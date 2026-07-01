@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111a" />
+  <title>What Is My Business Worth? | Salt Creek Advisory</title>
+  <meta name="description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from real industry transaction multiples." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo" aria-label="Salt Creek Advisory">
+    <img src="logo-mark.png" alt="" aria-hidden="true" class="nav-logo-img">
+    <span class="nav-logo-text">Salt Creek <span class="nav-logo-text-sub">Advisory</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="sectors.html">Sectors</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="investors.html">Investors</a></li>
+    <li><a href="podcast.html">Podcast</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <a href="valuation.html" class="nav-cta nav-cta--val">Value My Business</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile-drawer" id="mobileDrawer">
+  <a href="about.html" onclick="closeDrawer()">About</a>
+  <a href="sectors.html" onclick="closeDrawer()">Sectors</a>
+  <a href="process.html" onclick="closeDrawer()">Process</a>
+  <a href="team.html" onclick="closeDrawer()">Team</a>
+  <a href="investors.html" onclick="closeDrawer()">Investors</a>
+  <a href="podcast.html" onclick="closeDrawer()">Podcast</a>
+  <a href="faq.html" onclick="closeDrawer()">FAQ</a>
+  <a href="contact.html" onclick="closeDrawer()">Contact</a>
+  <a href="valuation.html" onclick="closeDrawer()">Value My Business</a>
+</div>
+
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">Free Valuation Tool</span>
+    <h1 class="page-hero-h1">What is your business<br><em>actually worth?</em></h1>
+    <p class="page-hero-sub">A dozen quick dropdowns. About two minutes. A ballpark range built from real transaction multiples in your industry, and an honest conversation if you want one.</p>
+  </div>
+</section>
+
+<section class="val">
+  <div class="val-card">
+    <div class="val-progress" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+
+    <div class="val-step active" data-step="1">
+      <span class="val-step-kicker">Step 1 of 4</span>
+      <h3 class="val-step-title">The basics</h3>
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="vIndustry">Industry</label>
+          <select id="vIndustry" class="val-select">
+            <option value="">Select your industry&hellip;</option>
+            <option value="ece">Early Childhood Education / Preschool</option>
+            <option value="services">Business Services</option>
+            <option value="homeservices">Home Services (HVAC, Plumbing, Electrical)</option>
+            <option value="facilities">Facility Services / Landscaping</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="distribution">Distribution / Logistics</option>
+            <option value="construction">Construction / Specialty Contractors</option>
+            <option value="healthcare">Healthcare Services</option>
+            <option value="insurance">Insurance Agency</option>
+            <option value="itservices">IT Services / MSP</option>
+            <option value="software">Software / Technology</option>
+            <option value="professional">Professional Services (Accounting, Engineering, Consulting)</option>
+            <option value="agency">Marketing / Creative Agency</option>
+            <option value="transport">Transportation / Trucking</option>
+            <option value="auto">Auto Services / Car Wash</option>
+            <option value="consumer">Consumer / Retail</option>
+            <option value="restaurants">Restaurants / Food Service</option>
+            <option value="ecommerce">E-Commerce</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vState">State</label>
+          <select id="vState" class="val-select">
+            <option value="">Select your state&hellip;</option>
+          </select>
+        </div>
+      </div>
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="vRevenue">Annual Revenue</label>
+          <input id="vRevenue" class="val-input" type="text" inputmode="numeric" placeholder="$2,500,000" autocomplete="off">
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vProfit">Annual Profit (EBITDA or SDE) <span style="opacity:.5;">(blank if unsure)</span></label>
+          <input id="vProfit" class="val-input" type="text" inputmode="numeric" placeholder="$500,000" autocomplete="off">
+        </div>
+      </div>
+      <p class="val-help">Profit means earnings before interest, taxes, depreciation and amortization, plus any owner salary above market. A rough number is fine &mdash; and if you leave it blank, we&rsquo;ll estimate from typical margins in your industry.</p>
+      <div class="val-field" style="margin-top:1.5rem;">
+        <label class="val-label" for="vWebsite">Company Website <span style="opacity:.5;">(optional, helps us give you a sharper read)</span></label>
+        <input id="vWebsite" class="val-input" type="text" placeholder="yourcompany.com" autocomplete="off">
+      </div>
+      <p class="val-error-msg" id="err1"></p>
+      <div class="val-actions">
+        <span></span>
+        <button class="btn-primary" id="toStep2" type="button">Continue &#8594;</button>
+      </div>
+    </div>
+
+    <div class="val-step" data-step="2">
+      <span class="val-step-kicker">Step 2 of 4</span>
+      <h3 class="val-step-title">A few quick details</h3>
+      <p class="val-help" style="margin:-1rem 0 1.75rem;">These move your multiple up or down. Honest answers get honest numbers.</p>
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="vOwner">How involved are you day to day?</label>
+          <select id="vOwner" class="val-select">
+            <option value="">Select one&hellip;</option>
+            <option value="team">It runs without me &mdash; manager in place</option>
+            <option value="oversee">I oversee it, my team runs operations</option>
+            <option value="daily">I&rsquo;m in it every day</option>
+            <option value="me">The business is mostly me</option>
+          </select>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vGrowth">Revenue over the last few years?</label>
+          <select id="vGrowth" class="val-select">
+            <option value="">Select one&hellip;</option>
+            <option value="fast">Growing 10%+ a year</option>
+            <option value="steady">Growing steadily</option>
+            <option value="flat">Roughly flat</option>
+            <option value="down">Declining</option>
+          </select>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vConc">Your largest customer is&hellip;</label>
+          <select id="vConc" class="val-select">
+            <option value="">Select one&hellip;</option>
+            <option value="low">Less than 10% of revenue</option>
+            <option value="mid">10&ndash;25% of revenue</option>
+            <option value="high">25&ndash;50% of revenue</option>
+            <option value="very">More than half of revenue</option>
+          </select>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vRec">What kind of revenue?</label>
+          <select id="vRec" class="val-select">
+            <option value="">Select one&hellip;</option>
+            <option value="contract">Contracted or recurring (memberships, contracts)</option>
+            <option value="repeat">Mostly repeat customers</option>
+            <option value="mixed">Mix of repeat and one-time</option>
+            <option value="project">Mostly one-time or project work</option>
+          </select>
+        </div>
+      </div>
+      <p class="val-error-msg" id="err2"></p>
+      <div class="val-actions">
+        <button class="btn-ghost val-back" id="back1" type="button">&#8592; Back</button>
+        <button class="btn-primary" id="toStep3" type="button">Continue &#8594;</button>
+      </div>
+    </div>
+
+    <div class="val-step" data-step="3">
+      <span class="val-step-kicker">Step 3 of 4</span>
+      <h3 class="val-step-title">Where should we send the full breakdown?</h3>
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="vName">Your Name</label>
+          <input id="vName" class="val-input" type="text" placeholder="First and last name" autocomplete="name">
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="vEmail">Email</label>
+          <input id="vEmail" class="val-input" type="email" placeholder="you@company.com" autocomplete="email">
+        </div>
+      </div>
+      <div class="val-field">
+        <label class="val-label" for="vPhone">Phone <span style="opacity:.5;">(optional)</span></label>
+        <input id="vPhone" class="val-input" type="tel" placeholder="(555) 555-5555" autocomplete="tel">
+      </div>
+      <p class="val-trust">Your range appears instantly on the next screen. Every inquiry is confidential, and the only people who will ever see it are Jack and Connor.</p>
+      <p class="val-error-msg" id="err3"></p>
+      <div class="val-actions">
+        <button class="btn-ghost val-back" id="back2" type="button">&#8592; Back</button>
+        <button class="btn-primary" id="calcBtn" type="button">Show My Range</button>
+      </div>
+    </div>
+
+    <div class="val-step val-result" data-step="4" id="valResult">
+      <div id="valNumbers">
+        <span class="val-result-eyebrow">Estimated Value Range</span>
+        <div class="val-range"><span id="valLow">$0</span><span class="val-range-dash">&mdash;</span><span id="valHigh">$0</span></div>
+        <div class="val-bar"><div class="val-bar-fill"></div></div>
+        <div class="val-bar-labels"><span>Conservative</span><span>With a competitive process</span></div>
+        <p class="val-note" id="valNote"></p>
+      </div>
+      <div id="valBigLook" style="display:none;">
+        <span class="val-result-eyebrow">This One Deserves a Closer Look</span>
+        <p class="val-biglook-msg">Honestly? At your size, a calculator range isn&rsquo;t worth your time. Businesses like yours trade on things a tool can&rsquo;t see &mdash; buyer appetite, sector momentum, deal structure, and how the story gets told. Rather than hand you a number that could be off by tens of millions in either direction, we&rsquo;d like to take a real look. That conversation is free, confidential, and worth it at your scale.</p>
+      </div>
+
+      <div class="val-buyers" id="valBuyers">
+        <span class="val-buyers-title" id="valBuyersTitle">Buyers active in your industry</span>
+        <div id="valBuyersList"></div>
+        <p class="val-buyers-note">Illustrative examples drawn from publicly reported acquisition activity. These firms are not affiliated with Salt Creek Advisory and this is not an offer. A real process typically surfaces dozens of qualified buyers, including private equity platforms and family offices active in your region.</p>
+      </div>
+
+      <p class="val-cta-line">A calculator can see eight inputs. Buyers look at a hundred. This range is a starting point &mdash; the only way to know what your business is really worth is a conversation with someone who has sat on the buyer&rsquo;s side of the table. It&rsquo;s free, it&rsquo;s confidential, and it&rsquo;s with the two people whose names are on the firm. We personally review every submission, including your website.</p>
+      <div class="val-result-actions">
+        <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="btn-primary">Schedule With Jack &amp; Connor</a>
+        <a href="#" id="valEmailLink" class="btn-ghost">Email Us This Estimate <span class="btn-ghost-arrow">&#8594;</span></a>
+      </div>
+      <p class="val-disclaimer">This is a directional estimate based on industry transaction multiples, not a formal valuation or an offer. Real outcomes depend on dozens of factors a tool cannot see, and most of all on whether buyers compete for your business. We treat your information as confidential and never share it.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+
+  <div class="footer-grid">
+    <div class="footer-left">
+      <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog">
+      <span class="footer-brand">Salt Creek Advisory LLC</span>
+      <span class="footer-tagline">On Your Side</span>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Firm</span>
+      <a href="about.html">About</a>
+      <a href="sectors.html">Sector Expertise</a>
+      <a href="process.html">Our Process</a>
+      <a href="team.html">The Partners</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Connect</span>
+      <a href="investors.html">For Investors</a>
+      <a href="podcast.html">The Making Of Hosted By Jack Pitts</a>
+      <a href="faq.html">Owner FAQ</a>
+      <a href="valuation.html">Valuation Tool</a>
+      <a href="https://www.linkedin.com/company/salt-creek-advisory/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Contact</span>
+      <a href="mailto:jack@saltcreekadvisory.com">jack@saltcreekadvisory.com</a>
+      <a href="mailto:connor@saltcreekadvisory.com">connor@saltcreekadvisory.com</a>
+      <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener">Schedule a Call</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+(function () {
+  // Base EBITDA multiple ranges, calibrated to 2025-26 lower middle market
+  // transaction data (GF Data, BizBuySell, sector reports). Low end = typical
+  // negotiated sale; high end = quality business in a competitive process.
+  const MULT = {
+    ece:          [3.5, 6.0],
+    services:     [4.5, 7.0],
+    homeservices: [4.5, 7.5],
+    facilities:   [4.0, 6.5],
+    manufacturing:[4.5, 6.5],
+    distribution: [4.5, 6.5],
+    construction: [3.5, 5.5],
+    healthcare:   [5.0, 7.5],
+    insurance:    [7.0, 10.0],
+    itservices:   [5.0, 8.0],
+    software:     [6.0, 10.0],
+    professional: [4.0, 6.5],
+    agency:       [4.0, 6.0],
+    transport:    [3.5, 5.5],
+    auto:         [4.5, 7.0],
+    consumer:     [3.0, 4.5],
+    restaurants:  [2.5, 4.0],
+    ecommerce:    [3.0, 5.0],
+    other:        [3.5, 5.5]
+  };
+  const NAMES = {
+    ece: 'early childhood education', services: 'business services',
+    homeservices: 'home services', facilities: 'facility services and landscaping',
+    manufacturing: 'manufacturing', distribution: 'distribution and logistics',
+    construction: 'construction', healthcare: 'healthcare services',
+    insurance: 'insurance agency', itservices: 'IT services',
+    software: 'software and technology', professional: 'professional services',
+    agency: 'agency', transport: 'transportation', auto: 'auto services',
+    consumer: 'consumer', restaurants: 'restaurant and food service',
+    ecommerce: 'e-commerce', other: 'comparable'
+  };
+  // Typical EBITDA margins by industry, used only when profit is left blank.
+  const MARGIN = {
+    ece: 0.18, services: 0.15, homeservices: 0.12, facilities: 0.12,
+    manufacturing: 0.12, distribution: 0.07, construction: 0.10, healthcare: 0.15,
+    insurance: 0.25, itservices: 0.15, software: 0.25, professional: 0.20,
+    agency: 0.15, transport: 0.08, auto: 0.20, consumer: 0.10,
+    restaurants: 0.12, ecommerce: 0.10, other: 0.12
+  };
+  const OWNER_ADJ  = { team: 0.5, oversee: 0.25, daily: 0, me: -0.75 };
+  const GROWTH_ADJ = { fast: 0.5, steady: 0.25, flat: 0, down: -0.75 };
+  const CONC_ADJ   = { low: 0.25, mid: 0, high: -0.5, very: -1.0 };
+  const REC_ADJ    = { contract: 0.5, repeat: 0.25, mixed: 0, project: -0.25 };
+
+  // Verified acquirers by industry (publicly reported activity, 2025-26).
+  const BUYERS = {
+    ece: [
+      ['Cadence Education', 'PE-backed national platform with 300+ schools across 30 states; has acquired more than 100 preschools.'],
+      ['KinderCare Learning Companies', 'One of the largest early education providers in the country.'],
+      ['Busy Bees / BrightPath', 'Global operator backed by the Ontario Teachers’ Pension Plan, growing across North America.']
+    ],
+    services: [
+      ['Springdale Industries', 'Long-term holding company with 375+ partner businesses nationwide; buys majority stakes and keeps management in place. We work closely with their team.'],
+      ['Alpine Investors', 'One of the biggest names in business services; backs Apex, Ascend, Trilon, and Evergreen, among the most acquisitive platforms in the country.'],
+      ['Shore Capital Partners', 'Ranked #1 in U.S. private equity deal volume 2015–2024 (PitchBook); built around buying founder-owned businesses our size.']
+    ],
+    homeservices: [
+      ['Apex Service Partners', 'The most active home services consolidator: roughly 60 acquisitions in 2025 across HVAC, plumbing and electrical. An Alpine Investors platform.'],
+      ['Multi-trade PE platforms', 'Dozens of private equity-backed regional platforms are actively acquiring residential trades businesses.']
+    ],
+    facilities: [
+      ['BrightView', 'The largest commercial landscaper in the country, actively acquiring again.'],
+      ['SiteOne Landscape Supply', 'Serial acquirer in the landscape supply chain: seven acquisitions in 2025 alone.'],
+      ['PE-backed facility services platforms', 'Consolidators in landscaping, janitorial and facility maintenance remain highly active.']
+    ],
+    manufacturing: [
+      ['Marmon Holdings (Berkshire Hathaway)', 'A long-time home for family-owned niche manufacturers; more than 100 autonomous businesses.'],
+      ['PE-backed manufacturing platforms', 'Industrial-focused private equity firms actively acquire precision, specialty, and contract manufacturers.']
+    ],
+    distribution: [
+      ['Watsco', 'The largest HVAC distributor in North America and a serial acquirer of family-owned distributors.'],
+      ['SiteOne Landscape Supply', 'Completed seven distribution acquisitions in 2025; dozens over the last decade.']
+    ],
+    construction: [
+      ['Comfort Systems USA', 'Public mechanical and electrical contractor that completed five acquisitions in 2025.'],
+      ['Specialty trade consolidators', 'PE-backed platforms in fire and life safety, roofing, paving, and mechanical trades are acquiring aggressively.']
+    ],
+    healthcare: [
+      ['Shore Capital Partners', 'The most active healthcare investor in the lower middle market; ranked #1 in U.S. PE deal volume 2015–2024.'],
+      ['Heartland Dental', 'The largest dental support organization in the country, supporting 1,700+ offices.'],
+      ['MSO and DSO platforms', 'PE-backed physician, dental, and therapy groups are consolidating nearly every specialty.']
+    ],
+    insurance: [
+      ['BroadStreet Partners', 'The most active agency acquirer in the country, with 69 deals in 2025.'],
+      ['Hub International', 'Top-five broker, 49 agency acquisitions in 2025.'],
+      ['Inszone Insurance Services', '45 agency acquisitions in 2025 and accelerating.']
+    ],
+    itservices: [
+      ['Evergreen Services Group (Lyra)', 'The most acquisitive MSP buyer in the world: 47 acquisitions in 2025. An Alpine Investors company.'],
+      ['PE-backed MSP platforms', 'A deep field of platforms actively consolidating managed IT services.']
+    ],
+    software: [
+      ['Constellation Software', 'Famously acquires hundreds of small vertical software companies and holds them forever.'],
+      ['Vertical SaaS consolidators', 'PE-backed software platforms compete aggressively for niche products with sticky customers.']
+    ],
+    professional: [
+      ['Ascend', 'Alpine-backed accounting platform; dozens of CPA firm mergers, including Top 200 firms.'],
+      ['Trilon Group', 'The most prolific acquirer in engineering and infrastructure consulting: eight acquisitions in 2025.'],
+      ['PE-backed professional services platforms', 'Accounting, engineering, and consulting roll-ups are among the hottest areas in private equity.']
+    ],
+    agency: [
+      ['Accenture', 'Has acquired dozens of marketing and creative agencies at the larger end of the market.'],
+      ['PE-backed agency platforms', 'Digital marketing and creative agency roll-ups actively acquire specialized shops with retainer revenue.']
+    ],
+    transport: [
+      ['TFI International', 'One of the most acquisitive trucking consolidators in North America, with well over 100 acquisitions in its history.'],
+      ['Knight-Swift', 'Top-five carrier that has grown through acquisition, including U.S. Xpress and Dependable Highway Express.']
+    ],
+    auto: [
+      ['Mammoth Holdings', 'Express car wash platform with 200+ locations in 17 states. Its founding CEO has been a guest on our podcast.'],
+      ['Mister Car Wash', 'The largest U.S. car wash operator, taken private by Leonard Green in 2026.'],
+      ['Crash Champions', 'PE-backed collision repair consolidator with hundreds of locations.']
+    ],
+    consumer: [
+      ['Shore Capital Partners', 'Closed a $450M+ food and beverage fund in 2025; built around buying founder-owned consumer businesses.'],
+      ['Strategic and franchise acquirers', 'Category leaders and franchise groups actively acquire proven consumer concepts and locations.']
+    ],
+    restaurants: [
+      ['Flynn Group', 'The largest multi-brand franchise operator in the world, with thousands of locations across seven brands.'],
+      ['Savory Fund', 'Private equity fund built specifically to buy and scale emerging restaurant brands; $750M+ in assets.'],
+      ['Shore Capital Partners', 'Closed a $450M+ food and beverage fund in 2025.']
+    ],
+    ecommerce: [
+      ['Razor Group', 'The surviving consolidator of the aggregator era; merged with Infinite Commerce in 2025 to manage 10,000+ SKUs.'],
+      ['Strategic brand acquirers', 'The aggregator wave has cooled. Today’s buyers are selective and pay for profitable, differentiated brands.']
+    ]
+  };
+  const BUYERS_GENERIC = [
+    ['PE-backed industry platforms', 'Private equity consolidators building scale in your sector through add-on acquisitions.'],
+    ['Strategic acquirers', 'Larger companies in your industry seeking geographic or capability expansion.'],
+    ['Family offices & independent sponsors', 'Long-hold buyers who compete well on culture and continuity.']
+  ];
+
+  const STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','Washington D.C.','West Virginia','Wisconsin','Wyoming'];
+
+  // Formspree: every submission is emailed to Salt Creek and stored in the
+  // Formspree dashboard. Create a form at formspree.io, then paste its ID
+  // below so the line reads: const LEAD_ENDPOINT = 'https://formspree.io/f/abcdwxyz';
+  const LEAD_ENDPOINT = 'https://formspree.io/f/xzdqavol';
+
+  const $ = (id) => document.getElementById(id);
+  const steps = document.querySelectorAll('.val-step');
+  const dots = document.querySelectorAll('.val-progress span');
+  const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // populate states
+  const stateSel = $('vState');
+  STATES.forEach(st => {
+    const o = document.createElement('option');
+    o.value = st; o.textContent = st;
+    stateSel.appendChild(o);
+  });
+
+  function showStep(n) {
+    steps.forEach(s => s.classList.toggle('active', s.dataset.step == n));
+    dots.forEach((d, i) => d.classList.toggle('on', i < n));
+    if (n === 4) $('valResult').classList.add('shown');
+  }
+
+  function parseMoney(v) {
+    const d = String(v).replace(/[^0-9.]/g, '');
+    return d ? Math.round(parseFloat(d)) : 0;
+  }
+  function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+  ['vRevenue', 'vProfit'].forEach(id => {
+    const el = $(id);
+    el.addEventListener('input', () => {
+      const n = parseMoney(el.value);
+      el.value = n ? '$' + n.toLocaleString('en-US') : '';
+    });
+  });
+
+  function err(id, msg) {
+    const el = $(id);
+    el.textContent = msg || '';
+    el.style.display = msg ? 'block' : 'none';
+  }
+
+  $('toStep2').addEventListener('click', () => {
+    const ind = $('vIndustry').value;
+    const rev = parseMoney($('vRevenue').value);
+    const prof = parseMoney($('vProfit').value);
+    if (!ind) return err('err1', 'Please select your industry.');
+    if (!$('vState').value) return err('err1', 'Please select your state.');
+    if (!rev && !prof) return err('err1', 'Give us revenue or profit \u2014 a rough number is fine.');
+    if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.');
+    err('err1', '');
+    showStep(2);
+  });
+
+  $('toStep3').addEventListener('click', () => {
+    if (!$('vOwner').value) return err('err2', 'Tell us how involved you are day to day.');
+    if (!$('vGrowth').value) return err('err2', 'Tell us how revenue has trended.');
+    if (!$('vConc').value) return err('err2', 'Tell us about your largest customer.');
+    if (!$('vRec').value) return err('err2', 'Tell us what kind of revenue you have.');
+    err('err2', '');
+    showStep(3);
+  });
+
+  $('back1').addEventListener('click', () => showStep(1));
+  $('back2').addEventListener('click', () => showStep(2));
+
+  function sizeAdj(p) {
+    if (p >= 5e6) return 1.5;
+    if (p >= 2e6) return 0.75;
+    if (p >= 1e6) return 0.25;
+    if (p >= 5e5) return 0;
+    if (p >= 2.5e5) return -0.5;
+    return -1.0;
+  }
+  function roundSmart(v) {
+    const step = v >= 1e7 ? 5e5 : v >= 1e6 ? 1e5 : 2.5e4;
+    return Math.round(v / step) * step;
+  }
+  function countUp(el, target, dur) {
+    if (rm) { el.textContent = fmt(target); return; }
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(roundSmart(target * eased));
+      if (t < 1) requestAnimationFrame(tick); else el.textContent = fmt(target);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function renderBuyers(ind) {
+    const list = (BUYERS[ind] || []).concat(BUYERS_GENERIC).slice(0, 3);
+    $('valBuyersTitle').textContent = 'Buyers active in ' +
+      (NAMES[ind] === 'comparable' ? 'businesses like yours' : NAMES[ind]);
+    $('valBuyersList').innerHTML = list.map(b =>
+      '<div class="val-buyer"><span class="val-buyer-name">' + b[0] +
+      '</span><span class="val-buyer-desc">' + b[1] + '</span></div>'
+    ).join('');
+  }
+
+  $('calcBtn').addEventListener('click', () => {
+    const name = $('vName').value.trim();
+    const email = $('vEmail').value.trim();
+    if (!name) return err('err3', 'Please enter your name.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('err3', 'Please enter a valid email address.');
+    err('err3', '');
+
+    const ind = $('vIndustry').value;
+    const rev = parseMoney($('vRevenue').value);
+    let prof = parseMoney($('vProfit').value);
+    let estimated = false;
+    if (!prof && rev) { prof = Math.round(rev * MARGIN[ind]); estimated = true; }
+
+    // Very large businesses get a closer look, not a guess.
+    const bigDeal = prof >= 12e6 || rev >= 12e7;
+
+    const adj = sizeAdj(prof) + OWNER_ADJ[$('vOwner').value] + GROWTH_ADJ[$('vGrowth').value] +
+                CONC_ADJ[$('vConc').value] + REC_ADJ[$('vRec').value];
+    const lowX = Math.max(2.0, MULT[ind][0] + adj);
+    const highX = Math.max(2.5, MULT[ind][1] + adj);
+    const low = roundSmart(prof * lowX);
+    const high = roundSmart(prof * highX);
+
+    $('valNumbers').style.display = bigDeal ? 'none' : 'block';
+    $('valBigLook').style.display = bigDeal ? 'block' : 'none';
+
+    const profPhrase = estimated
+      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical ' + NAMES[ind] + ' margins to your revenue \u2014 treat this as a rougher starting point)'
+      : 'your ' + fmt(prof) + ' of annual profit';
+    $('valNote').textContent = 'Based on a ' + lowX.toFixed(1) + 'x\u2013' + highX.toFixed(1) +
+      'x multiple applied to ' + profPhrase + ', adjusted for size, ' +
+      'owner involvement, growth, customer concentration, and revenue quality. That is where ' +
+      NAMES[ind] + ' businesses are trading today. Where you land inside the range \u2014 or above it \u2014 ' +
+      'depends almost entirely on whether buyers compete for your business.';
+
+    renderBuyers(ind);
+
+    const sel = (id) => { const e = $(id); return e.options[e.selectedIndex].text; };
+    const lead = {
+      name, email, phone: $('vPhone').value.trim(), website: $('vWebsite').value.trim(),
+      state: $('vState').value,
+      industry: sel('vIndustry'), ownerInvolvement: sel('vOwner'), revenueTrend: sel('vGrowth'),
+      customerConcentration: sel('vConc'), revenueType: sel('vRec'),
+      revenue: rev, profit: prof, profitEstimated: estimated, oversized: bigDeal,
+      estimateLow: low, estimateHigh: high,
+      date: new Date().toISOString(), source: 'valuation-tool'
+    };
+
+    if (LEAD_ENDPOINT) {
+      fetch(LEAD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(Object.assign({
+          _subject: 'New valuation lead \u2014 ' + name + ' (' + lead.industry + ', ' + lead.state + ')'
+        }, lead))
+      }).catch(() => {});
+    }
+    try {
+      const all = JSON.parse(localStorage.getItem('sc_valuation_leads') || '[]');
+      all.push(lead);
+      localStorage.setItem('sc_valuation_leads', JSON.stringify(all));
+    } catch (e) {}
+
+    const subject = 'Valuation inquiry \u2014 ' + name;
+    const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
+      'Name: ' + name + '\nEmail: ' + email + (lead.phone ? '\nPhone: ' + lead.phone : '') +
+      (lead.website ? '\nWebsite: ' + lead.website : '') + '\nState: ' + lead.state +
+      '\nIndustry: ' + lead.industry + '\nOwner involvement: ' + lead.ownerInvolvement +
+      '\nRevenue trend: ' + lead.revenueTrend + '\nLargest customer: ' + lead.customerConcentration +
+      '\nRevenue type: ' + lead.revenueType + '\nAnnual revenue: ' + fmt(rev) +
+      '\nAnnual profit: ' + fmt(prof) + (estimated ? ' (estimated from margins)' : '') +
+      '\nEstimated range: ' + (bigDeal ? 'needs a closer look \u2014 large business' : fmt(low) + ' \u2013 ' + fmt(high)) +
+      '\n\nI\u2019d like to talk about what a real number could look like.';
+    $('valEmailLink').setAttribute('href',
+      'mailto:jack@saltcreekadvisory.com?cc=connor@saltcreekadvisory.com&subject=' +
+      encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyTxt));
+
+    showStep(4);
+    if (!bigDeal) {
+      countUp($('valLow'), low, 1200);
+      countUp($('valHigh'), high, 1400);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

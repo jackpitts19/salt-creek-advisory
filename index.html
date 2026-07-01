@@ -1,8 +1,280 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Index Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111a" />
+  <title>Salt Creek Advisory | For the Owners Who Built Something Worth Protecting</title>
+  <meta name="description" content="Salt Creek Advisory is a family-owned investment bank founded by brothers Jack and Connor Pitts. Sell-side and buy-side M&A advisory for lower middle market business owners." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FinancialService",
+    "name": "Salt Creek Advisory",
+    "description": "Family-owned investment bank providing sell-side and buy-side M&A advisory for lower middle market business owners, with sector expertise in early childhood education, business services, and industrials.",
+    "url": "https://saltcreekadvisory.com",
+    "founders": [
+      { "@type": "Person", "name": "Jack Pitts" },
+      { "@type": "Person", "name": "Connor Pitts" }
+    ],
+    "areaServed": "United States",
+    "address": { "@type": "PostalAddress", "addressRegion": "IL", "addressCountry": "US" }
+  }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<h1>Welcome to Salt Creek Advisory</h1>
+<nav id="nav">
+  <a href="index.html" class="nav-logo" aria-label="Salt Creek Advisory">
+    <img src="logo-mark.png" alt="" aria-hidden="true" class="nav-logo-img">
+    <span class="nav-logo-text">Salt Creek <span class="nav-logo-text-sub">Advisory</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="sectors.html">Sectors</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="investors.html">Investors</a></li>
+    <li><a href="podcast.html">Podcast</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <a href="valuation.html" class="nav-cta nav-cta--val">Value My Business</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile-drawer" id="mobileDrawer">
+  <a href="about.html" onclick="closeDrawer()">About</a>
+  <a href="sectors.html" onclick="closeDrawer()">Sectors</a>
+  <a href="process.html" onclick="closeDrawer()">Process</a>
+  <a href="team.html" onclick="closeDrawer()">Team</a>
+  <a href="investors.html" onclick="closeDrawer()">Investors</a>
+  <a href="podcast.html" onclick="closeDrawer()">Podcast</a>
+  <a href="faq.html" onclick="closeDrawer()">FAQ</a>
+  <a href="contact.html" onclick="closeDrawer()">Contact</a>
+  <a href="valuation.html" onclick="closeDrawer()">Value My Business</a>
+</div>
+
+<main>
+
+<section class="hero" id="home">
+  <div class="hero-monogram" aria-hidden="true">SC</div>
+  <div class="hero-deco" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">A Family-Owned Investment Bank</span>
+    <h1 class="hero-h1">
+      For the owners<br>
+      who built something<br>
+      <em>worth protecting.</em>
+    </h1>
+    <p class="hero-sub">
+      Built for lower middle market owners. Whether you are selling, acquiring, or still weighing the right move, you work directly with us &mdash; from the first conversation to the day the wire clears.
+    </p>
+    <div class="hero-actions">
+      <a href="valuation.html" class="btn-primary">What’s My Business Worth?</a>
+      <a href="about.html" class="btn-ghost">How We Work <span class="btn-ghost-arrow">&#8594;</span></a>
+    </div>
+    <div class="hero-cred" aria-label="Firm credentials">
+      <div class="hero-cred-item">
+        <span class="hero-cred-num">40+</span>
+        <span class="hero-cred-label">Transactions of Combined Experience</span>
+      </div>
+      <div class="hero-cred-sep" aria-hidden="true"></div>
+      <div class="hero-cred-item">
+        <span class="hero-cred-num">$5M&ndash;$75M</span>
+        <span class="hero-cred-label">Revenue Range We Serve</span>
+      </div>
+      <div class="hero-cred-sep" aria-hidden="true"></div>
+      <div class="hero-cred-item">
+        <span class="hero-cred-num">100%</span>
+        <span class="hero-cred-label">Success-Fee Based</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <span class="hero-scroll-label">Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<section class="impact">
+  <div class="wrap">
+    <div class="impact-header reveal">
+      <span class="eyebrow">The Case for a Process</span>
+      <h2 class="impact-h2">What is your business<br><em>really worth?</em></h2>
+      <p class="impact-sub">Private equity firms control trillions in capital and employ teams of analysts whose sole job is to acquire your business at the lowest possible price. Our job is to make sure they pay the right one.</p>
+    </div>
+
+    <div class="impact-stats">
+      <div class="impact-stat reveal">
+        <span class="impact-stat-num">50%</span>
+        <span class="impact-stat-label">Higher Offers</span>
+        <span class="impact-stat-desc">What competition can add. When buyers know they have rivals, the first bid stops being the ceiling.</span>
+      </div>
+      <div class="impact-stat reveal reveal-delay-1">
+        <span class="impact-stat-num">30</span>
+        <span class="impact-stat-label">Days to First Offers</span>
+        <span class="impact-stat-desc">Our target from launch to first offers. Speed creates leverage, and leverage creates value.</span>
+      </div>
+      <div class="impact-stat reveal reveal-delay-2">
+        <span class="impact-stat-num">$0</span>
+        <span class="impact-stat-label">Upfront Fees</span>
+        <span class="impact-stat-desc">Success fee only. No retainers. We get paid when you do. That is the deal.</span>
+      </div>
+      <div class="impact-stat reveal reveal-delay-3">
+        <span class="impact-stat-num">100%</span>
+        <span class="impact-stat-label">Aligned Incentives</span>
+        <span class="impact-stat-desc">Every buyer that matters. None that do not. The right table, not the biggest one.</span>
+      </div>
+    </div>
+
+    <div class="impact-body reveal">
+      <div class="impact-body-quote">Buyers do not overpay in private conversations.<br><em>They overpay when they are competing.</em></div>
+      <p class="impact-body-text">We build a structured, competitive process around your business and your timeline. Every relevant buyer at the table, at the same time, with the same information. That is how you get a number that actually reflects what you built. Not what a buyer thought they could get away with in a private conversation.</p>
+    </div>
+  </div>
+</section>
+<section class="why-us" id="why">
+  <div class="wrap">
+    <div class="why-header reveal">
+      <span class="eyebrow">Why Salt Creek</span>
+      <h2 class="why-h2">
+        A different kind<br>
+        <em>of investment bank.</em>
+      </h2>
+      <p class="why-sub">
+        Buy-side and sell-side M&amp;A is all we do. We built a model that is more direct, more aligned, and more owner-friendly than what most banks offer. Here is what that looks like in practice.
+      </p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <span class="why-card-num">01</span>
+        <h3>You Deal With Us Directly</h3>
+        <p>Jack and Connor work every engagement personally, from first call to close. You always know who is on your deal and who is accountable for the outcome. That is not how most banks operate, and it is the difference that matters most.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <span class="why-card-num">02</span>
+        <h3>When You Win, We Win</h3>
+        <p>Salt Creek is 100% success-fee based. We only get paid when your deal closes. That means our incentives are completely aligned with yours. Not just getting a deal done, but getting you the right one.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <span class="why-card-num">03</span>
+        <h3>We Cut the Complexity</h3>
+        <p>Traditional investment banking is full of unnecessary process. Long timelines, binders nobody reads, jargon that obscures more than it explains. We keep things clear. You always know where things stand and why.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-3">
+        <span class="why-card-num">04</span>
+        <h3>Proprietary AI</h3>
+        <p>We built our own AI tools for research, deal preparation, and market intelligence. Most boutique advisors haven't come close. The result is faster, sharper work that gives you a real edge in the process.</p>
+      </div>
+    </div>
+
+    <div class="why-process-callout reveal">
+      <h3>A real process gets you<br><em>a better deal.</em></h3>
+      <p>Most owners only sell once, and many take the first offer they get. The difference between a good outcome and a great one is almost always whether there was a real process, one where multiple buyers compete. When buyers know they are not the only option, they sharpen their offers. Price goes up. Terms improve. You have leverage. Running a competitive process is one of the most important things a good advisor does, and it is exactly what we do.</p>
+    </div>
+  </div>
+</section>
+
+<section class="val-band" id="valuation">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" style="justify-content:center;">Free Valuation Tool</span>
+      <h2 class="val-band-h2">Get your number<br><em>in two minutes.</em></h2>
+      <p class="val-band-sub">A handful of dropdowns, real transaction multiples, a ballpark range on the spot &mdash; plus the buyers most active in your industry. Confidential, free, and yours to do with as you please.</p>
+      <a href="valuation.html" class="btn-primary">Get My Ballpark Value</a>
+      <span class="val-band-note">About two minutes &middot; Only Jack and Connor ever see it</span>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="contact-deco-outer" aria-hidden="true"></div>
+  <div class="contact-deco" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow eyebrow--light">Get In Touch</span>
+      <div class="contact-accent"></div>
+      <h2 class="contact-h2">
+        The most important<br>
+        conversation starts<br>
+        <em>with a simple one.</em>
+      </h2>
+      <p class="contact-sub">
+        We are just trying to meet the right people. Whether you are thinking about a sale in six months or six years, want to talk about an acquisition, or just want an honest read on where things stand, reach out. No pitch. No pressure.
+      </p>
+      <div class="contact-actions">
+        <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="btn-primary">Schedule a Call</a>
+        <a href="https://www.linkedin.com/company/salt-creek-advisory/" target="_blank" rel="noopener" class="btn-ghost">
+          LinkedIn <span class="btn-ghost-arrow">&#8599;</span>
+        </a>
+      </div>
+
+      <div class="contact-divider"></div>
+
+      <div class="contact-persons">
+        <div class="contact-person">
+          <span class="contact-person-name">Jack Pitts</span>
+          <span class="contact-person-role">Co-Founder &amp; Principal</span>
+          <a href="mailto:jack@saltcreekadvisory.com" class="contact-email-addr">jack@saltcreekadvisory.com</a>
+          <a href="tel:+17082052788" class="contact-phone">708.205.2788</a>
+        </div>
+        <div class="contact-person-divider" aria-hidden="true"></div>
+        <div class="contact-person">
+          <span class="contact-person-name">Connor Pitts</span>
+          <span class="contact-person-role">Co-Founder &amp; Principal</span>
+          <a href="mailto:connor@saltcreekadvisory.com" class="contact-email-addr">connor@saltcreekadvisory.com</a>
+          <a href="tel:+17086575419" class="contact-phone">708.657.5419</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+
+  <div class="footer-grid">
+    <div class="footer-left">
+      <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog">
+      <span class="footer-brand">Salt Creek Advisory LLC</span>
+      <span class="footer-tagline">On Your Side</span>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Firm</span>
+      <a href="about.html">About</a>
+      <a href="sectors.html">Sector Expertise</a>
+      <a href="process.html">Our Process</a>
+      <a href="team.html">The Partners</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Connect</span>
+      <a href="investors.html">For Investors</a>
+      <a href="podcast.html">The Making Of Hosted By Jack Pitts</a>
+      <a href="faq.html">Owner FAQ</a>
+      <a href="valuation.html">Valuation Tool</a>
+      <a href="https://www.linkedin.com/company/salt-creek-advisory/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Contact</span>
+      <a href="mailto:jack@saltcreekadvisory.com">jack@saltcreekadvisory.com</a>
+      <a href="mailto:connor@saltcreekadvisory.com">connor@saltcreekadvisory.com</a>
+      <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener">Schedule a Call</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+
 </body>
 </html>
