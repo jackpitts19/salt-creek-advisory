@@ -1,0 +1,6 @@
+.git
+.github
+README.md
+wrangler.toml
+.assetsignore
+.DS_Store
