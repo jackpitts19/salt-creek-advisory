@@ -912,20 +912,6 @@
       filter: saturate(1.02);
     }
 
-    .team-initials {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 5rem;
-      font-weight: 300;
-      color: rgba(184,115,51,0.18);
-      letter-spacing: 0.1em;
-      user-select: none;
-      transition: color 0.4s, text-shadow 0.4s;
-    }
-    .team-card:hover .team-initials {
-      color: rgba(184,115,51,0.32);
-      text-shadow: 0 0 50px rgba(184,115,51,0.3);
-    }
-
     .team-img-area::after {
       content: '';
       position: absolute;
