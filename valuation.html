@@ -148,6 +148,12 @@
           </select>
         </div>
       </div>
+      <div class="val-field">
+        <label class="val-label" for="vSubsector">Subsector <span style="opacity:.5;">(this is what really narrows the range)</span></label>
+        <select id="vSubsector" class="val-select" disabled>
+          <option value="">Select your industry first&hellip;</option>
+        </select>
+      </div>
       <div class="val-grid2">
         <div class="val-field">
           <label class="val-label" for="vRevenue">Annual Revenue</label>
@@ -179,40 +185,51 @@
           <label class="val-label" for="vOwner">How involved are you day to day?</label>
           <select id="vOwner" class="val-select">
             <option value="">Select one&hellip;</option>
-            <option value="team">It runs without me (manager in place)</option>
-            <option value="oversee">I oversee it, my team runs operations</option>
-            <option value="daily">I&rsquo;m in it every day</option>
-            <option value="me">The business is mostly me</option>
+            <option value="fullTeamAbsentee">I have a full management team &mdash; I could step away for months and the business would run fine</option>
+            <option value="gmInPlace">I have a general manager or president running day to day &mdash; the company could run without me</option>
+            <option value="teamOpsOwnerRelationships">My team runs operations, but I still personally hold our key customer and vendor relationships</option>
+            <option value="teamOpsOwnerSales">I have a team running operations, but I&rsquo;m still the main salesperson bringing in new business</option>
+            <option value="dailyHandsOn">I&rsquo;m hands-on every day, running most key operations myself</option>
+            <option value="irreplaceableDelivery">I personally do the skilled work customers pay for, and no one else can do it</option>
+            <option value="allMe">The business is entirely me &mdash; relationships, sales, and delivery all run through me</option>
           </select>
         </div>
         <div class="val-field">
           <label class="val-label" for="vGrowth">Revenue over the last few years?</label>
           <select id="vGrowth" class="val-select">
             <option value="">Select one&hellip;</option>
-            <option value="fast">Growing 10%+ a year</option>
-            <option value="steady">Growing steadily</option>
-            <option value="flat">Roughly flat</option>
-            <option value="down">Declining</option>
+            <option value="explosive25plus">Growing fast &mdash; 25%+ a year, consistently</option>
+            <option value="strong10to25">Growing strong &mdash; 10&ndash;25% a year</option>
+            <option value="steady3to10">Growing steadily &mdash; roughly 3&ndash;10% a year</option>
+            <option value="unevenGrowth">Growing overall, but unevenly &mdash; some strong years, some flat or down</option>
+            <option value="roughlyFlat">Roughly flat the last few years</option>
+            <option value="recentDip">Slight dip recently, after years of growth</option>
+            <option value="multiYearDecline">Declining for multiple years in a row</option>
           </select>
         </div>
         <div class="val-field">
           <label class="val-label" for="vConc">Your largest customer is&hellip;</label>
           <select id="vConc" class="val-select">
             <option value="">Select one&hellip;</option>
-            <option value="low">Less than 10% of revenue</option>
-            <option value="mid">10&ndash;25% of revenue</option>
-            <option value="high">25&ndash;50% of revenue</option>
-            <option value="very">More than half of revenue</option>
+            <option value="under5">No single customer is even 5% of revenue</option>
+            <option value="five_ten">5&ndash;10% of revenue</option>
+            <option value="ten_25">10&ndash;25% of revenue</option>
+            <option value="twentyfive_40">25&ndash;40% of revenue</option>
+            <option value="forty_60">40&ndash;60% of revenue</option>
+            <option value="sixty_80">60&ndash;80% of revenue</option>
+            <option value="over80">More than 80% of revenue</option>
           </select>
         </div>
         <div class="val-field">
           <label class="val-label" for="vRec">What kind of revenue?</label>
           <select id="vRec" class="val-select">
             <option value="">Select one&hellip;</option>
-            <option value="contract">Contracted or recurring (memberships, contracts)</option>
-            <option value="repeat">Mostly repeat customers</option>
-            <option value="mixed">Mix of repeat and one-time</option>
-            <option value="project">Mostly one-time or project work</option>
+            <option value="lockedInContracts">Multi-year contracts customers can&rsquo;t easily leave</option>
+            <option value="autoRenewing">Auto-renewing contracts or memberships (subscriptions, service agreements)</option>
+            <option value="repeatNoContract">Mostly repeat customers, but no formal contracts</option>
+            <option value="mixedRevenue">Mix of repeat and one-time business</option>
+            <option value="oneTimeProject">Mostly one-time or project-based work</option>
+            <option value="cyclicalLumpy">Highly cyclical or unpredictable project work</option>
           </select>
         </div>
       </div>
@@ -402,10 +419,148 @@
     agency: 0.15, transport: 0.08, auto: 0.20, consumer: 0.10,
     restaurants: 0.12, ecommerce: 0.10, other: 0.12
   };
-  const OWNER_ADJ  = { team: 0.5, oversee: 0.25, daily: 0, me: -0.75 };
-  const GROWTH_ADJ = { fast: 0.5, steady: 0.25, flat: 0, down: -0.75 };
-  const CONC_ADJ   = { low: 0.25, mid: 0, high: -0.5, very: -1.0 };
-  const REC_ADJ    = { contract: 0.5, repeat: 0.25, mixed: 0, project: -0.25 };
+  // Subsector-level multiple/margin overrides. Each industry with real dispersion
+  // between its niches gets its own list; industries left out (or the "_other"
+  // fallback) use the industry-level MULT/MARGIN/NAMES above instead.
+  const SUBSECTORS = {
+    ece: [
+      {id:'independent', label:'Single-Site Independent Preschool / Daycare', mult:[3.0,5.0], margin:0.15, name:'single-site preschools and daycares'},
+      {id:'multisite', label:'Multi-Site Regional Preschool Group', mult:[4.0,6.5], margin:0.18, name:'multi-site preschool groups'},
+      {id:'franchise', label:'Franchise-Affiliated Childcare Center', mult:[3.5,5.5], margin:0.16, name:'franchise-affiliated childcare centers'},
+      {id:'specialty', label:'Specialty (Montessori, Bilingual, Special Needs)', mult:[4.0,7.0], margin:0.20, name:'specialty early education providers'}
+    ],
+    services: [
+      {id:'staffing', label:'Staffing / Recruiting', mult:[3.5,5.5], margin:0.10, name:'staffing and recruiting firms'},
+      {id:'outsourced', label:'Outsourced Back-Office (Payroll, HR, BPO)', mult:[5.5,8.5], margin:0.18, name:'outsourced back-office providers'},
+      {id:'inspection', label:'Environmental / Testing / Inspection', mult:[5.0,7.5], margin:0.18, name:'environmental, testing, and inspection firms'},
+      {id:'security', label:'Security Services', mult:[4.0,6.0], margin:0.10, name:'security services firms'}
+    ],
+    homeservices: [
+      {id:'hvac', label:'HVAC (Residential)', mult:[5.0,8.0], margin:0.13, name:'residential HVAC companies'},
+      {id:'plumbing', label:'Plumbing', mult:[4.5,7.5], margin:0.12, name:'plumbing companies'},
+      {id:'electrical', label:'Electrical', mult:[4.5,7.5], margin:0.12, name:'electrical contractors'},
+      {id:'multitrade', label:'Multi-Trade / Combo Shop', mult:[5.0,8.5], margin:0.13, name:'multi-trade home services companies'},
+      {id:'pest', label:'Pest Control', mult:[5.5,9.0], margin:0.20, name:'pest control companies'}
+    ],
+    facilities: [
+      {id:'landscapemaint', label:'Commercial Landscape Maintenance', mult:[4.5,7.0], margin:0.13, name:'commercial landscape maintenance companies'},
+      {id:'landscapedb', label:'Landscape Design / Build', mult:[3.5,5.5], margin:0.10, name:'landscape design/build companies'},
+      {id:'janitorial', label:'Janitorial / Commercial Cleaning', mult:[4.0,6.5], margin:0.10, name:'janitorial and commercial cleaning companies'},
+      {id:'exterior', label:'Snow Removal / Exterior Services', mult:[3.5,5.5], margin:0.12, name:'snow removal and exterior services companies'}
+    ],
+    manufacturing: [
+      {id:'machining', label:'Precision Machining / Metal Fabrication', mult:[4.5,7.0], margin:0.14, name:'precision machining and metal fabrication shops'},
+      {id:'contract', label:'Contract / OEM Manufacturing', mult:[4.0,6.0], margin:0.10, name:'contract and OEM manufacturers'},
+      {id:'foodbev', label:'Food & Beverage Manufacturing', mult:[5.0,7.5], margin:0.12, name:'food and beverage manufacturers'},
+      {id:'buildingproducts', label:'Building Products Manufacturing', mult:[4.5,6.5], margin:0.12, name:'building products manufacturers'},
+      {id:'plastics', label:'Plastics / Injection Molding', mult:[4.5,6.5], margin:0.13, name:'plastics and injection molding companies'}
+    ],
+    distribution: [
+      {id:'wholesale', label:'Wholesale Distribution (Durable Goods)', mult:[4.5,6.5], margin:0.07, name:'wholesale distributors'},
+      {id:'foodbevdist', label:'Food & Beverage Distribution', mult:[4.0,6.0], margin:0.06, name:'food and beverage distributors'},
+      {id:'industrial', label:'Industrial / MRO Distribution', mult:[5.0,7.0], margin:0.09, name:'industrial and MRO distributors'},
+      {id:'logistics', label:'3PL / Warehousing & Logistics', mult:[5.0,7.5], margin:0.10, name:'3PL and warehousing companies'}
+    ],
+    construction: [
+      {id:'general', label:'General Contracting', mult:[3.0,5.0], margin:0.08, name:'general contractors'},
+      {id:'specialty', label:'Specialty Mechanical / Electrical Contracting', mult:[4.0,6.0], margin:0.10, name:'specialty mechanical and electrical contractors'},
+      {id:'roofing', label:'Roofing', mult:[4.0,6.5], margin:0.12, name:'roofing companies'},
+      {id:'civil', label:'Civil / Infrastructure', mult:[3.5,5.5], margin:0.09, name:'civil and infrastructure contractors'}
+    ],
+    healthcare: [
+      {id:'dental', label:'Dental Practice', mult:[5.5,8.5], margin:0.20, name:'dental practices'},
+      {id:'homehealth', label:'Home Health / Home Care', mult:[5.5,8.0], margin:0.13, name:'home health and home care agencies'},
+      {id:'behavioral', label:'Behavioral Health / Therapy', mult:[5.5,8.5], margin:0.15, name:'behavioral health and therapy practices'},
+      {id:'pt', label:'Physical / Occupational Therapy', mult:[5.0,7.5], margin:0.15, name:'physical and occupational therapy clinics'},
+      {id:'medpractice', label:'Medical Practice (Non-Dental)', mult:[5.0,7.5], margin:0.18, name:'medical practices'},
+      {id:'veterinary', label:'Veterinary', mult:[6.0,9.0], margin:0.20, name:'veterinary practices'}
+    ],
+    insurance: [
+      {id:'personal', label:'Personal Lines Agency', mult:[6.0,8.5], margin:0.22, name:'personal lines agencies'},
+      {id:'commercial', label:'Commercial P&C Agency', mult:[7.5,10.5], margin:0.28, name:'commercial P&C agencies'},
+      {id:'benefits', label:'Employee Benefits Brokerage', mult:[7.5,10.5], margin:0.28, name:'employee benefits brokerages'},
+      {id:'mga', label:'MGA / Specialty Program', mult:[8.0,11.0], margin:0.25, name:'MGAs and specialty program businesses'}
+    ],
+    itservices: [
+      {id:'msp', label:'Managed Service Provider (MSP)', mult:[5.5,8.5], margin:0.17, name:'managed service providers'},
+      {id:'cyber', label:'Cybersecurity Services', mult:[6.5,9.5], margin:0.18, name:'cybersecurity services firms'},
+      {id:'itstaffing', label:'IT Staffing / Consulting', mult:[4.0,6.5], margin:0.10, name:'IT staffing and consulting firms'},
+      {id:'cloud', label:'Cloud / Infrastructure Services', mult:[5.5,8.5], margin:0.16, name:'cloud and infrastructure services firms'}
+    ],
+    software: [
+      {id:'verticalsaas', label:'Vertical SaaS', mult:[7.0,11.0], margin:0.28, name:'vertical SaaS companies'},
+      {id:'onprem', label:'On-Premise / Legacy Licensed Software', mult:[4.5,7.0], margin:0.22, name:'on-premise and legacy licensed software companies'},
+      {id:'fintech', label:'Fintech / Payments Software', mult:[6.5,10.5], margin:0.25, name:'fintech and payments software companies'},
+      {id:'devtools', label:'Dev Tools / Infrastructure Software', mult:[6.5,10.5], margin:0.22, name:'dev tools and infrastructure software companies'}
+    ],
+    professional: [
+      {id:'accounting', label:'Accounting / CPA Firm', mult:[5.0,7.5], margin:0.25, name:'accounting and CPA firms'},
+      {id:'engineering', label:'Engineering Firm', mult:[5.0,7.5], margin:0.18, name:'engineering firms'},
+      {id:'consulting', label:'Management Consulting', mult:[4.0,6.5], margin:0.20, name:'management consulting firms'},
+      {id:'architecture', label:'Architecture', mult:[3.5,5.5], margin:0.15, name:'architecture firms'}
+    ],
+    agency: [
+      {id:'digital', label:'Digital Marketing / Performance', mult:[4.0,6.5], margin:0.15, name:'digital marketing and performance agencies'},
+      {id:'creative', label:'Creative / Branding', mult:[3.5,5.5], margin:0.14, name:'creative and branding agencies'},
+      {id:'pr', label:'PR / Communications', mult:[3.5,5.5], margin:0.14, name:'PR and communications agencies'},
+      {id:'mediabuying', label:'Media Buying', mult:[4.0,6.0], margin:0.10, name:'media buying agencies'}
+    ],
+    transport: [
+      {id:'truckload', label:'Truckload Carrier', mult:[3.0,5.0], margin:0.07, name:'truckload carriers'},
+      {id:'ltl', label:'LTL / Regional Carrier', mult:[4.0,6.0], margin:0.08, name:'LTL and regional carriers'},
+      {id:'specialized', label:'Specialized Freight (Tanker, Flatbed, Refrigerated)', mult:[3.5,5.5], margin:0.09, name:'specialized freight carriers'},
+      {id:'brokerage', label:'Freight Brokerage', mult:[4.0,6.5], margin:0.06, name:'freight brokerages'}
+    ],
+    auto: [
+      {id:'carwash', label:'Express Car Wash', mult:[6.0,9.0], margin:0.30, name:'express car wash businesses'},
+      {id:'repair', label:'Auto Repair / Collision', mult:[4.0,6.0], margin:0.16, name:'auto repair and collision shops'},
+      {id:'quicklube', label:'Quick Lube / Tire', mult:[4.5,6.5], margin:0.18, name:'quick lube and tire shops'},
+      {id:'glass', label:'Auto Glass / Detailing', mult:[4.0,6.0], margin:0.15, name:'auto glass and detailing businesses'}
+    ],
+    consumer: [
+      {id:'specialtyretail', label:'Specialty Retail (Brick & Mortar)', mult:[2.5,4.0], margin:0.08, name:'specialty retailers'},
+      {id:'cpg', label:'Consumer Products / CPG Brand', mult:[4.0,6.5], margin:0.12, name:'consumer products brands'},
+      {id:'franchiseretail', label:'Franchise Retail', mult:[3.0,4.5], margin:0.10, name:'franchise retail operators'},
+      {id:'beauty', label:'Beauty / Personal Care Services', mult:[3.5,5.5], margin:0.15, name:'beauty and personal care businesses'}
+    ],
+    restaurants: [
+      {id:'qsr', label:'Quick Service / Fast Casual (Multi-Unit)', mult:[4.0,6.0], margin:0.15, name:'multi-unit quick service and fast casual restaurants'},
+      {id:'fullservice', label:'Full Service / Casual Dining', mult:[2.0,3.5], margin:0.10, name:'full service and casual dining restaurants'},
+      {id:'catering', label:'Catering / Institutional Food Service', mult:[3.0,4.5], margin:0.10, name:'catering and institutional food service companies'},
+      {id:'independent', label:'Single High-Performing Independent', mult:[2.0,3.0], margin:0.10, name:'single-location independent restaurants'}
+    ],
+    ecommerce: [
+      {id:'marketplace', label:'Amazon-First / Marketplace Brand', mult:[3.0,5.0], margin:0.15, name:'marketplace-first e-commerce brands'},
+      {id:'dtc', label:'DTC Brand (Owned Site)', mult:[3.5,5.5], margin:0.12, name:'direct-to-consumer brands'},
+      {id:'subscription', label:'Subscription / Consumables Brand', mult:[4.5,7.0], margin:0.15, name:'subscription and consumables brands'},
+      {id:'b2b', label:'B2B E-Commerce', mult:[4.0,6.0], margin:0.10, name:'B2B e-commerce companies'}
+    ]
+  };
+
+  // Each dropdown below was designed independently (owner dependency, growth,
+  // concentration, revenue quality), then rescaled together so the four
+  // combined best-case and worst-case totals stay close to the original
+  // 4-tier model's combined swing (+1.75 / -2.75). Individually stretching
+  // each dimension's own extreme by up to 0.15 is fine; letting all four
+  // stretch in the same direction at once is not, since highX/lowX have no
+  // cap beyond the multiple floor.
+  const OWNER_ADJ = {
+    fullTeamAbsentee: 0.50, gmInPlace: 0.28, teamOpsOwnerRelationships: 0.05,
+    teamOpsOwnerSales: -0.18, dailyHandsOn: -0.40, irreplaceableDelivery: -0.62,
+    allMe: -0.80
+  };
+  const GROWTH_ADJ = {
+    explosive25plus: 0.55, strong10to25: 0.35, steady3to10: 0.18,
+    unevenGrowth: 0, roughlyFlat: -0.20, recentDip: -0.42, multiYearDecline: -0.80
+  };
+  const CONC_ADJ = {
+    under5: 0.30, five_ten: 0.15, ten_25: 0, twentyfive_40: -0.30,
+    forty_60: -0.55, sixty_80: -0.80, over80: -1.00
+  };
+  const REC_ADJ = {
+    lockedInContracts: 0.55, autoRenewing: 0.35, repeatNoContract: 0.17,
+    mixedRevenue: 0, oneTimeProject: -0.20, cyclicalLumpy: -0.40
+  };
 
   // Verified acquirers by industry (publicly reported activity, 2025-26).
   const BUYERS = {
@@ -516,6 +671,21 @@
     stateSel.appendChild(o);
   });
 
+  // Populate subsector options whenever the industry changes.
+  const subSel = $('vSubsector');
+  $('vIndustry').addEventListener('change', () => {
+    const list = SUBSECTORS[$('vIndustry').value];
+    if (!list) {
+      subSel.innerHTML = '<option value="">Not applicable for this industry</option>';
+      subSel.disabled = true;
+      return;
+    }
+    subSel.disabled = false;
+    subSel.innerHTML = '<option value="">Select your subsector&hellip;</option>' +
+      list.map(s => '<option value="' + s.id + '">' + s.label + '</option>').join('') +
+      '<option value="_other">Other / Not Listed</option>';
+  });
+
   function showStep(n) {
     steps.forEach(s => s.classList.toggle('active', s.dataset.step == n));
     dots.forEach((d, i) => d.classList.toggle('on', i < n));
@@ -547,6 +717,7 @@
     const rev = parseMoney($('vRevenue').value);
     const prof = parseMoney($('vProfit').value);
     if (!ind) return err('err1', 'Please select your industry.');
+    if (SUBSECTORS[ind] && !$('vSubsector').value) return err('err1', 'Please select your subsector.');
     if (!$('vState').value) return err('err1', 'Please select your state.');
     if (!rev && !prof) return err('err1', 'Give us revenue or profit \u2014 a rough number is fine.');
     if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.');
@@ -608,18 +779,25 @@
     err('err3', '');
 
     const ind = $('vIndustry').value;
+    const subKey = $('vSubsector').value;
+    const subList = SUBSECTORS[ind];
+    const sub = subList ? subList.find(s => s.id === subKey) : null;
+    const multRange = sub ? sub.mult : MULT[ind];
+    const margin = sub ? sub.margin : MARGIN[ind];
+    const subName = sub ? sub.name : NAMES[ind];
+
     const rev = parseMoney($('vRevenue').value);
     let prof = parseMoney($('vProfit').value);
     let estimated = false;
-    if (!prof && rev) { prof = Math.round(rev * MARGIN[ind]); estimated = true; }
+    if (!prof && rev) { prof = Math.round(rev * margin); estimated = true; }
 
     // Very large businesses get a closer look, not a guess.
     const bigDeal = prof >= 12e6 || rev >= 12e7;
 
     const adj = sizeAdj(prof) + OWNER_ADJ[$('vOwner').value] + GROWTH_ADJ[$('vGrowth').value] +
                 CONC_ADJ[$('vConc').value] + REC_ADJ[$('vRec').value];
-    const lowX = Math.max(2.0, MULT[ind][0] + adj);
-    const highX = Math.max(2.5, MULT[ind][1] + adj);
+    const lowX = Math.max(2.0, multRange[0] + adj);
+    const highX = Math.max(2.5, multRange[1] + adj);
     const low = roundSmart(prof * lowX);
     const high = roundSmart(prof * highX);
 
@@ -627,12 +805,12 @@
     $('valBigLook').style.display = bigDeal ? 'block' : 'none';
 
     const profPhrase = estimated
-      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical ' + NAMES[ind] + ' margins to your revenue \u2014 treat this as a rougher starting point)'
+      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical margins for ' + subName + ' to your revenue \u2014 treat this as a rougher starting point)'
       : 'your ' + fmt(prof) + ' of annual profit';
     $('valNote').textContent = 'Based on a ' + lowX.toFixed(1) + 'x\u2013' + highX.toFixed(1) +
       'x multiple applied to ' + profPhrase + ', adjusted for size, ' +
       'owner involvement, growth, customer concentration, and revenue quality. That is where ' +
-      NAMES[ind] + ' businesses are trading today. Where you land inside the range \u2014 or above it \u2014 ' +
+      subName + ' are trading today. Where you land inside the range \u2014 or above it \u2014 ' +
       'depends almost entirely on whether buyers compete for your business.';
 
     renderBuyers(ind);
@@ -641,7 +819,8 @@
     const lead = {
       name, email, phone: $('vPhone').value.trim(), website: $('vWebsite').value.trim(),
       state: $('vState').value,
-      industry: sel('vIndustry'), ownerInvolvement: sel('vOwner'), revenueTrend: sel('vGrowth'),
+      industry: sel('vIndustry'), subsector: subSel.disabled ? 'N/A' : sel('vSubsector'),
+      ownerInvolvement: sel('vOwner'), revenueTrend: sel('vGrowth'),
       customerConcentration: sel('vConc'), revenueType: sel('vRec'),
       revenue: rev, profit: prof, profitEstimated: estimated, oversized: bigDeal,
       estimateLow: low, estimateHigh: high,
@@ -667,7 +846,8 @@
     const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
       'Name: ' + name + '\nEmail: ' + email + (lead.phone ? '\nPhone: ' + lead.phone : '') +
       (lead.website ? '\nWebsite: ' + lead.website : '') + '\nState: ' + lead.state +
-      '\nIndustry: ' + lead.industry + '\nOwner involvement: ' + lead.ownerInvolvement +
+      '\nIndustry: ' + lead.industry + '\nSubsector: ' + lead.subsector +
+      '\nOwner involvement: ' + lead.ownerInvolvement +
       '\nRevenue trend: ' + lead.revenueTrend + '\nLargest customer: ' + lead.customerConcentration +
       '\nRevenue type: ' + lead.revenueType + '\nAnnual revenue: ' + fmt(rev) +
       '\nAnnual profit: ' + fmt(prof) + (estimated ? ' (estimated from margins)' : '') +
