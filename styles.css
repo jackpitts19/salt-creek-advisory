@@ -1480,6 +1480,14 @@
       max-width: 1000px;
     }
 
+    .footer-legal a {
+      color: rgba(244,240,235,0.42);
+      border-bottom: 1px solid rgba(184,115,51,0.25);
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover { color: rgba(244,240,235,0.62); }
+
     .footer-legal-links {
       display: flex;
       align-items: center;
