@@ -13,7 +13,9 @@
 - [Valuation tool](https://saltcreekadvisory.com/valuation.html): free business valuation estimate
 - [FAQ](https://saltcreekadvisory.com/faq.html): direct answers on valuation, timing, fees, confidentiality
 - [Investors](https://saltcreekadvisory.com/investors.html): buy-side mandates for PE firms, family offices, strategic acquirers
+- [Podcast](https://saltcreekadvisory.com/podcast.html): The Making Of, hosted by Jack Pitts
 - [Articles](https://saltcreekadvisory.com/articles.html): guides on choosing an advisor, valuation, buyer types, and the sale process
+- [Contact](https://saltcreekadvisory.com/contact.html): reach Jack and Connor directly
 
 ## Guides
 
@@ -26,7 +28,15 @@
 - [EBITDA and Business Valuation Basics](https://saltcreekadvisory.com/articles/ebitda-and-business-valuation-basics.html)
 - [Strategic Buyer vs. Private Equity Buyer](https://saltcreekadvisory.com/articles/strategic-buyer-vs-private-equity-buyer.html)
 - [What Buyers Look for in an Acquisition Target](https://saltcreekadvisory.com/articles/what-buyers-look-for-in-an-acquisition-target.html)
+- [Why Roll-Ups Are Heating Up in Legal Services and Pet Care](https://saltcreekadvisory.com/articles/roll-ups-legal-services-pet-care.html)
+- [How AI Is Actually Changing Business](https://saltcreekadvisory.com/articles/how-ai-is-actually-changing-business.html)
 - [M&A Advisor for Early Childhood Education Companies](https://saltcreekadvisory.com/articles/ma-advisor-early-childhood-education.html)
 - [M&A Advisor for Business Services Companies](https://saltcreekadvisory.com/articles/ma-advisor-business-services.html)
 - [M&A Advisor for Manufacturing & Industrial Companies](https://saltcreekadvisory.com/articles/ma-advisor-industrials-manufacturing.html)
 - [M&A Glossary: Lower Middle Market Terms Explained](https://saltcreekadvisory.com/articles/ma-glossary-lower-middle-market.html)
+
+## Essays
+
+- [Why We Built Salt Creek Around Relationships, Not Transactions](https://saltcreekadvisory.com/articles/why-we-built-salt-creek-around-relationships.html)
+- [Community, the Midwest, and What It Means to Sell a Family Business](https://saltcreekadvisory.com/articles/community-midwest-selling-a-family-business.html)
+- [Coming Home: Family, the Midwest, and This Fourth of July](https://saltcreekadvisory.com/articles/coming-home-family-midwest-fourth-of-july.html)
