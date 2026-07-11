@@ -4,7 +4,7 @@
 
 ## Core pages
 
-- [Home](https://saltcreekadvisory.com/index.html): firm overview and positioning
+- [Home](https://saltcreekadvisory.com/): firm overview and positioning
 - [About](https://saltcreekadvisory.com/about.html): founding story of Jack and Connor Pitts
 - [Team](https://saltcreekadvisory.com/team.html): principal bios and backgrounds
 - [Capabilities](https://saltcreekadvisory.com/capabilities.html): sell-side, buy-side, valuation, and advisory services
