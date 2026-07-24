@@ -1613,6 +1613,7 @@
       text-align: center;
       border-top: 2px solid rgba(184,115,51,0.32);
       transition: border-top-color 0.25s, background 0.25s;
+      min-width: 0;
     }
 
     .impact-stat:last-child { border-right: none; }
@@ -1633,10 +1634,25 @@
       letter-spacing: -0.02em;
       text-shadow: 0 0 60px rgba(184,115,51,0.18);
       transition: text-shadow 0.35s;
+      overflow-wrap: break-word;
     }
     .impact-stat:hover .impact-stat-num {
       text-shadow: 0 0 80px rgba(184,115,51,0.4);
     }
+    /* Word/verdict values (e.g. "Selective") read as an editorial callout, not a giant number,
+       so a long unbreakable word can't force the grid past the viewport. */
+    .impact-stat-num--word {
+      font-size: clamp(2.1rem, 3.2vw, 2.9rem);
+      font-style: italic;
+      letter-spacing: -0.005em;
+      line-height: 1.08;
+      padding-top: 0.35rem;
+    }
+
+    /* Compact stat rows: values with more glyphs (e.g. "$1.87B", "~$350B") stay on one line
+       in a 4-up cell without shrinking the short, punchy numbers used on the homepage. */
+    .impact-stats--compact .impact-stat-num { font-size: clamp(2.8rem, 4.3vw, 4.5rem); }
+    .impact-stats--compact .impact-stat-num--word { font-size: clamp(2.2rem, 3.3vw, 2.9rem); }
 
     .impact-stat-label {
       font-size: 0.72rem;
@@ -1761,6 +1777,11 @@
       gap: 0;
       border: 1px solid rgba(244,240,235,0.06);
     }
+
+    /* 3-up variant for six-card grids (e.g. "What Earns a Premium"),
+       so they render as a balanced 2x3 instead of 4 + 2 with stranded empty cells. */
+    .why-grid--three { grid-template-columns: repeat(3, 1fr); }
+    .why-grid--three .why-card:nth-child(3n) { border-right: none; }
 
     .why-card {
       padding: 3rem 2.2rem;
@@ -2664,6 +2685,47 @@
     }
 
     .article-table-wrap { overflow-x: auto; margin: 0 0 1.75rem; }
+
+    /* Dark-theme comparison table for landing sections (the light .article-body
+       table styles below are scoped to article pages and do not reach here). */
+    .comp-table-wrap { overflow-x: auto; max-width: 780px; margin: 2.75rem auto 0; }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid rgba(244,240,235,0.09);
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+    .comp-table thead th {
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--copper2);
+      padding: 1.05rem 1.35rem;
+      background: rgba(184,115,51,0.05);
+      border-bottom: 2px solid rgba(184,115,51,0.35);
+    }
+    .comp-table thead th:first-child { color: var(--cream); }
+    .comp-table tbody td {
+      padding: 0.95rem 1.35rem;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(244,240,235,0.06);
+      vertical-align: top;
+    }
+    .comp-table tbody td:first-child { color: var(--cream); font-weight: 400; }
+    .comp-table tbody tr:last-child td { border-bottom: none; }
+    /* Highlight the winning ("Recurring & clean") column and emphasize the bottom-line row. */
+    .comp-table thead th:last-child,
+    .comp-table tbody td:last-child { background: rgba(184,115,51,0.07); }
+    .comp-table tbody td:last-child { color: var(--cream); }
+    .comp-table tbody tr:last-child td {
+      font-weight: 500;
+      color: var(--cream);
+      border-top: 1px solid rgba(184,115,51,0.28);
+    }
 
     .article-body table {
       width: 100%;
