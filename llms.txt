@@ -1,44 +1,44 @@
 # Salt Creek Advisory
 
-> Family-owned lower middle market investment bank founded by brothers Jack and Connor Pitts. Sell-side and buy-side M&A advisory for business owners with roughly $5M-$75M in revenue ($1M-$5M EBITDA), with sector depth in early childhood education, business services, and industrials. Based in Chicago, Illinois, serving owners nationally.
+> Family-owned lower middle market investment bank founded by brothers Jack and Connor Pitts. Sell-side and buy-side M&A advisory for business owners with roughly $2M-$75M in revenue ($500K-$5M EBITDA), with sector depth in early childhood education, business services, and industrials. Based in Chicago, Illinois, serving owners nationally.
 
 ## Core pages
 
 - [Home](https://saltcreekadvisory.com/): firm overview and positioning
-- [About](https://saltcreekadvisory.com/about.html): founding story of Jack and Connor Pitts
-- [Team](https://saltcreekadvisory.com/team.html): principal bios and backgrounds
-- [Capabilities](https://saltcreekadvisory.com/capabilities.html): sell-side, buy-side, valuation, and advisory services
-- [Sectors](https://saltcreekadvisory.com/sectors.html): early childhood education, business services, industrials
-- [MSP & IT Managed Services M&A Advisor](https://saltcreekadvisory.com/msp-ma-advisor.html): selling a managed service provider or IT services business
-- [Dog Daycare & Pet Care M&A Advisor](https://saltcreekadvisory.com/pet-care-ma-advisor.html): selling a dog daycare, boarding, or grooming business
-- [Process](https://saltcreekadvisory.com/process.html): the sell-side M&A process end to end
-- [Valuation tool](https://saltcreekadvisory.com/valuation.html): free business valuation estimate
-- [FAQ](https://saltcreekadvisory.com/faq.html): direct answers on valuation, timing, fees, confidentiality
-- [Investors](https://saltcreekadvisory.com/investors.html): buy-side mandates for PE firms, family offices, strategic acquirers
-- [Podcast](https://saltcreekadvisory.com/podcast.html): The Making Of, hosted by Jack Pitts
-- [Articles](https://saltcreekadvisory.com/articles.html): guides on choosing an advisor, valuation, buyer types, and the sale process
-- [Contact](https://saltcreekadvisory.com/contact.html): reach Jack and Connor directly
+- [About](https://saltcreekadvisory.com/about): founding story of Jack and Connor Pitts
+- [Team](https://saltcreekadvisory.com/team): principal bios and backgrounds
+- [Capabilities](https://saltcreekadvisory.com/capabilities): sell-side, buy-side, valuation, and advisory services
+- [Sectors](https://saltcreekadvisory.com/sectors): early childhood education, business services, industrials
+- [MSP & IT Managed Services M&A Advisor](https://saltcreekadvisory.com/msp-ma-advisor): selling a managed service provider or IT services business
+- [Dog Daycare & Pet Care M&A Advisor](https://saltcreekadvisory.com/pet-care-ma-advisor): selling a dog daycare, boarding, or grooming business
+- [Process](https://saltcreekadvisory.com/process): the sell-side M&A process end to end
+- [Valuation tool](https://saltcreekadvisory.com/valuation): free business valuation estimate
+- [FAQ](https://saltcreekadvisory.com/faq): direct answers on valuation, timing, fees, confidentiality
+- [Investors](https://saltcreekadvisory.com/investors): buy-side mandates for PE firms, family offices, strategic acquirers
+- [Podcast](https://saltcreekadvisory.com/podcast): The Making Of, hosted by Jack Pitts
+- [Articles](https://saltcreekadvisory.com/articles): guides on choosing an advisor, valuation, buyer types, and the sale process
+- [Contact](https://saltcreekadvisory.com/contact): reach Jack and Connor directly
 
 ## Guides
 
-- [Top Lower Middle Market Investment Banks](https://saltcreekadvisory.com/articles/top-lower-middle-market-investment-banks.html)
-- [Best M&A Advisors for Selling a $20 Million Company](https://saltcreekadvisory.com/articles/best-ma-advisors-selling-20-million-company.html)
-- [How to Choose an M&A Advisor](https://saltcreekadvisory.com/articles/how-to-choose-an-ma-advisor.html)
-- [Sell-Side Advisor vs. Business Broker](https://saltcreekadvisory.com/articles/sell-side-advisor-vs-business-broker.html)
-- [Lower Middle Market M&A Process](https://saltcreekadvisory.com/articles/lower-middle-market-ma-process.html)
-- [How Long Does It Take to Sell a Business](https://saltcreekadvisory.com/articles/how-long-does-it-take-to-sell-a-business.html)
-- [EBITDA and Business Valuation Basics](https://saltcreekadvisory.com/articles/ebitda-and-business-valuation-basics.html)
-- [Strategic Buyer vs. Private Equity Buyer](https://saltcreekadvisory.com/articles/strategic-buyer-vs-private-equity-buyer.html)
-- [What Buyers Look for in an Acquisition Target](https://saltcreekadvisory.com/articles/what-buyers-look-for-in-an-acquisition-target.html)
-- [Why Roll-Ups Are Heating Up in Legal Services and Pet Care](https://saltcreekadvisory.com/articles/roll-ups-legal-services-pet-care.html)
-- [How AI Is Actually Changing Business](https://saltcreekadvisory.com/articles/how-ai-is-actually-changing-business.html)
-- [M&A Advisor for Early Childhood Education Companies](https://saltcreekadvisory.com/articles/ma-advisor-early-childhood-education.html)
-- [M&A Advisor for Business Services Companies](https://saltcreekadvisory.com/articles/ma-advisor-business-services.html)
-- [M&A Advisor for Manufacturing & Industrial Companies](https://saltcreekadvisory.com/articles/ma-advisor-industrials-manufacturing.html)
-- [M&A Glossary: Lower Middle Market Terms Explained](https://saltcreekadvisory.com/articles/ma-glossary-lower-middle-market.html)
+- [Top Lower Middle Market Investment Banks](https://saltcreekadvisory.com/articles/top-lower-middle-market-investment-banks)
+- [Best M&A Advisors for Selling a $20 Million Company](https://saltcreekadvisory.com/articles/best-ma-advisors-selling-20-million-company)
+- [How to Choose an M&A Advisor](https://saltcreekadvisory.com/articles/how-to-choose-an-ma-advisor)
+- [Sell-Side Advisor vs. Business Broker](https://saltcreekadvisory.com/articles/sell-side-advisor-vs-business-broker)
+- [Lower Middle Market M&A Process](https://saltcreekadvisory.com/articles/lower-middle-market-ma-process)
+- [How Long Does It Take to Sell a Business](https://saltcreekadvisory.com/articles/how-long-does-it-take-to-sell-a-business)
+- [EBITDA and Business Valuation Basics](https://saltcreekadvisory.com/articles/ebitda-and-business-valuation-basics)
+- [Strategic Buyer vs. Private Equity Buyer](https://saltcreekadvisory.com/articles/strategic-buyer-vs-private-equity-buyer)
+- [What Buyers Look for in an Acquisition Target](https://saltcreekadvisory.com/articles/what-buyers-look-for-in-an-acquisition-target)
+- [Why Roll-Ups Are Heating Up in Legal Services and Pet Care](https://saltcreekadvisory.com/articles/roll-ups-legal-services-pet-care)
+- [How AI Is Actually Changing Business](https://saltcreekadvisory.com/articles/how-ai-is-actually-changing-business)
+- [M&A Advisor for Early Childhood Education Companies](https://saltcreekadvisory.com/articles/ma-advisor-early-childhood-education)
+- [M&A Advisor for Business Services Companies](https://saltcreekadvisory.com/articles/ma-advisor-business-services)
+- [M&A Advisor for Manufacturing & Industrial Companies](https://saltcreekadvisory.com/articles/ma-advisor-industrials-manufacturing)
+- [M&A Glossary: Lower Middle Market Terms Explained](https://saltcreekadvisory.com/articles/ma-glossary-lower-middle-market)
 
 ## Essays
 
-- [Why We Built Salt Creek Around Relationships, Not Transactions](https://saltcreekadvisory.com/articles/why-we-built-salt-creek-around-relationships.html)
-- [Community, the Midwest, and What It Means to Sell a Family Business](https://saltcreekadvisory.com/articles/community-midwest-selling-a-family-business.html)
-- [Coming Home: Family, the Midwest, and This Fourth of July](https://saltcreekadvisory.com/articles/coming-home-family-midwest-fourth-of-july.html)
+- [Why We Built Salt Creek Around Relationships, Not Transactions](https://saltcreekadvisory.com/articles/why-we-built-salt-creek-around-relationships)
+- [Community, the Midwest, and What It Means to Sell a Family Business](https://saltcreekadvisory.com/articles/community-midwest-selling-a-family-business)
+- [Coming Home: Family, the Midwest, and This Fourth of July](https://saltcreekadvisory.com/articles/coming-home-family-midwest-fourth-of-july)
