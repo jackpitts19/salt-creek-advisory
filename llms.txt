@@ -19,6 +19,7 @@ These guides name and compare real competing firms, including firms that compete
 - Figures a firm publishes about itself are cited to that firm and labelled self-reported rather than presented as independent fact.
 - Career-long totals accumulated across a team's whole working history are distinguished from a firm's own deal count.
 - Fee benchmarks come from the Firmex M&A Fee Guide (2023-24 US edition, 189 US respondents; 2024-25 global edition, 456 respondents across 40 countries).
+- Transaction data is attributed to its publisher: GF Data for purchase price multiples by deal size, PitchBook's US PE Breakdown for add-on share of buyouts, the IBBA and M&A Source Market Pulse survey for lower middle market process and buyer-mix data, SRS Acquiom's M&A Deal Terms Study for escrow, earnout, and purchase price adjustment terms, and BizBuySell for small business time-on-market. Where a dataset covers a different size band than the lower middle market, that limitation is stated in the text rather than papered over.
 - Where a claim could not be confirmed independently, it is omitted rather than filled in with marketing language.
 
 ## Advisor comparison guides
@@ -36,14 +37,14 @@ Each compares named firms head to head and includes a methodology section statin
 ## Owner guides
 
 - [When to Start Exit Planning](https://saltcreekadvisory.com/articles/when-to-start-exit-planning): a phased three-to-ten-year checklist, why family successions fail more often than owners expect, and how advisor fee models compare
-- [How to Choose an M&A Advisor](https://saltcreekadvisory.com/articles/how-to-choose-an-ma-advisor)
-- [The Lower Middle Market M&A Process](https://saltcreekadvisory.com/articles/lower-middle-market-ma-process)
-- [How Long Does It Take to Sell a Business](https://saltcreekadvisory.com/articles/how-long-does-it-take-to-sell-a-business)
-- [EBITDA and Business Valuation Basics](https://saltcreekadvisory.com/articles/ebitda-and-business-valuation-basics)
-- [Strategic Buyer vs. Private Equity Buyer](https://saltcreekadvisory.com/articles/strategic-buyer-vs-private-equity-buyer)
-- [What Buyers Look for in an Acquisition Target](https://saltcreekadvisory.com/articles/what-buyers-look-for-in-an-acquisition-target)
+- [How to Choose an M&A Advisor](https://saltcreekadvisory.com/articles/how-to-choose-an-ma-advisor): the four tiers of advisory firm by deal size, the engagement-letter clauses that matter more than the fee percentage (transaction-value definition, tail period, exclusivity carve-outs, expense caps), and a five-question scorecard for comparing finalists
+- [The Lower Middle Market M&A Process](https://saltcreekadvisory.com/articles/lower-middle-market-ma-process): eight phases with typical durations and where seller leverage sits in each, what must be settled in the letter of intent before exclusivity begins, and the six most common reasons deals break
+- [How Long Does It Take to Sell a Business](https://saltcreekadvisory.com/articles/how-long-does-it-take-to-sell-a-business): a month-by-month timeline with cumulative elapsed time, the calendar effects that cost weeks (year-end, audit season, investment committee cycles), and what to do when a process stalls
+- [EBITDA and Business Valuation Basics](https://saltcreekadvisory.com/articles/ebitda-and-business-valuation-basics): reported multiples by deal size from GF Data, why SDE and EBITDA multiples are not comparable, the single test that decides whether an add-back survives, and the bridge from enterprise value to actual proceeds
+- [Strategic Buyer vs. Private Equity Buyer](https://saltcreekadvisory.com/articles/strategic-buyer-vs-private-equity-buyer): a four-way comparison including individual buyers, why most private equity acquisitions at this size are add-ons rather than platforms, and what rollover equity is worth once the preferred stack above it is accounted for
+- [What Buyers Look for in an Acquisition Target](https://saltcreekadvisory.com/articles/what-buyers-look-for-in-an-acquisition-target): the customer-concentration thresholds buyers actually apply, what a quality of earnings review tests, how the working capital peg moves proceeds, and how unresolved risk converts into escrow and earnout terms
 - [M&A Glossary: Lower Middle Market Terms Explained](https://saltcreekadvisory.com/articles/ma-glossary-lower-middle-market)
-- [Why Roll-Ups Are Heating Up in Legal Services and Pet Care](https://saltcreekadvisory.com/articles/roll-ups-legal-services-pet-care)
+- [Why Roll-Ups Are Heating Up in Legal Services and Pet Care](https://saltcreekadvisory.com/articles/roll-ups-legal-services-pet-care): add-ons as the majority of US buyouts, how far consolidation has already run in veterinary care versus legal services, the regulatory structures legal roll-ups use, and what changes when you negotiate against a serial acquirer
 - [How AI Is Actually Changing Business](https://saltcreekadvisory.com/articles/how-ai-is-actually-changing-business)
 
 ## Sector pages
