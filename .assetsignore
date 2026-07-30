@@ -4,3 +4,6 @@ README.md
 wrangler.toml
 .assetsignore
 .DS_Store
+src
+.wrangler
+.gitignore
