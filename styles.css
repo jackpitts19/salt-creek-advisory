@@ -2048,6 +2048,61 @@
       margin-bottom: 0.9rem;
     }
 
+    .sector-link {
+      color: var(--copper3);
+      border-bottom: 1px solid rgba(184,115,51,0.35);
+    }
+
+    .sector-link:hover { color: var(--copper2); }
+
+    .sector-card-next {
+      display: block;
+      margin-top: 0.55rem;
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.5);
+    }
+
+    .sector-card-next:hover { color: var(--copper2); }
+
+    .sector-intro {
+      max-width: 760px;
+      margin: 0 auto 3.5rem;
+      background: rgba(7,17,26,0.03);
+      border: 1px solid rgba(7,17,26,0.08);
+      border-left: 3px solid var(--copper2);
+      padding: 2rem 2.25rem;
+    }
+
+    .sector-intro-label {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 0.9rem;
+    }
+
+    .sector-intro p {
+      font-size: 1.02rem;
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .sector-group-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      font-weight: 400;
+      color: var(--navy);
+      margin: 0 0 1.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .sector-group-h2 em { font-style: italic; color: var(--copper3); }
+
     /* ============================================================
        INVESTORS / BUY-SIDE
        ============================================================ */
