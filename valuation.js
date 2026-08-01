@@ -300,6 +300,70 @@
   const dots = document.querySelectorAll('.val-progress span');
   const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // analytics.js owns the GA4 guard and exposes this. Absent only if that file
+  // failed to load, in which case there is nothing to report to anyway.
+  function track(eventName, params) {
+    if (typeof window.scTrack === 'function') window.scTrack(eventName, params);
+  }
+
+  /**
+   * Reports funnel progress as one event carrying a step number, rather than three
+   * separate event names, so GA4 funnel exploration reads it without extra setup.
+   * Carries no visitor-entered data.
+   * @param {number} step the step just completed
+   */
+  function trackStep(step) {
+    track('valuation_step_complete', { step });
+  }
+
+  /**
+   * Tells the visitor their details did not reach us. The estimate renders either
+   * way, so without this the screen implies we received a submission we never got.
+   * The mailto fallback below it is already populated with the full lead.
+   */
+  function showLeadWarning() {
+    const el = $('valLeadWarning');
+    if (!el) return;
+    el.textContent = 'Your estimate is ready, but we could not deliver your details to us ' +
+      'automatically. Please use “Email Us This Estimate” below so this actually reaches us — ' +
+      'the message is already written for you.';
+    el.style.display = 'block';
+  }
+
+  function hideLeadWarning() {
+    const el = $('valLeadWarning');
+    if (!el) return;
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+
+  /**
+   * Posts the lead to Formspree. Formspree answers with a non-OK status rather than
+   * a network error once the plan's monthly submission quota is spent, so the status
+   * is checked explicitly: that is the failure most likely to happen quietly.
+   * @param {Object} lead the full submission, sent only to Formspree
+   * @param {Object} context non-identifying fields safe to report to GA4
+   * @returns {Promise<void>}
+   */
+  function deliverLead(lead, context) {
+    return fetch(LEAD_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(Object.assign({
+        _subject: 'New valuation lead — ' + lead.name + ' (' + lead.industry + ', ' + lead.state + ')'
+      }, lead))
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('lead endpoint returned HTTP ' + response.status);
+        track('valuation_lead_delivered', context);
+      })
+      .catch((error) => {
+        showLeadWarning();
+        track('valuation_lead_delivery_failed',
+          Object.assign({ failure_reason: error.message }, context));
+      });
+  }
+
   // populate states
   const stateSel = $('vState');
   STATES.forEach(st => {
@@ -359,6 +423,7 @@
     if (!rev && !prof) return err('err1', 'Give us revenue or profit \u2014 a rough number is fine.');
     if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.');
     err('err1', '');
+    trackStep(1);
     showStep(2);
   });
 
@@ -368,6 +433,7 @@
     if (!$('vConc').value) return err('err2', 'Tell us about your largest customer.');
     if (!$('vRec').value) return err('err2', 'Tell us what kind of revenue you have.');
     err('err2', '');
+    trackStep(2);
     showStep(3);
   });
 
@@ -464,15 +530,27 @@
       date: new Date().toISOString(), source: 'valuation-tool'
     };
 
+    // Non-identifying context for GA4. The visitor's name, email, phone and website
+    // stay out of analytics entirely: those go to Formspree and nowhere else.
+    const leadContext = {
+      industry: lead.industry,
+      state: lead.state,
+      oversized: bigDeal,
+      // Oversized businesses get no range, so they carry no comparable value.
+      value: bigDeal ? 0 : Math.round((low + high) / 2),
+      currency: 'USD'
+    };
+
+    // Cleared first so a visitor who steps back and resubmits is not left looking
+    // at a stale warning from an earlier attempt.
+    hideLeadWarning();
     if (LEAD_ENDPOINT) {
-      fetch(LEAD_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(Object.assign({
-          _subject: 'New valuation lead \u2014 ' + name + ' (' + lead.industry + ', ' + lead.state + ')'
-        }, lead))
-      }).catch(() => {});
+      deliverLead(lead, leadContext);
+    } else {
+      // No endpoint configured means the lead reaches us only if they mail it.
+      showLeadWarning();
     }
+    track('valuation_complete', leadContext);
     // Leads are deliberately not persisted in the browser. The old write ran on
     // the visitor's machine, not ours, so we could never read it back: pure
     // exposure with no operational value. An owner quietly exploring a sale
