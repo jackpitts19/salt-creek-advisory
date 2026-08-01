@@ -55,8 +55,9 @@ class CheckSiteTestCase(unittest.TestCase):
         self._origin = os.getcwd()
         self._tmp = tempfile.TemporaryDirectory()
         os.chdir(self._tmp.name)
-        # A clean baseline that each test breaks in exactly one way.
-        self.write("index.html", page("/"))
+        # A clean baseline that each test breaks in exactly one way. index links to
+        # about so the baseline satisfies the orphan check too.
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
         self.write("about.html", page("/about"))
         self.write_sitemap(["/", "/about"])
 
@@ -103,6 +104,8 @@ class CheckSiteTestCase(unittest.TestCase):
     def test_relative_link_out_of_articles_resolves(self):
         # ../valuation from /articles/foo must resolve to valuation.html, the
         # pattern every real article uses.
+        self.write("index.html", page("/", body=(
+            '<a href="/about">About</a><a href="/articles/foo">Guide</a>')))
         self.write("valuation.html", page("/valuation"))
         self.write("articles/foo.html",
                    page("/articles/foo", body='<a href="../valuation">Value</a>'))
@@ -144,6 +147,28 @@ class CheckSiteTestCase(unittest.TestCase):
     def test_sitemap_entry_for_missing_file_is_caught(self):
         self.write_sitemap(["/", "/about", "/deleted-page"])
         self.assertFails("deleted-page")
+
+    # --- orphan detection ----------------------------------------------------
+
+    def test_page_nothing_links_to_is_caught(self):
+        """In the sitemap but unreachable by crawling: four articles shipped this way."""
+        self.write("unlinked.html", page("/unlinked"))
+        self.write_sitemap(["/", "/about", "/unlinked"])
+        self.assertFails("/unlinked is indexable but no other page links to it")
+
+    def test_linked_page_is_not_an_orphan(self):
+        self.write("index.html",
+                   page("/", body='<a href="/about">About</a><a href="/reachable">Go</a>'))
+        self.write("reachable.html", page("/reachable"))
+        self.write_sitemap(["/", "/about", "/reachable"])
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a linked page should not be an orphan:\n" + output)
+
+    def test_self_link_does_not_rescue_an_orphan(self):
+        """A page linking only to itself is still unreachable from anywhere else."""
+        self.write("lonely.html", page("/lonely", body='<a href="/lonely">Me</a>'))
+        self.write_sitemap(["/", "/about", "/lonely"])
+        self.assertFails("/lonely is indexable but no other page links to it")
 
     # --- noindex pages are held to a different standard ----------------------
 

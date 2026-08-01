@@ -185,6 +185,31 @@ def check_sitemap(errors, warnings):
         warnings.append("sitemap.xml: {} is listed but is noindex or excluded".format(route))
 
 
+def check_orphans(errors, _warnings):
+    """A page no other page links to is reachable only by sitemap.
+
+    Four articles shipped that way once. Google discovers such pages late, ranks
+    them worse, and a reader browsing the site can never arrive at them at all.
+    """
+    linked_to = set()
+    for path in page_paths():
+        base = urljoin(SITE, route_for(path))
+        own_route = route_for(path)
+        for href in LINK_ATTR.findall(read(path)):
+            if not is_internal(href):
+                continue
+            route = urlparse(urljoin(base, href)).path
+            normalized = route if route == "/" else route.rstrip("/")
+            if normalized != own_route:
+                linked_to.add(normalized)
+
+    # The homepage is the entry point, so nothing needs to link to it for it to be
+    # found. Every page does anyway, through the nav logo.
+    candidates = indexable_routes() - linked_to - {"/"}
+    for route in sorted(candidates):
+        errors.append("{} is indexable but no other page links to it (orphan)".format(route))
+
+
 def main():
     paths = page_paths()
     if not paths:
@@ -198,6 +223,7 @@ def main():
         for check in PAGE_CHECKS:
             check(path, html, errors, warnings)
     check_sitemap(errors, warnings)
+    check_orphans(errors, warnings)
 
     for warning in warnings:
         print("  warn  {}".format(warning))
