@@ -90,7 +90,7 @@
   <div class="contact-deco" aria-hidden="true"></div>
   <div class="wrap">
     <div class="reveal">
-      <img src="logo-full.png" alt="Salt Creek Advisory" class="contact-logo" width="738" height="593" decoding="async" onerror="this.style.display='none'">
+      <img src="logo-full-sm.webp" alt="Salt Creek Advisory" class="contact-logo" width="280" height="225" fetchpriority="high" decoding="async" onerror="this.src='logo-full.png'">
       <span class="eyebrow eyebrow--light" style="justify-content:center;">Get In Touch</span>
       <div class="contact-accent"></div>
       <h1 class="contact-h2">
@@ -178,6 +178,16 @@
 </footer>
 
 <script src="main.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://saltcreekadvisory.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://saltcreekadvisory.com/contact" }
+    ]
+  }
+  </script>
 
 </body>
 </html>
