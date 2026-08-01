@@ -1,4 +1,18 @@
 (function () {
+  // Earlier versions of this tool appended every submitted lead to localStorage.
+  // Purge anything that left behind. Runs on load, so a returning visitor is
+  // cleaned up whether or not they submit the form again.
+  const STORED_LEADS_KEY = 'sc_valuation_leads';
+  function clearStoredLeads() {
+    try {
+      localStorage.removeItem(STORED_LEADS_KEY);
+    } catch (err) {
+      // Storage can be unavailable in private mode or when cookies are blocked.
+      // There is nothing to recover from and nothing the visitor needs to see.
+    }
+  }
+  clearStoredLeads();
+
   // Base EBITDA multiple ranges, calibrated to 2025-26 lower middle market
   // transaction data (GF Data, BizBuySell, sector reports). Low end = typical
   // negotiated sale; high end = quality business in a competitive process.
@@ -459,11 +473,12 @@
         }, lead))
       }).catch(() => {});
     }
-    try {
-      const all = JSON.parse(localStorage.getItem('sc_valuation_leads') || '[]');
-      all.push(lead);
-      localStorage.setItem('sc_valuation_leads', JSON.stringify(all));
-    } catch (e) {}
+    // Leads are deliberately not persisted in the browser. The old write ran on
+    // the visitor's machine, not ours, so we could never read it back: pure
+    // exposure with no operational value. An owner quietly exploring a sale
+    // should not leave their name, revenue and profit on a shared computer.
+    // The lead still reaches us via the POST above and the mailto link below.
+    clearStoredLeads();
 
     const subject = 'Valuation inquiry \u2014 ' + name;
     const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
