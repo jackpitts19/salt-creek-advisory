@@ -16,7 +16,10 @@ const CONTENT_SECURITY_POLICY = [
   "frame-ancestors 'none'",
   "frame-src 'none'",
   "object-src 'none'",
-  "script-src 'self' https://www.googletagmanager.com",
+  // static.cloudflareinsights.com is Cloudflare Web Analytics. Cloudflare injects
+  // that beacon at the edge, so it appears in no local build and shows up only
+  // when testing the deployed site.
+  "script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com",
   // 'unsafe-inline' is still required by ~58 style="" attributes in the markup.
   // Scoped to style only; script-src carries no inline escape hatch.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -25,7 +28,7 @@ const CONTENT_SECURITY_POLICY = [
   // www.google.com is GA4's Google-signals endpoint: gtag beacons user_engagement
   // there in addition to google-analytics.com. Omitting it costs engagement data
   // and prints a CSP error on every page.
-  "connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com",
+  "connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://cloudflareinsights.com",
   "manifest-src 'self'",
   "worker-src 'self'",
   "upgrade-insecure-requests",
