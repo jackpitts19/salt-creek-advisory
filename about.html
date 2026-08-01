@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-YQGFZDGZ2N');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#07111a" />
@@ -21,11 +12,17 @@
   <meta property="og:title" content="About Salt Creek Advisory | Family-Owned M&A Advisory Firm" />
   <meta property="og:description" content="Salt Creek Advisory is a family-owned investment bank founded by brothers Jack and Connor Pitts, offering honest M&A guidance for lower middle market owners." />
   <meta property="og:url" content="https://saltcreekadvisory.com/about" />
-  <meta property="og:image" content="https://saltcreekadvisory.com/logo-full.png" />
+  <meta property="og:image" content="https://saltcreekadvisory.com/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
+  <meta property="og:locale" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="About Salt Creek Advisory | Family-Owned M&A Advisory Firm" />
   <meta name="twitter:description" content="Salt Creek Advisory is a family-owned investment bank founded by brothers Jack and Connor Pitts, offering honest M&A guidance for lower middle market owners." />
-  <meta name="twitter:image" content="https://saltcreekadvisory.com/logo-full.png" />
+  <meta name="twitter:image" content="https://saltcreekadvisory.com/og-image.jpg" />
+  <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,8 +41,8 @@
     "description": "A family-owned, founder-led lower middle market investment bank founded by brothers Jack and Connor Pitts, providing sell-side and buy-side M&A advisory to privately held business owners nationwide.",
     "foundingDate": "2026",
     "founder": [
-      { "@type": "Person", "name": "Jack Pitts", "url": "https://saltcreekadvisory.com/team" },
-      { "@type": "Person", "name": "Connor Pitts", "url": "https://saltcreekadvisory.com/team" }
+      { "@type": "Person", "@id": "https://saltcreekadvisory.com/#jack-pitts", "name": "Jack Pitts", "url": "https://saltcreekadvisory.com/team" },
+      { "@type": "Person", "@id": "https://saltcreekadvisory.com/#connor-pitts", "name": "Connor Pitts", "url": "https://saltcreekadvisory.com/team" }
     ],
     "areaServed": "United States"
   }
@@ -61,6 +58,9 @@
   ]
 }
   </script>
+  <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
+  <script src="analytics.js" defer></script>
 </head>
 <body>
 <nav id="nav">
@@ -85,17 +85,17 @@
   </button>
 </nav>
 <div class="nav-mobile-drawer" id="mobileDrawer">
-  <a href="about" onclick="closeDrawer()">About</a>
-  <a href="sectors" onclick="closeDrawer()">Sectors</a>
-  <a href="process" onclick="closeDrawer()">Process</a>
-  <a href="team" onclick="closeDrawer()">Team</a>
-  <a href="investors" onclick="closeDrawer()">Investors</a>
-  <a href="podcast" onclick="closeDrawer()">Podcast</a>
-  <a href="faq" onclick="closeDrawer()">FAQ</a>
-  <a href="articles" onclick="closeDrawer()">Articles</a>
-  <a href="capabilities" onclick="closeDrawer()">Capabilities</a>
-  <a href="contact" onclick="closeDrawer()">Contact</a>
-  <a href="valuation" onclick="closeDrawer()">Value My Business</a>
+  <a href="about">About</a>
+  <a href="sectors">Sectors</a>
+  <a href="process">Process</a>
+  <a href="team">Team</a>
+  <a href="investors">Investors</a>
+  <a href="podcast">Podcast</a>
+  <a href="faq">FAQ</a>
+  <a href="articles">Articles</a>
+  <a href="capabilities">Capabilities</a>
+  <a href="contact">Contact</a>
+  <a href="valuation">Value My Business</a>
 </div>
 
 <main>

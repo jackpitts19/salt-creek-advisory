@@ -1,4 +1,44 @@
+# saltcreekadvisory.com
+# Everything here is public marketing content and we want it read, indexed and
+# cited. The wildcard group below already permits every crawler; the named groups
+# that follow exist to state consent explicitly for AI and answer-engine bots
+# that look for their own token, and to record the one exclusion we make.
+#
+# Machine-readable summary of the firm for LLMs: /llms.txt
+# Article feed: /feed.xml
+
 User-agent: *
+Allow: /
+
+# --- Search engines -------------------------------------------------------
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# --- AI training and answer engines ---------------------------------------
+# Google and Apple treat these tokens as opt-out signals: allowing them keeps
+# this content eligible for AI Overviews, Gemini grounding and Siri answers.
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Google-CloudVertexBot
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 User-agent: GPTBot
@@ -16,6 +56,12 @@ Allow: /
 User-agent: Claude-Web
 Allow: /
 
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
 User-agent: anthropic-ai
 Allow: /
 
@@ -25,19 +71,16 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-User-agent: Google-Extended
+User-agent: DuckAssistBot
 Allow: /
 
-User-agent: GoogleOther
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: YouBot
 Allow: /
 
 User-agent: CCBot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-User-agent: Applebot-Extended
 Allow: /
 
 User-agent: Amazonbot
@@ -46,9 +89,56 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
+User-agent: meta-externalfetcher
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
 User-agent: cohere-ai
 Allow: /
 
+User-agent: cohere-training-data-crawler
+Allow: /
+
+User-agent: AI2Bot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: Webzio-Extended
+Allow: /
+
+User-agent: TimpiBot
+Allow: /
+
+# --- Link preview / unfurl bots -------------------------------------------
+# These fetch og:image and og:description when someone shares a link.
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# --- Excluded --------------------------------------------------------------
+# ByteDance's crawler ignores conventional rate expectations and we get no
+# distribution value back from it.
 User-agent: Bytespider
 Disallow: /
 

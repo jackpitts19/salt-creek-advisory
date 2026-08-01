@@ -10,10 +10,31 @@ if (hamburger && drawer) {
     drawer.classList.toggle('open');
   });
 }
-window.closeDrawer = function () {
+const closeDrawer = () => {
   if (hamburger) hamburger.classList.remove('open');
   if (drawer) drawer.classList.remove('open');
 };
+// Delegated so the markup needs no inline onclick, which lets the CSP drop
+// 'unsafe-inline' from script-src.
+if (drawer) {
+  drawer.addEventListener('click', (e) => {
+    if (e.target.closest('a')) closeDrawer();
+  });
+}
+
+// Image fallbacks for browsers that cannot decode the primary (WebP) source.
+// Replaces the former inline onerror handlers.
+const applyImageFallback = (img) => {
+  const fallback = img.getAttribute('data-fallback');
+  if (!fallback || img.dataset.fallbackApplied) return;
+  img.dataset.fallbackApplied = 'true';
+  img.src = fallback;
+};
+document.querySelectorAll('img[data-fallback]').forEach(img => {
+  img.addEventListener('error', () => applyImageFallback(img), { once: true });
+  // The error may already have fired before this script ran.
+  if (img.complete && img.naturalWidth === 0) applyImageFallback(img);
+});
 
 // Reveal animations
 const revealEls = document.querySelectorAll('.reveal');
