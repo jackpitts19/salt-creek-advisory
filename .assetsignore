@@ -7,3 +7,4 @@ wrangler.toml
 src
 .wrangler
 .gitignore
+docs
