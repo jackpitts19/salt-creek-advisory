@@ -45,115 +45,137 @@ ROOT_PAGE_TITLES = {
 # which is what a reader in that sector actually wants next.
 RELATED = {
     # Fundamentals
-    "ebitda-and-business-valuation-basics-2026": [
-        "quality-of-earnings-report-2026", "what-buyers-look-for-in-an-acquisition-target-2026",
-        "ma-glossary-lower-middle-market-2026"],
-    "ma-glossary-lower-middle-market-2026": [
-        "ebitda-and-business-valuation-basics-2026", "working-capital-peg-ma-2026",
-        "lower-middle-market-ma-process-2026"],
-    "quality-of-earnings-report-2026": [
-        "working-capital-peg-ma-2026", "ebitda-and-business-valuation-basics-2026",
-        "what-buyers-look-for-in-an-acquisition-target-2026"],
-    "working-capital-peg-ma-2026": [
-        "quality-of-earnings-report-2026", "ma-deal-structure-2026",
-        "lower-middle-market-ma-process-2026"],
+    "ebitda-and-business-valuation-basics": [
+        "quality-of-earnings-report", "what-buyers-look-for-in-an-acquisition-target",
+        "ma-glossary-lower-middle-market"],
+    "ma-glossary-lower-middle-market": [
+        "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
+        "lower-middle-market-ma-process"],
+    "quality-of-earnings-report": [
+        "working-capital-peg-ma", "ebitda-and-business-valuation-basics",
+        "what-buyers-look-for-in-an-acquisition-target"],
+    "working-capital-peg-ma": [
+        "quality-of-earnings-report", "ma-deal-structure",
+        "lower-middle-market-ma-process"],
 
     # Reading an offer. Sits between the fundamentals and the buyer guides: the
     # peg is one of its six structures, and the buyer-type guide explains who
     # asks for rollover equity and why.
-    "ma-deal-structure-2026": [
-        "working-capital-peg-ma-2026", "strategic-buyer-vs-private-equity-buyer-2026",
-        "lower-middle-market-ma-process-2026"],
+    "ma-deal-structure": [
+        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
+        "lower-middle-market-ma-process"],
 
     # Sector: IT managed services
-    "msp-valuation-multiples-2026": [
-        "/msp-ma-advisor", "business-services-valuation-multiples-2026",
-        "ebitda-and-business-valuation-basics-2026"],
+    "msp-valuation-multiples": [
+        "/msp-ma-advisor", "business-services-valuation-multiples",
+        "ebitda-and-business-valuation-basics"],
 
     # Sector: pet care
-    "dog-daycare-pet-care-valuation-multiples-2026": [
-        "/pet-care-ma-advisor", "roll-ups-legal-services-pet-care-2026",
-        "ebitda-and-business-valuation-basics-2026"],
-    "roll-ups-legal-services-pet-care-2026": [
-        "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples-2026",
-        "strategic-buyer-vs-private-equity-buyer-2026"],
+    "dog-daycare-pet-care-valuation-multiples": [
+        "/pet-care-ma-advisor", "roll-ups-legal-services-pet-care",
+        "ebitda-and-business-valuation-basics"],
+    "roll-ups-legal-services-pet-care": [
+        "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
+        "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: early childhood education
-    "childcare-daycare-valuation-multiples-2026": [
-        "ma-advisor-early-childhood-education-2026", "ebitda-and-business-valuation-basics-2026",
-        "what-buyers-look-for-in-an-acquisition-target-2026"],
-    "ma-advisor-early-childhood-education-2026": [
-        "childcare-daycare-valuation-multiples-2026", "how-to-choose-an-ma-advisor-2026",
-        "lower-middle-market-ma-process-2026"],
+    "childcare-daycare-valuation-multiples": [
+        "ma-advisor-early-childhood-education", "ebitda-and-business-valuation-basics",
+        "what-buyers-look-for-in-an-acquisition-target"],
+    "ma-advisor-early-childhood-education": [
+        "childcare-daycare-valuation-multiples", "how-to-choose-an-ma-advisor",
+        "lower-middle-market-ma-process"],
 
     # Sector: manufacturing
-    "manufacturing-valuation-multiples-2026": [
-        "ma-advisor-industrials-manufacturing-2026", "ebitda-and-business-valuation-basics-2026",
-        "what-buyers-look-for-in-an-acquisition-target-2026"],
-    "ma-advisor-industrials-manufacturing-2026": [
-        "manufacturing-valuation-multiples-2026", "how-to-choose-an-ma-advisor-2026",
-        "lower-middle-market-ma-process-2026"],
+    "manufacturing-valuation-multiples": [
+        "ma-advisor-industrials-manufacturing", "ebitda-and-business-valuation-basics",
+        "what-buyers-look-for-in-an-acquisition-target"],
+    "ma-advisor-industrials-manufacturing": [
+        "manufacturing-valuation-multiples", "how-to-choose-an-ma-advisor",
+        "lower-middle-market-ma-process"],
 
     # Sector: business services
-    "business-services-valuation-multiples-2026": [
-        "ma-advisor-business-services-2026", "msp-valuation-multiples-2026",
-        "ebitda-and-business-valuation-basics-2026"],
-    "ma-advisor-business-services-2026": [
-        "business-services-valuation-multiples-2026", "how-to-choose-an-ma-advisor-2026",
+    "business-services-valuation-multiples": [
+        "ma-advisor-business-services", "msp-valuation-multiples",
+        "ebitda-and-business-valuation-basics"],
+    "ma-advisor-business-services": [
+        "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
         "/msp-ma-advisor"],
 
     # Choosing an advisor
-    "how-to-choose-an-ma-advisor-2026": [
-        "sell-side-advisor-vs-business-broker-2026", "top-lower-middle-market-investment-banks-2026",
-        "best-ma-advisors-selling-20-million-company-2026"],
-    "sell-side-advisor-vs-business-broker-2026": [
-        "how-to-choose-an-ma-advisor-2026", "top-lower-middle-market-investment-banks-2026",
-        "lower-middle-market-ma-process-2026"],
-    "top-lower-middle-market-investment-banks-2026": [
-        "best-ma-advisors-selling-20-million-company-2026", "how-to-choose-an-ma-advisor-2026",
-        "sell-side-advisor-vs-business-broker-2026"],
-    "best-ma-advisors-selling-20-million-company-2026": [
-        "top-lower-middle-market-investment-banks-2026", "how-to-choose-an-ma-advisor-2026",
-        "lower-middle-market-ma-process-2026"],
-    "best-business-valuation-firms-lower-middle-market-2026": [
-        "ebitda-and-business-valuation-basics-2026", "quality-of-earnings-report-2026",
-        "how-to-choose-an-ma-advisor-2026"],
+    "how-to-choose-an-ma-advisor": [
+        "sell-side-advisor-vs-business-broker", "top-lower-middle-market-investment-banks",
+        "best-ma-advisors-selling-20-million-company"],
+    "sell-side-advisor-vs-business-broker": [
+        "how-to-choose-an-ma-advisor", "top-lower-middle-market-investment-banks",
+        "lower-middle-market-ma-process"],
+    "top-lower-middle-market-investment-banks": [
+        "best-ma-advisors-selling-20-million-company", "how-to-choose-an-ma-advisor",
+        "sell-side-advisor-vs-business-broker"],
+    "best-ma-advisors-selling-20-million-company": [
+        "top-lower-middle-market-investment-banks", "how-to-choose-an-ma-advisor",
+        "lower-middle-market-ma-process"],
+    "best-business-valuation-firms-lower-middle-market": [
+        "ebitda-and-business-valuation-basics", "quality-of-earnings-report",
+        "how-to-choose-an-ma-advisor"],
 
     # Process and timing
-    "lower-middle-market-ma-process-2026": [
-        "how-long-does-it-take-to-sell-a-business-2026", "when-to-start-exit-planning-2026",
-        "what-buyers-look-for-in-an-acquisition-target-2026"],
-    "how-long-does-it-take-to-sell-a-business-2026": [
-        "lower-middle-market-ma-process-2026", "when-to-start-exit-planning-2026",
-        "quality-of-earnings-report-2026"],
-    "when-to-start-exit-planning-2026": [
-        "lower-middle-market-ma-process-2026", "what-buyers-look-for-in-an-acquisition-target-2026",
-        "how-long-does-it-take-to-sell-a-business-2026"],
+    "lower-middle-market-ma-process": [
+        "how-long-does-it-take-to-sell-a-business", "when-to-start-exit-planning",
+        "what-buyers-look-for-in-an-acquisition-target"],
+    "how-long-does-it-take-to-sell-a-business": [
+        "lower-middle-market-ma-process", "when-to-start-exit-planning",
+        "quality-of-earnings-report"],
+    "when-to-start-exit-planning": [
+        "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
+        "how-long-does-it-take-to-sell-a-business"],
 
     # Buyers
-    "what-buyers-look-for-in-an-acquisition-target-2026": [
-        "strategic-buyer-vs-private-equity-buyer-2026", "quality-of-earnings-report-2026",
-        "ebitda-and-business-valuation-basics-2026"],
-    "strategic-buyer-vs-private-equity-buyer-2026": [
-        "what-buyers-look-for-in-an-acquisition-target-2026", "ma-deal-structure-2026",
-        "lower-middle-market-ma-process-2026"],
+    "what-buyers-look-for-in-an-acquisition-target": [
+        "strategic-buyer-vs-private-equity-buyer", "quality-of-earnings-report",
+        "ebitda-and-business-valuation-basics"],
+    "strategic-buyer-vs-private-equity-buyer": [
+        "what-buyers-look-for-in-an-acquisition-target", "ma-deal-structure",
+        "lower-middle-market-ma-process"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
     # as mechanical, which is the one thing this block must not do.
     "why-we-built-salt-creek-around-relationships": [
         "community-midwest-selling-a-family-business",
-        "coming-home-family-midwest-fourth-of-july", "how-to-choose-an-ma-advisor-2026"],
+        "coming-home-family-midwest-fourth-of-july", "how-to-choose-an-ma-advisor"],
     "community-midwest-selling-a-family-business": [
         "why-we-built-salt-creek-around-relationships",
-        "coming-home-family-midwest-fourth-of-july", "when-to-start-exit-planning-2026"],
+        "coming-home-family-midwest-fourth-of-july", "when-to-start-exit-planning"],
     "coming-home-family-midwest-fourth-of-july": [
         "community-midwest-selling-a-family-business",
         "why-we-built-salt-creek-around-relationships", "how-ai-is-actually-changing-business"],
     "how-ai-is-actually-changing-business": [
         "why-we-built-salt-creek-around-relationships",
-        "what-buyers-look-for-in-an-acquisition-target-2026",
+        "what-buyers-look-for-in-an-acquisition-target",
         "community-midwest-selling-a-family-business"],
 }
+
+
+GUIDE_YEAR = re.compile(r'const CURRENT_GUIDE_YEAR = "(\d{4})"')
+
+
+def current_guide_year():
+    """The year guide slugs carry, read from the Worker.
+
+    The map above is deliberately written in bare slugs. Storing the year in it
+    too would mean editing ninety-odd lines here every January on top of the
+    renames, which is exactly the maintenance the resolve-forward design in
+    src/index.js exists to avoid. One source of truth, applied at render time.
+    """
+    path = os.path.join("src", "index.js")
+    if not os.path.exists(path):
+        print("  !! {} not found, cannot resolve guide year".format(path), file=sys.stderr)
+        return None
+    found = GUIDE_YEAR.search(open(path, encoding="utf-8").read())
+    if not found:
+        print("  !! {}: no CURRENT_GUIDE_YEAR".format(path), file=sys.stderr)
+        return None
+    return found.group(1)
 
 
 def article_headline(path):
@@ -173,10 +195,11 @@ def href_for(target):
     return ".." + target if target.startswith("/") else target
 
 
-def render(targets, titles):
+def render(targets, titles, stamp):
+    """`stamp` turns a bare base slug into the filename actually on disk."""
     items = "\n".join(
         '        <li><a href="{}">{}<span class="related-guides-arrow" aria-hidden="true">'
-        "&#8594;</span></a></li>".format(href_for(t), html.escape(titles[t], quote=False))
+        "&#8594;</span></a></li>".format(href_for(stamp(t)), html.escape(titles[t], quote=False))
         for t in targets
     )
     return (
@@ -201,35 +224,57 @@ def main():
         print("No articles found — run this from the repository root.", file=sys.stderr)
         return 1
 
+    year = current_guide_year()
+    if not year:
+        return 1
+    suffix = "-" + year
+
+    def base_of(path):
+        """The map's key for a file: its slug with any year suffix removed."""
+        slug = os.path.basename(path)[: -len(".html")]
+        return slug[: -len(suffix)] if slug.endswith(suffix) else slug
+
+    # Which bases actually carry the year on disk. Derived rather than listed, so
+    # the essays stay bare without needing to be enumerated a second time.
+    stamped_bases = {
+        base_of(path) for path in paths
+        if os.path.basename(path)[: -len(".html")].endswith(suffix)
+    }
+
+    def stamp(target):
+        """Bare base slug -> the slug on disk. Root pages pass through."""
+        if target.startswith("/"):
+            return target
+        return target + suffix if target in stamped_bases else target
+
     titles = dict(ROOT_PAGE_TITLES)
     for path in paths:
-        slug = os.path.basename(path)[: -len(".html")]
         headline = article_headline(path)
         if not headline:
             print("  !! {}: no Article headline, cannot be linked to".format(path), file=sys.stderr)
             continue
-        titles[slug] = headline
+        titles[base_of(path)] = headline
 
     # Fail before writing anything: a typo in RELATED would otherwise scatter dead
-    # links across 27 files.
+    # links across 28 files.
     missing = sorted({t for targets in RELATED.values() for t in targets} - set(titles))
     if missing:
         print("Unknown link targets: {}".format(missing), file=sys.stderr)
         return 1
-    unmapped = sorted({os.path.basename(p)[: -len(".html")] for p in paths} - set(RELATED))
+    unmapped = sorted({base_of(p) for p in paths} - set(RELATED))
     if unmapped:
         print("Articles missing from RELATED: {}".format(unmapped), file=sys.stderr)
         return 1
 
     written = 0
     for path in paths:
-        slug = os.path.basename(path)[: -len(".html")]
+        base = base_of(path)
         original = open(path, encoding="utf-8").read()
         stripped = EXISTING_BLOCK.sub("", original)
         if ANCHOR not in stripped:
             print("  !! {}: no next-cta anchor, skipped".format(path), file=sys.stderr)
             continue
-        updated = stripped.replace(ANCHOR, render(RELATED[slug], titles) + ANCHOR, 1)
+        updated = stripped.replace(ANCHOR, render(RELATED[base], titles, stamp) + ANCHOR, 1)
         if updated != original:
             open(path, "w", encoding="utf-8").write(updated)
             written += 1

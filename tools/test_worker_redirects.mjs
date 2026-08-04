@@ -126,6 +126,28 @@ test("an unknown article is not invented into a year-stamped URL", async () => {
   assert.equal(response.status, 200);
 });
 
+test("campaign parameters survive the redirect", async () => {
+  // Every old inbound link is now a redirect, so dropping the query string
+  // here would silently break utm attribution and Google Ads click tracking
+  // for all of them at once. `target` is cloned from the request URL and only
+  // its protocol/host/pathname are reassigned, which is what preserves this.
+  const { final } = await followAll(
+    `${SITE}/articles/msp-valuation-multiples?utm_source=newsletter&utm_medium=email`,
+  );
+  assert.equal(
+    final,
+    `${SITE}/articles/msp-valuation-multiples-2026?utm_source=newsletter&utm_medium=email`,
+  );
+
+  // Also across the combined http + www + .html + year collapse, since that is
+  // the shape a forwarded newsletter link actually arrives in.
+  const legacy = await followAll(
+    "http://www.saltcreekadvisory.com/articles/working-capital-peg-ma.html?gclid=abc123",
+  );
+  assert.equal(legacy.chain.length, 1);
+  assert.equal(legacy.final, `${SITE}/articles/working-capital-peg-ma-2026?gclid=abc123`);
+});
+
 test("redirects still carry the security headers", async () => {
   const response = await get(`${SITE}/articles/msp-valuation-multiples`);
   assert.equal(response.status, 301);

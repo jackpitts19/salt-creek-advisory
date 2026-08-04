@@ -11,6 +11,7 @@ no false positives on a well-formed page.
 Stdlib only, to match the rest of tools/.
 """
 import contextlib
+import datetime
 import importlib.util
 import io
 import os
@@ -226,6 +227,24 @@ class CheckSiteTestCase(unittest.TestCase):
         self.write_guide("alpha-guide")
         self.write("src/index.js", "export default { fetch() {} };\n")
         self.assertFails("cannot be verified")
+
+    def test_stale_guide_year_warns_but_does_not_fail(self):
+        # The whole site can be internally consistent and still be advertising
+        # last year. Warn, do not fail: a build that breaks on New Year's Day
+        # just teaches people to ignore the checker.
+        self.write_guide("alpha-guide", year="2019")
+        self.write_worker(["alpha-guide"], year="2019")
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a stale year should warn, not fail:\n" + output)
+        self.assertIn("CURRENT_GUIDE_YEAR is 2019", output)
+
+    def test_current_guide_year_does_not_warn(self):
+        current = str(datetime.date.today().year)
+        self.write_guide("alpha-guide", year=current)
+        self.write_worker(["alpha-guide"], year=current)
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
+        self.assertNotIn("CURRENT_GUIDE_YEAR is", output)
 
     def test_missing_worker_skips_the_check(self):
         # The checker still has to run against a plain directory of HTML.

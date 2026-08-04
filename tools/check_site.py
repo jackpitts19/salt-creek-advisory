@@ -16,6 +16,7 @@ build step, no dependencies.
 
 Exits 1 if any error is found, 0 otherwise. Warnings never fail the run.
 """
+import datetime
 import glob
 import json
 import os
@@ -216,6 +217,36 @@ WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)
 WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
 
 
+def check_guide_year_is_current(warnings):
+    """Say something when the guides are advertising last year.
+
+    Everything else here checks internal consistency, which stays perfectly
+    consistent while the whole site quietly goes stale: on the first of January
+    the URLs and titles still say 2026, every test passes, and nothing points
+    out that the one thing these slugs exist to signal is now wrong.
+
+    A warning rather than an error on purpose. Refreshing the guides is
+    editorial work with a real cost, and failing the build on New Year's Day
+    would only teach someone to ignore the check.
+    """
+    if not os.path.exists(WORKER_PATH):
+        return
+    found = WORKER_YEAR.search(read(WORKER_PATH))
+    if not found:
+        return
+    declared = int(found.group(1))
+    now = datetime.date.today().year
+    if declared < now:
+        warnings.append(
+            "{}: CURRENT_GUIDE_YEAR is {} but it is now {}. Guide URLs and titles "
+            "still say {}; refresh the content and roll the year.".format(
+                WORKER_PATH, declared, now, declared))
+    elif declared > now:
+        warnings.append(
+            "{}: CURRENT_GUIDE_YEAR is {}, ahead of the current year {}".format(
+                WORKER_PATH, declared, now))
+
+
 def check_worker_slugs(errors, _warnings):
     """The Worker's guide list has to match the year-stamped files on disk.
 
@@ -272,6 +303,7 @@ def main():
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
     check_worker_slugs(errors, warnings)
+    check_guide_year_is_current(warnings)
 
     for warning in warnings:
         print("  warn  {}".format(warning))
