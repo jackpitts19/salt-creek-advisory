@@ -108,7 +108,16 @@ def validated(urls):
         raise IndexNowError("{} URLs is past the {} a single request accepts.".format(
             len(urls), MAX_URLS))
     for url in urls:
-        if urlparse(url).hostname != HOST:
+        parsed = urlparse(url)
+        # The host check alone is not enough. urlparse reads a host off
+        # "//host/path" quite happily, which would submit a URL that is not
+        # absolute, and the Worker 301s http to https, so announcing an http
+        # URL points the engines at a redirect rather than at the page.
+        if parsed.scheme != "https":
+            raise IndexNowError(
+                "'{}' is not an https URL. The site is https only and the "
+                "engines fetch exactly what they are given.".format(url))
+        if parsed.hostname != HOST:
             raise IndexNowError(
                 "'{}' is not on {}. IndexNow would reject the whole "
                 "submission.".format(url, HOST))

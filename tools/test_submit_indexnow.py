@@ -100,6 +100,18 @@ class IndexNowTestCase(unittest.TestCase):
         urls = [SITE + "/", SITE + "/msp-ma-advisor"]
         self.assertEqual(submit_indexnow.validated(urls), urls)
 
+    def test_a_plain_http_url_is_rejected(self):
+        # The Worker 301s http to https, so announcing an http URL points the
+        # engines at a redirect instead of the page.
+        with self.assertRaises(submit_indexnow.IndexNowError):
+            submit_indexnow.validated(["http://saltcreekadvisory.com/msp-ma-advisor"])
+
+    def test_a_protocol_relative_url_is_rejected(self):
+        # urlparse reads the host off "//host/path" happily, so the host check
+        # alone passes it through and we would submit a non-absolute URL.
+        with self.assertRaises(submit_indexnow.IndexNowError):
+            submit_indexnow.validated(["//saltcreekadvisory.com/msp-ma-advisor"])
+
     def test_submitting_nothing_is_an_error(self):
         with self.assertRaises(submit_indexnow.IndexNowError):
             submit_indexnow.validated([])
