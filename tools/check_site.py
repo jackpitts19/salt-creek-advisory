@@ -210,6 +210,53 @@ def check_orphans(errors, _warnings):
         errors.append("{} is indexable but no other page links to it (orphan)".format(route))
 
 
+WORKER_PATH = os.path.join("src", "index.js")
+WORKER_YEAR = re.compile(r'const CURRENT_GUIDE_YEAR = "(\d{4})"')
+WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)", re.DOTALL)
+WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
+
+
+def check_worker_slugs(errors, _warnings):
+    """The Worker's guide list has to match the year-stamped files on disk.
+
+    Guide URLs carry the year, so the Worker is the only thing turning an old
+    inbound link into the current page. Drift is silent in both directions and
+    both directions hurt: a slug listed there with no file behind it redirects
+    visitors into a 404, and a year-stamped file missing from the list leaves
+    its pre-rename URL dead. Neither surfaces until a crawler finds it.
+
+    Skipped when src/index.js is absent, so the checker still runs against a
+    plain directory of HTML.
+    """
+    if not os.path.exists(WORKER_PATH):
+        return
+    source = read(WORKER_PATH)
+    year = WORKER_YEAR.search(source)
+    declared_block = WORKER_GUIDE_SET.search(source)
+    if not year or not declared_block:
+        errors.append(
+            "{}: could not find CURRENT_GUIDE_YEAR and YEAR_STAMPED_GUIDES, so "
+            "year-stamped guide URLs cannot be verified".format(WORKER_PATH))
+        return
+
+    suffix = "-" + year.group(1)
+    declared = set(WORKER_SLUG.findall(declared_block.group(1)))
+    stamped = {
+        os.path.basename(path)[: -len(".html")][: -len(suffix)]
+        for path in glob.glob("articles/*.html")
+        if os.path.basename(path)[: -len(".html")].endswith(suffix)
+    }
+
+    for base in sorted(declared - stamped):
+        errors.append(
+            "{}: YEAR_STAMPED_GUIDES lists '{}' but articles/{}{}.html does not exist, "
+            "so its old URL would redirect into a 404".format(WORKER_PATH, base, base, suffix))
+    for base in sorted(stamped - declared):
+        errors.append(
+            "articles/{}{}.html is year-stamped but '{}' is missing from YEAR_STAMPED_GUIDES "
+            "in {}, so its pre-rename URL is dead".format(base, suffix, base, WORKER_PATH))
+
+
 def main():
     paths = page_paths()
     if not paths:
@@ -224,6 +271,7 @@ def main():
             check(path, html, errors, warnings)
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
+    check_worker_slugs(errors, warnings)
 
     for warning in warnings:
         print("  warn  {}".format(warning))
