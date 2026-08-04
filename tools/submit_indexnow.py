@@ -71,8 +71,11 @@ def find_key():
             ", ".join(path for path, _ in candidates)))
 
     path, stem = candidates[0]
-    with open(path, encoding="utf-8") as handle:
-        body = handle.read().strip()
+    try:
+        with open(path, encoding="utf-8") as handle:
+            body = handle.read().strip()
+    except (OSError, UnicodeDecodeError) as err:
+        raise IndexNowError("could not read {}: {}".format(path, err))
     if body != stem:
         raise IndexNowError(
             "{} has to contain exactly its own name, '{}', but contains '{}'. "
@@ -80,12 +83,27 @@ def find_key():
     return stem
 
 
-def sitemap_urls():
-    """Every URL in sitemap.xml, in the order it lists them."""
+def require_site_root():
+    """Refuse to trust a key file found somewhere that is not the site root.
+
+    A stray hex-named .txt in an unrelated directory looks exactly like a key,
+    and find_key cannot tell the difference. Without this the tool reports
+    success while submitting whatever it happened to find next to it. Nothing
+    unsafe results, since the host is a hardcoded constant, but reporting
+    success for work that did not happen is its own kind of failure.
+    """
     if not os.path.exists("sitemap.xml"):
         raise IndexNowError("sitemap.xml is missing. Run this from the repository root.")
-    with open("sitemap.xml", encoding="utf-8") as handle:
-        urls = [loc.strip() for loc in SITEMAP_LOC.findall(handle.read())]
+
+
+def sitemap_urls():
+    """Every URL in sitemap.xml, in the order it lists them."""
+    require_site_root()
+    try:
+        with open("sitemap.xml", encoding="utf-8") as handle:
+            urls = [loc.strip() for loc in SITEMAP_LOC.findall(handle.read())]
+    except (OSError, UnicodeDecodeError) as err:
+        raise IndexNowError("could not read sitemap.xml: {}".format(err))
     if not urls:
         raise IndexNowError("sitemap.xml lists no URLs.")
     return urls
@@ -156,6 +174,10 @@ def post(payload):
 
 
 def main(argv=None, submit=post):
+    # `submit` defaults to the post function object captured at def time, not to
+    # the module attribute. Patching submit_indexnow.post will therefore not
+    # take effect here. Tests should pass submit= explicitly, which is the whole
+    # reason the seam exists.
     argv = list(sys.argv[1:] if argv is None else argv)
 
     dry_run = "--dry-run" in argv
@@ -170,6 +192,9 @@ def main(argv=None, submit=post):
                 "nothing to submit. Pass one or more URLs, or --all to submit "
                 "every URL in sitemap.xml.")
 
+        # Before find_key, and on both paths: the explicit-URL path never reads
+        # the sitemap, so without this it would happily trust a stray key file.
+        require_site_root()
         key = find_key()
         urls = validated(sitemap_urls() if use_sitemap else [absolute(t) for t in targets])
         payload = build_payload(key, urls)

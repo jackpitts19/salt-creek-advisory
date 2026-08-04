@@ -10,6 +10,7 @@ be tested without it.
 Stdlib only, to match the rest of tools/.
 """
 import importlib.util
+import io
 import os
 import tempfile
 import unittest
@@ -75,6 +76,77 @@ class IndexNowTestCase(unittest.TestCase):
             handle.write("User-agent: *\nAllow: /\n")
         with self.assertRaises(submit_indexnow.IndexNowError):
             submit_indexnow.find_key()
+
+    def test_the_real_key_is_found_alongside_robots_and_llms(self):
+        # The test above passes even with KEY_PATTERN deleted, because robots.txt
+        # would still fail the body-equals-stem check and raise by another route.
+        # This is the case that actually pins the filter: with the real key
+        # present, dropping the filter makes robots.txt and llms.txt candidates
+        # too, and find_key raises "more than one" instead of returning the key.
+        self.write_key()
+        for name in ("robots.txt", "llms.txt"):
+            with open(name, "w", encoding="utf-8") as handle:
+                handle.write("User-agent: *\nAllow: /\n")
+        self.assertEqual(submit_indexnow.find_key(), KEY)
+
+    def test_two_hex_shaped_files_are_ambiguous_rather_than_a_coin_flip(self):
+        self.write_key()
+        self.write_key(name="f" * 32 + ".txt", body="f" * 32)
+        with self.assertRaises(submit_indexnow.IndexNowError):
+            submit_indexnow.find_key()
+
+    # --- refusing to run in the wrong place ----------------------------------
+
+    def test_running_outside_the_site_root_fails_rather_than_succeeding(self):
+        # A stray hex-named file in an unrelated directory looks exactly like a
+        # key. Without this the tool reports success while submitting a garbage
+        # key from wherever it happened to be run.
+        self.write_key()
+        sent = []
+        self.assertEqual(submit_indexnow.main(["/msp-ma-advisor"], submit=sent.append), 1)
+        self.assertEqual(sent, [])
+
+    # --- translating network failures ----------------------------------------
+
+    def test_an_http_error_becomes_an_indexnow_error(self):
+        import urllib.error
+
+        def raise_http(*_args, **_kwargs):
+            raise urllib.error.HTTPError(
+                submit_indexnow.ENDPOINT, 422, "Unprocessable", {}, io.BytesIO(b"bad key"))
+
+        original = submit_indexnow.urllib.request.urlopen
+        submit_indexnow.urllib.request.urlopen = raise_http
+        try:
+            with self.assertRaises(submit_indexnow.IndexNowError) as caught:
+                submit_indexnow.post(submit_indexnow.build_payload(KEY, [SITE + "/"]))
+            self.assertIn("422", str(caught.exception))
+        finally:
+            submit_indexnow.urllib.request.urlopen = original
+
+    def test_an_unreachable_endpoint_becomes_an_indexnow_error(self):
+        import urllib.error
+
+        def raise_url(*_args, **_kwargs):
+            raise urllib.error.URLError("name resolution failed")
+
+        original = submit_indexnow.urllib.request.urlopen
+        submit_indexnow.urllib.request.urlopen = raise_url
+        try:
+            with self.assertRaises(submit_indexnow.IndexNowError):
+                submit_indexnow.post(submit_indexnow.build_payload(KEY, [SITE + "/"]))
+        finally:
+            submit_indexnow.urllib.request.urlopen = original
+
+    def test_an_unreadable_key_file_is_reported_cleanly(self):
+        # An I/O oddity should still print "IndexNow: ..." rather than dumping a
+        # traceback at whoever ran it.
+        self.write_sitemap(["/"])
+        with open(KEY + ".txt", "wb") as handle:
+            handle.write(b"\xff\xfe not utf-8")
+        sent = []
+        self.assertEqual(submit_indexnow.main(["/msp-ma-advisor"], submit=sent.append), 1)
+        self.assertEqual(sent, [])
 
     # --- choosing what to submit ---------------------------------------------
 
