@@ -28,8 +28,8 @@ out.
 
 Two constants drive it, both in `src/index.js`:
 
-- `CURRENT_GUIDE_YEAR` — the year the files on disk carry.
-- `YEAR_STAMPED_GUIDES` — the base slugs, without any year.
+- `CURRENT_GUIDE_YEAR`: the year the files on disk carry.
+- `YEAR_STAMPED_GUIDES`: the base slugs, without any year.
 
 `tools/build_related.py` reads `CURRENT_GUIDE_YEAR` out of that file rather
 than hardcoding it, so its `RELATED` map stays in bare slugs and needs no edit
@@ -85,6 +85,7 @@ python3 tools/build_related.py     # Keep Reading blocks
 python3 tools/build_feed.py        # feed.xml and sitemap.xml, generated
 python3 tools/check_site.py        # 0 errors required
 python3 tools/test_check_site.py   # the checker's own tests
+python3 tools/test_submit_indexnow.py
 node     tools/test_worker_redirects.mjs
 ```
 
@@ -94,6 +95,24 @@ the previous commit's date.
 
 There is no CI. These run when someone remembers, and `main` deploys to
 production within a minute of a push.
+
+## Telling the engines
+
+After the deploy is live, not before, because the engines fetch what you
+announce:
+
+```sh
+python3 tools/submit_indexnow.py --dry-run /midwest-ma-advisor   # see the payload
+python3 tools/submit_indexnow.py /midwest-ma-advisor             # one page
+python3 tools/submit_indexnow.py --all                           # every URL in the sitemap
+```
+
+That covers Bing, Yandex and the other IndexNow participants, which is most of
+them except the one that matters most. Google does not participate, so a new
+URL still wants a Search Console request-indexing on top of this.
+
+Prefer naming the pages that actually changed. `--all` is for a structural
+change such as a rename round, not for routine edits.
 
 ### What the guards cover
 

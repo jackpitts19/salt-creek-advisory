@@ -221,7 +221,7 @@ def render(targets, titles, stamp):
 def main():
     paths = sorted(glob.glob("articles/*.html"))
     if not paths:
-        print("No articles found — run this from the repository root.", file=sys.stderr)
+        print("No articles found. Run this from the repository root.", file=sys.stderr)
         return 1
 
     year = current_guide_year()

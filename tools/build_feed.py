@@ -19,7 +19,10 @@ from datetime import datetime, timezone
 from xml.sax.saxutils import escape
 
 SITE = "https://saltcreekadvisory.com"
-FEED_TITLE = "Salt Creek Advisory — Articles & Guides"
+# Matches the <link rel="alternate"> title in the markup exactly. The two drifted
+# once already, on the em dash, and a feed title that disagrees with the tag
+# pointing at it is the kind of thing only a reader ever notices.
+FEED_TITLE = "Salt Creek Advisory - Articles & Guides"
 FEED_DESCRIPTION = (
     "M&A guides for lower middle market business owners: valuation multiples, "
     "the sale process, and how to choose an advisor."
@@ -154,7 +157,7 @@ def build_sitemap(articles):
 def main():
     articles = collect_articles()
     if not articles:
-        print("No articles found — refusing to write an empty feed.", file=sys.stderr)
+        print("No articles found. Refusing to write an empty feed.", file=sys.stderr)
         return 1
 
     # Render both documents before opening anything for writing: opening a file

@@ -287,6 +287,26 @@ class CheckSiteTestCase(unittest.TestCase):
         self.assertEqual(code, 0, "a long title should not fail the run")
         self.assertIn("Google truncates past", output)
 
+    def test_entities_count_as_the_character_they_render(self):
+        # "&amp;" is five characters in the source and one on the SERP. Counting
+        # the source spent two warnings on titles that were never too long, and
+        # the tempting fix for a false warning is to damage a good title.
+        # " &amp; B" is eight characters of source and four of rendered text, so
+        # this lands one character over the limit before the fix and exactly on
+        # it after. A wider margin would pass either way and prove nothing.
+        title = "A" * (check_site.MAX_TITLE_CHARS - 4) + " &amp; B"
+        self.write("about.html", page("/about", title=title))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a long title should not fail the run")
+        self.assertNotIn("Google truncates past", output)
+
+    def test_description_entities_count_as_rendered(self):
+        description = "A" * (check_site.MAX_DESCRIPTION_CHARS - 4) + " &amp; B"
+        self.write("about.html", page("/about", description=description))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a long description should not fail the run")
+        self.assertNotIn("meta description is", output)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

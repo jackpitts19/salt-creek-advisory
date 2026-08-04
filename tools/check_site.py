@@ -22,6 +22,9 @@ import json
 import os
 import re
 import sys
+# Imported by name: every check function takes a parameter called `html`, which
+# would shadow the module inside exactly the places that need it.
+from html import unescape
 from urllib.parse import urljoin, urlparse
 
 SITE = "https://saltcreekadvisory.com"
@@ -98,20 +101,30 @@ def check_internal_links(path, html, errors, _warnings):
                 path, href, target))
 
 
+def rendered_length(source):
+    """How long a head tag reads once the browser has decoded it.
+
+    Measuring the source counts "&amp;" as five characters where a SERP shows
+    one, which is how two perfectly good titles came to be flagged as too long.
+    The tempting fix for a false warning is to damage a title that was fine.
+    """
+    return len(unescape(source.strip()))
+
+
 def check_head_tags(path, html, errors, warnings):
     title = TITLE.search(html)
     if not title or not title.group(1).strip():
         errors.append("{}: missing <title>".format(path))
-    elif len(title.group(1).strip()) > MAX_TITLE_CHARS:
+    elif rendered_length(title.group(1)) > MAX_TITLE_CHARS:
         warnings.append("{}: title is {} chars, Google truncates past {}".format(
-            path, len(title.group(1).strip()), MAX_TITLE_CHARS))
+            path, rendered_length(title.group(1)), MAX_TITLE_CHARS))
 
     description = DESCRIPTION.search(html)
     if not description or not description.group(1).strip():
         errors.append("{}: missing meta description".format(path))
-    elif len(description.group(1).strip()) > MAX_DESCRIPTION_CHARS:
+    elif rendered_length(description.group(1)) > MAX_DESCRIPTION_CHARS:
         warnings.append("{}: meta description is {} chars, past {}".format(
-            path, len(description.group(1).strip()), MAX_DESCRIPTION_CHARS))
+            path, rendered_length(description.group(1)), MAX_DESCRIPTION_CHARS))
 
 
 def check_canonical(path, html, errors, _warnings):
@@ -332,7 +345,7 @@ def check_worker_slugs(errors, _warnings):
 def main():
     paths = page_paths()
     if not paths:
-        print("No HTML pages found — run this from the repository root.", file=sys.stderr)
+        print("No HTML pages found. Run this from the repository root.", file=sys.stderr)
         return 1
 
     errors = []
