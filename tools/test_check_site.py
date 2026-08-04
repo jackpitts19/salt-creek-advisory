@@ -11,6 +11,7 @@ no false positives on a well-formed page.
 Stdlib only, to match the rest of tools/.
 """
 import contextlib
+import datetime
 import importlib.util
 import io
 import os
@@ -184,6 +185,71 @@ class CheckSiteTestCase(unittest.TestCase):
                                         head='<meta name="robots" content="noindex, follow" />'))
         code, output = self.run_checker()
         self.assertEqual(code, 0, "noindex page should not count as a sitemap orphan:\n" + output)
+
+    # --- the Worker's guide list must match the files on disk ----------------
+
+    def write_worker(self, slugs, year="2026"):
+        """A synthetic src/index.js carrying just the two literals we parse."""
+        listed = "".join('  "{}",\n'.format(slug) for slug in slugs)
+        self.write("src/index.js", (
+            'const CURRENT_GUIDE_YEAR = "{}";\n\n'
+            "const YEAR_STAMPED_GUIDES = new Set([\n{}]);\n"
+        ).format(year, listed))
+
+    def write_guide(self, slug, year="2026"):
+        """A year-stamped guide, linked from index so it is not an orphan."""
+        route = "/articles/{}-{}".format(slug, year)
+        self.write("articles/{}-{}.html".format(slug, year), page(route))
+        self.write("index.html", page("/", body=(
+            '<a href="/about">About</a><a href="{}">Guide</a>'.format(route))))
+        self.write_sitemap(["/", "/about", route])
+
+    def test_worker_slugs_matching_disk_passes(self):
+        self.write_guide("alpha-guide")
+        self.write_worker(["alpha-guide"])
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a matching guide list should pass:\n" + output)
+
+    def test_worker_slug_without_a_file_is_caught(self):
+        # Sends visitors from the old URL straight into a 404.
+        self.write_guide("alpha-guide")
+        self.write_worker(["alpha-guide", "beta-guide"])
+        self.assertFails("beta-guide")
+
+    def test_year_stamped_file_missing_from_worker_is_caught(self):
+        # The guide is still reachable, but everything linking to its
+        # pre-rename URL is dead, which is the failure nobody notices.
+        self.write_guide("alpha-guide")
+        self.write_worker([])
+        self.assertFails("missing from YEAR_STAMPED_GUIDES")
+
+    def test_unparseable_worker_is_caught(self):
+        self.write_guide("alpha-guide")
+        self.write("src/index.js", "export default { fetch() {} };\n")
+        self.assertFails("cannot be verified")
+
+    def test_stale_guide_year_warns_but_does_not_fail(self):
+        # The whole site can be internally consistent and still be advertising
+        # last year. Warn, do not fail: a build that breaks on New Year's Day
+        # just teaches people to ignore the checker.
+        self.write_guide("alpha-guide", year="2019")
+        self.write_worker(["alpha-guide"], year="2019")
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a stale year should warn, not fail:\n" + output)
+        self.assertIn("CURRENT_GUIDE_YEAR is 2019", output)
+
+    def test_current_guide_year_does_not_warn(self):
+        current = str(datetime.date.today().year)
+        self.write_guide("alpha-guide", year=current)
+        self.write_worker(["alpha-guide"], year=current)
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
+        self.assertNotIn("CURRENT_GUIDE_YEAR is", output)
+
+    def test_missing_worker_skips_the_check(self):
+        # The checker still has to run against a plain directory of HTML.
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "no Worker should not fail the run:\n" + output)
 
     # --- warnings inform without failing the run -----------------------------
 

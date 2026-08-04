@@ -34,6 +34,12 @@ thin geo pages are the classic helpful-content casualty and need real local subs
 justify existing. Earnouts and tax-on-sale guides also deferred; tax content is
 advice-adjacent and carries liability the other topics do not.
 
+> **Stale paths below.** Guide URLs now carry the year, so every
+> `articles/<slug>.html` named in this document is `articles/<slug>-2026.html`
+> on disk. This file is kept as the record of that content round; see
+> [url-scheme.md](../../url-scheme.md) for the current scheme, how to add a
+> guide, and the January rollover.
+
 ## Templates
 
 **Sector valuation guides** clone `articles/msp-valuation-multiples.html`:

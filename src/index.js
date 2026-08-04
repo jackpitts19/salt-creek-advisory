@@ -76,6 +76,69 @@ function getOriginalScheme(request, url) {
   return url.protocol.replace(":", "");
 }
 
+// Guides whose URL carries the year the content speaks for. Renaming a file
+// every January is the easy half; the trap is the redirect chain it grows.
+// Point /msp-valuation-multiples at -2026 this year and -2027 next year, and a
+// 2028 visitor arriving on the original link takes three hops, each one leaking
+// a little of whatever authority that link carried.
+//
+// So the year is resolved rather than mapped. Any form of a known guide -- the
+// bare slug, or one stamped with any prior year -- lands on the current year in
+// a single hop, and it composes with the https/www/.html normalization below
+// into that same one hop. Come January this is one constant and 24 renames,
+// with no chain inherited from this year.
+//
+// check_site.py asserts this set matches the files on disk: a slug that drifts
+// out of sync here is a 404 nobody notices until a crawler does.
+const CURRENT_GUIDE_YEAR = "2026";
+
+const YEAR_STAMPED_GUIDES = new Set([
+  "best-business-valuation-firms-lower-middle-market",
+  "best-ma-advisors-selling-20-million-company",
+  "business-services-valuation-multiples",
+  "childcare-daycare-valuation-multiples",
+  "dog-daycare-pet-care-valuation-multiples",
+  "ebitda-and-business-valuation-basics",
+  "how-long-does-it-take-to-sell-a-business",
+  "how-to-choose-an-ma-advisor",
+  "lower-middle-market-ma-process",
+  "ma-advisor-business-services",
+  "ma-advisor-early-childhood-education",
+  "ma-advisor-industrials-manufacturing",
+  "ma-deal-structure",
+  "ma-glossary-lower-middle-market",
+  "manufacturing-valuation-multiples",
+  "msp-valuation-multiples",
+  "quality-of-earnings-report",
+  "roll-ups-legal-services-pet-care",
+  "sell-side-advisor-vs-business-broker",
+  "strategic-buyer-vs-private-equity-buyer",
+  "top-lower-middle-market-investment-banks",
+  "what-buyers-look-for-in-an-acquisition-target",
+  "when-to-start-exit-planning",
+  "working-capital-peg-ma",
+]);
+
+// Lazy base so an optional trailing year wins when one is present. Essays carry
+// no year and are absent from the set above, so they fall straight through, as
+// does anything that is not a guide at all. "-20-million-company" is safe: the
+// suffix needs four digits, and that segment has one digit then a hyphen.
+const GUIDE_PATH = /^\/articles\/([a-z0-9-]+?)(?:-(20\d{2}))?$/;
+
+/**
+ * Maps any year-form of a known guide onto the current year. Returns `pathname`
+ * untouched for essays, unknown paths, and guides already on the current year,
+ * so the caller's redirect test stays a plain inequality.
+ */
+function resolveGuideYear(pathname) {
+  const match = GUIDE_PATH.exec(pathname);
+  if (!match) return pathname;
+  const [, base, year] = match;
+  if (!YEAR_STAMPED_GUIDES.has(base)) return pathname;
+  if (year === CURRENT_GUIDE_YEAR) return pathname;
+  return `/articles/${base}-${CURRENT_GUIDE_YEAR}`;
+}
+
 function normalizePathname(pathname) {
   if (pathname === "/index.html") return "/";
   if (pathname.endsWith("/index.html")) {
@@ -145,7 +208,9 @@ export default {
     const url = new URL(request.url);
     const originalScheme = getOriginalScheme(request, url);
     const targetHost = url.hostname === WWW_HOST ? APEX_HOST : url.hostname;
-    const targetPathname = normalizePathname(url.pathname);
+    // Year resolution runs after normalization so that ".html" and trailing
+    // slashes are already gone, and both corrections leave in one 301.
+    const targetPathname = resolveGuideYear(normalizePathname(url.pathname));
 
     const needsRedirect =
       originalScheme !== "https" ||

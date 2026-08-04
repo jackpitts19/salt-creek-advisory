@@ -9,3 +9,4 @@ src
 .gitignore
 docs
 tools
+.gstack
