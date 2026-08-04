@@ -28,8 +28,8 @@ out.
 
 Two constants drive it, both in `src/index.js`:
 
-- `CURRENT_GUIDE_YEAR` — the year the files on disk carry.
-- `YEAR_STAMPED_GUIDES` — the base slugs, without any year.
+- `CURRENT_GUIDE_YEAR`: the year the files on disk carry.
+- `YEAR_STAMPED_GUIDES`: the base slugs, without any year.
 
 `tools/build_related.py` reads `CURRENT_GUIDE_YEAR` out of that file rather
 than hardcoding it, so its `RELATED` map stays in bare slugs and needs no edit

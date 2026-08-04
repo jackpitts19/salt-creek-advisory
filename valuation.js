@@ -325,8 +325,8 @@
     const el = $('valLeadWarning');
     if (!el) return;
     el.textContent = 'Your estimate is ready, but we could not deliver your details to us ' +
-      'automatically. Please use “Email Us This Estimate” below so this actually reaches us — ' +
-      'the message is already written for you.';
+      'automatically. Please use “Email Us This Estimate” below so this actually reaches us. ' +
+      'The message is already written for you.';
     el.style.display = 'block';
   }
 
@@ -350,7 +350,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(Object.assign({
-        _subject: 'New valuation lead — ' + lead.name + ' (' + lead.industry + ', ' + lead.state + ')'
+        _subject: 'New valuation lead: ' + lead.name + ' (' + lead.industry + ', ' + lead.state + ')'
       }, lead))
     })
       .then((response) => {

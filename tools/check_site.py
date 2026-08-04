@@ -345,7 +345,7 @@ def check_worker_slugs(errors, _warnings):
 def main():
     paths = page_paths()
     if not paths:
-        print("No HTML pages found — run this from the repository root.", file=sys.stderr)
+        print("No HTML pages found. Run this from the repository root.", file=sys.stderr)
         return 1
 
     errors = []
