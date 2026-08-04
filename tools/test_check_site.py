@@ -186,6 +186,33 @@ class CheckSiteTestCase(unittest.TestCase):
         code, output = self.run_checker()
         self.assertEqual(code, 0, "noindex page should not count as a sitemap orphan:\n" + output)
 
+    # --- required schema fields, not just parseable JSON ---------------------
+
+    def test_dataset_without_description_is_caught(self):
+        # Shipped for real: three Dataset citations parsed fine and Search
+        # Console still reported them invalid.
+        node = ('<script type="application/ld+json">'
+                '{"@type": "Dataset", "name": "Some Series"}</script>')
+        self.write("about.html", page("/about", head=node))
+        self.assertFails("missing description")
+
+    def test_dataset_nested_in_a_citation_list_is_checked(self):
+        # The real ones sit inside an Article's citation array, not at the top
+        # level, so the walk has to recurse.
+        node = ('<script type="application/ld+json">'
+                '{"@type": "Article", "citation": ['
+                '{"@type": "Dataset", "name": "Buried Series"}]}</script>')
+        self.write("about.html", page("/about", head=node))
+        self.assertFails("Buried Series")
+
+    def test_complete_dataset_passes(self):
+        node = ('<script type="application/ld+json">'
+                '{"@type": "Dataset", "name": "Some Series",'
+                ' "description": "What it measures."}</script>')
+        self.write("about.html", page("/about", head=node))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a complete Dataset should pass:\n" + output)
+
     # --- the Worker's guide list must match the files on disk ----------------
 
     def write_worker(self, slugs, year="2026"):

@@ -146,11 +146,52 @@ def check_images(path, html, errors, _warnings):
             errors.append("{}: <img> without alt: {}".format(path, tag[:80]))
 
 
+# Fields Google requires before it will treat a node as eligible for a rich
+# result. Parsing is not validating: three Dataset citations shipped without a
+# description and Search Console reported them as invalid, while check_json_ld
+# passed them happily because the JSON was well-formed. Add a row here whenever
+# a new @type appears in the markup.
+REQUIRED_SCHEMA_FIELDS = {
+    "Dataset": ("name", "description"),
+}
+
+
+def iter_nodes(node):
+    """Every dict in a JSON-LD document, however deeply nested."""
+    if isinstance(node, dict):
+        yield node
+        for value in node.values():
+            yield from iter_nodes(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from iter_nodes(value)
+
+
+def check_schema_required_fields(path, html, errors, _warnings):
+    """A node missing a required field is invalid, not merely incomplete."""
+    for raw in JSON_LD.findall(html):
+        try:
+            document = json.loads(raw)
+        except json.JSONDecodeError:
+            continue  # check_json_ld already reported this
+        for node in iter_nodes(document):
+            required = REQUIRED_SCHEMA_FIELDS.get(node.get("@type"))
+            if not required:
+                continue
+            missing = [field for field in required if not node.get(field)]
+            if missing:
+                errors.append("{}: {} node '{}' is missing {}, so Google reports it "
+                              "as invalid".format(path, node["@type"],
+                                                  node.get("name", "unnamed")[:60],
+                                                  ", ".join(missing)))
+
+
 PAGE_CHECKS = (
     check_internal_links,
     check_head_tags,
     check_canonical,
     check_json_ld,
+    check_schema_required_fields,
     check_images,
 )
 
