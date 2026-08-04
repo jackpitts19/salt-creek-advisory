@@ -55,8 +55,15 @@ RELATED = {
         "working-capital-peg-ma", "ebitda-and-business-valuation-basics",
         "what-buyers-look-for-in-an-acquisition-target"],
     "working-capital-peg-ma": [
-        "quality-of-earnings-report", "lower-middle-market-ma-process",
-        "ma-glossary-lower-middle-market"],
+        "quality-of-earnings-report", "ma-deal-structure",
+        "lower-middle-market-ma-process"],
+
+    # Reading an offer. Sits between the fundamentals and the buyer guides: the
+    # peg is one of its six structures, and the buyer-type guide explains who
+    # asks for rollover equity and why.
+    "ma-deal-structure": [
+        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
+        "lower-middle-market-ma-process"],
 
     # Sector: IT managed services
     "msp-valuation-multiples": [
@@ -128,7 +135,7 @@ RELATED = {
         "strategic-buyer-vs-private-equity-buyer", "quality-of-earnings-report",
         "ebitda-and-business-valuation-basics"],
     "strategic-buyer-vs-private-equity-buyer": [
-        "what-buyers-look-for-in-an-acquisition-target", "roll-ups-legal-services-pet-care",
+        "what-buyers-look-for-in-an-acquisition-target", "ma-deal-structure",
         "lower-middle-market-ma-process"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
