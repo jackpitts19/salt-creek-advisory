@@ -2657,7 +2657,13 @@
 
     .articles-group + .articles-group { margin-top: 5rem; }
 
-    .articles-group-h2 { margin-bottom: 0.6rem; }
+    /* Outranks the 1.55rem card titles below it: same face and weight, so the
+       size step and the tighter leading are what carry the hierarchy. */
+    .articles-group-h2 {
+      font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+    }
 
     .articles-group-intro {
       font-size: 0.9rem;
