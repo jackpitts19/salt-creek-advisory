@@ -70,13 +70,18 @@ RELATED = {
         "/msp-ma-advisor", "business-services-valuation-multiples",
         "ebitda-and-business-valuation-basics"],
 
-    # Sector: pet care
+    # Sector: pet care. The advisor comparison sits in the middle of both other
+    # pet care guides rather than at the end: a reader on multiples or roll-ups
+    # is closer to picking a firm than to reading another sector explainer.
     "dog-daycare-pet-care-valuation-multiples": [
-        "/pet-care-ma-advisor", "roll-ups-legal-services-pet-care",
-        "ebitda-and-business-valuation-basics"],
+        "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
+        "roll-ups-legal-services-pet-care"],
     "roll-ups-legal-services-pet-care": [
+        "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
+        "dog-daycare-pet-care-valuation-multiples"],
+    "best-ma-advisors-pet-care-dog-daycare-businesses": [
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
-        "strategic-buyer-vs-private-equity-buyer"],
+        "roll-ups-legal-services-pet-care"],
 
     # Sector: early childhood education
     "childcare-daycare-valuation-multiples": [

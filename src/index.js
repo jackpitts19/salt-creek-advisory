@@ -94,6 +94,7 @@ const CURRENT_GUIDE_YEAR = "2026";
 
 const YEAR_STAMPED_GUIDES = new Set([
   "best-business-valuation-firms-lower-middle-market",
+  "best-ma-advisors-pet-care-dog-daycare-businesses",
   "best-ma-advisors-selling-20-million-company",
   "business-services-valuation-multiples",
   "childcare-daycare-valuation-multiples",

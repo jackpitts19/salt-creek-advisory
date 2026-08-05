@@ -3039,3 +3039,22 @@
     @media (max-width: 640px) {
       .capability-section { padding: 4.5rem 5%; }
     }
+
+    /* ============================================================
+       SCREEN-READER-ONLY UTILITY
+       Exposed to assistive technology and crawlers, never rendered.
+       Used for section headings that keep the document outline from
+       skipping a level where the design has no visible heading.
+       ============================================================ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
