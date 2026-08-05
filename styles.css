@@ -2647,7 +2647,7 @@
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(7,17,26,0.5);
+      color: rgba(7,17,26,0.62);
       text-decoration: none;
       transition: color 0.25s;
     }
@@ -2668,7 +2668,7 @@
     .articles-group-intro {
       font-size: 0.9rem;
       font-weight: 300;
-      color: rgba(7,17,26,0.58);
+      color: rgba(7,17,26,0.62);
       line-height: 1.8;
       max-width: 640px;
       margin: 0 0 2.25rem;
