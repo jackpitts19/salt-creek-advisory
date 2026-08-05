@@ -2633,9 +2633,6 @@
 
     .article-card:hover .article-card-arrow { color: var(--copper); }
 
-    /* An odd card at the end of a group fills the row instead of leaving a gap. */
-    .article-card:nth-child(odd):last-child { grid-column: 1 / -1; }
-
     .articles-jump {
       display: flex;
       flex-wrap: wrap;
