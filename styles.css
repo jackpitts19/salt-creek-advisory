@@ -2638,13 +2638,16 @@
     .articles-jump {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem 2rem;
+      /* No row gap: the links' own padding sets the rhythm and keeps their
+         44px hit areas flush, so a near miss still lands on a link. */
+      gap: 0 2rem;
       margin-bottom: 3.5rem;
-      padding-bottom: 1.5rem;
+      padding-bottom: 0.65rem;
       border-bottom: 1px solid rgba(7,17,26,0.1);
     }
 
     .articles-jump a {
+      padding: 0.85rem 0;
       font-size: 0.65rem;
       font-weight: 600;
       letter-spacing: 0.18em;
@@ -2682,7 +2685,7 @@
     @media (max-width: 640px) {
       .articles-list { padding: 5.5rem 5% 6rem; }
       .article-card { padding: 2rem 1.75rem; }
-      .articles-jump { gap: 0.6rem 1.4rem; margin-bottom: 2.75rem; }
+      .articles-jump { gap: 0 1.4rem; margin-bottom: 2.75rem; }
       .articles-group + .articles-group { margin-top: 3.5rem; }
     }
 
