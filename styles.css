@@ -2595,13 +2595,15 @@
 
     .article-card:hover { border-top-color: var(--copper); background: rgba(184,115,51,0.05); }
 
+    /* Neutral, not copper: the accent belongs to the action at the foot of the
+       card, and a date competing with it flattens the card's reading order. */
     .article-card-label {
       display: block;
       font-size: 0.6rem;
       font-weight: 600;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: rgba(7,17,26,0.62);
       margin-bottom: 0.9rem;
     }
 
