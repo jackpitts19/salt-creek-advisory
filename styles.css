@@ -2092,7 +2092,8 @@
       margin: 0;
     }
 
-    .sector-group-h2 {
+    .sector-group-h2,
+    .articles-group-h2 {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1.5rem, 2.4vw, 2rem);
       font-weight: 400;
@@ -2101,7 +2102,8 @@
       letter-spacing: -0.01em;
     }
 
-    .sector-group-h2 em { font-style: italic; color: var(--copper3); }
+    .sector-group-h2 em,
+    .articles-group-h2 em { font-style: italic; color: var(--copper3); }
 
     /* ============================================================
        INVESTORS / BUY-SIDE
@@ -2631,12 +2633,52 @@
 
     .article-card:hover .article-card-arrow { color: var(--copper); }
 
+    /* An odd card at the end of a group fills the row instead of leaving a gap. */
+    .article-card:nth-child(odd):last-child { grid-column: 1 / -1; }
+
+    .articles-jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 2rem;
+      margin-bottom: 3.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(7,17,26,0.1);
+    }
+
+    .articles-jump a {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.5);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .articles-jump a:hover,
+    .articles-jump a:focus-visible { color: var(--copper); }
+
+    .articles-group + .articles-group { margin-top: 5rem; }
+
+    .articles-group-h2 { margin-bottom: 0.6rem; }
+
+    .articles-group-intro {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.58);
+      line-height: 1.8;
+      max-width: 640px;
+      margin: 0 0 2.25rem;
+    }
+
     @media (max-width: 820px) {
       .articles-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
       .articles-list { padding: 5.5rem 5% 6rem; }
       .article-card { padding: 2rem 1.75rem; }
+      .articles-jump { gap: 0.6rem 1.4rem; margin-bottom: 2.75rem; }
+      .articles-group + .articles-group { margin-top: 3.5rem; }
     }
 
     /* ===== Article page (long-form) ===== */
