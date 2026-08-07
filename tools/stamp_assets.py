@@ -27,9 +27,9 @@ import re
 import sys
 
 # Only the assets pages load from this origin. Fonts and images sit behind their
-# own cache rules; analytics.js is here because it ships under the same .js rule
-# as main.js and would go stale the same way.
-ASSETS = ("styles.css", "main.js", "analytics.js")
+# own cache rules; analytics.js and valuation.js are here because they ship under
+# the same .js rule as main.js and would go stale the same way.
+ASSETS = ("styles.css", "main.js", "analytics.js", "valuation.js")
 HASH_LENGTH = 8
 
 
