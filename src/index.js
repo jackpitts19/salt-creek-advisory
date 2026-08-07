@@ -105,6 +105,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "how-to-choose-an-ma-advisor",
   "lower-middle-market-ma-process",
   "ma-advisor-business-services",
+  "ma-advisor-fees",
   "ma-advisor-early-childhood-education",
   "ma-advisor-industrials-manufacturing",
   "ma-deal-structure",

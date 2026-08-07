@@ -112,19 +112,24 @@ RELATED = {
         "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
         "best-ma-advisors-msp-managed-service-providers"],
 
-    # Choosing an advisor
+    # Choosing an advisor. The fee guide sits second in the two comparisons that
+    # quote a percentage without deriving it: a reader just told a $20M sale runs
+    # 3.4%-3.9% wants the bracket arithmetic sitting behind that number.
     "how-to-choose-an-ma-advisor": [
-        "sell-side-advisor-vs-business-broker", "top-lower-middle-market-investment-banks",
+        "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
+        "top-lower-middle-market-investment-banks"],
+    "ma-advisor-fees": [
+        "how-to-choose-an-ma-advisor", "sell-side-advisor-vs-business-broker",
         "best-ma-advisors-selling-20-million-company"],
     "sell-side-advisor-vs-business-broker": [
-        "how-to-choose-an-ma-advisor", "top-lower-middle-market-investment-banks",
-        "lower-middle-market-ma-process"],
+        "how-to-choose-an-ma-advisor", "ma-advisor-fees",
+        "top-lower-middle-market-investment-banks"],
     "top-lower-middle-market-investment-banks": [
         "best-ma-advisors-selling-20-million-company", "how-to-choose-an-ma-advisor",
         "sell-side-advisor-vs-business-broker"],
     "best-ma-advisors-selling-20-million-company": [
-        "top-lower-middle-market-investment-banks", "how-to-choose-an-ma-advisor",
-        "lower-middle-market-ma-process"],
+        "top-lower-middle-market-investment-banks", "ma-advisor-fees",
+        "how-to-choose-an-ma-advisor"],
     "best-business-valuation-firms-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "quality-of-earnings-report",
         "how-to-choose-an-ma-advisor"],
