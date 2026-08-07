@@ -2910,7 +2910,36 @@
       border-bottom: 1px solid rgba(184,115,51,0.25);
     }
 
-    .article-body tr.row-best td:first-child { border-left: 3px solid var(--copper); }
+    /* Row headers carry the firm name. Without this they inherit .article-body th
+       above, which is the uppercase 0.62rem column-header treatment, and the most
+       important text in a comparison table renders as the smallest. */
+    .article-body tbody th[scope="row"] {
+      font-size: 0.87rem;
+      font-weight: 400;
+      letter-spacing: normal;
+      text-transform: none;
+      color: rgba(7,17,26,0.72);
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(7,17,26,0.08);
+      vertical-align: top;
+    }
+
+    .article-body tr.row-best th[scope="row"] {
+      background: rgba(184,115,51,0.08);
+      font-weight: 500;
+      color: var(--navy);
+      border-bottom: 1px solid rgba(184,115,51,0.25);
+    }
+
+    /* Not td:first-child: the first cell is a th once a table uses row headers. */
+    .article-body tr.row-best > :first-child { border-left: 3px solid var(--copper); }
+
+    /* The wrap is a tab stop wherever it scrolls, so it needs a visible ring.
+       --copper2 measures under 3:1 on cream and cannot carry a focus indicator. */
+    .article-table-wrap:focus-visible {
+      outline: 2px solid #915b28;
+      outline-offset: 2px;
+    }
 
     .article-body th.col-best,
     .article-body td.col-best {
@@ -2934,7 +2963,10 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: #fff;
-      background: var(--copper);
+      /* Not --copper: white on #b87333 is 3.79:1 at 9.6px, under the 4.5:1 floor,
+         and 9.6px bold is far short of the 18.66px large-text exemption. This
+         darkening reads 5.45:1 on white and still holds 4.80:1 against cream. */
+      background: #9a5a1c;
       border-radius: 3px;
       vertical-align: middle;
       white-space: nowrap;
