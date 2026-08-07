@@ -56,6 +56,27 @@
     agency: 0.15, transport: 0.08, auto: 0.20, consumer: 0.10,
     restaurants: 0.12, ecommerce: 0.10, other: 0.12
   };
+  // What it costs to replace a full-time owner-operator, by revenue. Every
+  // multiple in MULT is an EBITDA multiple, so a profit figure that still
+  // contains the owner's own pay (SDE) has to give up a market manager's salary
+  // before it can be priced against them. Owners routinely report SDE and call
+  // it profit, and at the small end the difference is most of the valuation.
+  // Tiers are deliberately conservative: overstating the salary here would erase
+  // a real business, which is a worse error than understating it slightly.
+  const MANAGER_SALARY = [
+    [1e6, 65000], [3e6, 85000], [7e6, 115000], [15e6, 150000], [Infinity, 200000]
+  ];
+
+  /**
+   * Market pay for whoever the buyer hires to do the owner's job.
+   * @param {number} revenue annual revenue, used as the size proxy
+   * @returns {number} replacement salary in dollars
+   */
+  function replacementSalary(revenue) {
+    const tier = MANAGER_SALARY.find((entry) => revenue < entry[0]);
+    return tier[1];
+  }
+
   // Subsector-level multiple/margin overrides. Each industry with real dispersion
   // between its niches gets its own list; industries left out (or the "_other"
   // fallback) use the industry-level MULT/MARGIN/NAMES above instead.
@@ -202,7 +223,7 @@
   // Verified acquirers by industry (publicly reported activity, 2025-26).
   const BUYERS = {
     ece: [
-      ['Cadence Education', 'PE-backed national platform with 300+ schools across 30 states; has acquired more than 100 preschools.'],
+      ['Cadence Education', 'PE-backed national platform with 300+ schools across 30 states; has acquired more than 100 preschools. Connor spent three years inside Cadence, working through more than 40 of those acquisitions.'],
       ['KinderCare Learning Companies', 'One of the largest early education providers in the country.'],
       ['Busy Bees / BrightPath', 'Global operator backed by the Ontario Teachers’ Pension Plan, growing across North America.']
     ],
@@ -420,8 +441,13 @@
     if (!ind) return err('err1', 'Please select your industry.');
     if (SUBSECTORS[ind] && !$('vSubsector').value) return err('err1', 'Please select your subsector.');
     if (!$('vState').value) return err('err1', 'Please select your state.');
-    if (!rev && !prof) return err('err1', 'Give us revenue or profit \u2014 a rough number is fine.');
+    if (!rev && !prof) return err('err1', 'Give us revenue or profit. A rough number is fine.');
     if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.');
+    // Only binding when a profit figure was actually given: a blank profit is
+    // estimated from industry margins, which are already net of a manager's pay.
+    if (prof && !$('vProfitBasis').value) {
+      return err('err1', 'Tell us whether your own pay is still inside that profit number.');
+    }
     err('err1', '');
     trackStep(1);
     showStep(2);
@@ -494,8 +520,22 @@
     let estimated = false;
     if (!prof && rev) { prof = Math.round(rev * margin); estimated = true; }
 
+    // An owner who reported SDE handed us a number that still pays them. Buyers
+    // price the business without the owner in it, so a market manager's salary
+    // comes out before any multiple touches it. The estimated path skips this:
+    // MARGIN is already an EBITDA margin, so the salary is spoken for.
+    const ownerPayRemoved = (!estimated && $('vProfitBasis').value === 'includesOwnerPay')
+      ? replacementSalary(rev || Math.round(prof / margin))
+      : 0;
+    prof = prof - ownerPayRemoved;
+
+    // Once a manager is paid there is nothing left to put a multiple on. Saying
+    // that plainly beats printing a range built on zero or a negative number.
+    const belowManagerPay = prof <= 0;
+
     // Very large businesses get a closer look, not a guess.
     const bigDeal = prof >= 12e6 || rev >= 12e7;
+    const showRange = !bigDeal && !belowManagerPay;
 
     const adj = sizeAdj(prof) + OWNER_ADJ[$('vOwner').value] + GROWTH_ADJ[$('vGrowth').value] +
                 CONC_ADJ[$('vConc').value] + REC_ADJ[$('vRec').value];
@@ -504,16 +544,29 @@
     const low = roundSmart(prof * lowX);
     const high = roundSmart(prof * highX);
 
-    $('valNumbers').style.display = bigDeal ? 'none' : 'block';
+    $('valNumbers').style.display = showRange ? 'block' : 'none';
     $('valBigLook').style.display = bigDeal ? 'block' : 'none';
+    $('valSmallLook').style.display = (belowManagerPay && !bigDeal) ? 'block' : 'none';
+
+    if (belowManagerPay && !bigDeal) {
+      $('valSmallLookMsg').textContent = 'You told us your own pay is still inside that profit figure. Once we ' +
+        'set aside about ' + fmt(ownerPayRemoved) + ' to hire someone to do your job, there is not enough left ' +
+        'for a multiple to mean anything. That is more common than you would think, and it does not mean the ' +
+        'business has no value. It usually means the value sits in the assets, the customer relationships, or ' +
+        'the right buyer, rather than in the earnings. Let us look at it properly before you take any number ' +
+        'seriously.';
+    }
 
     const profPhrase = estimated
-      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical margins for ' + subName + ' to your revenue \u2014 treat this as a rougher starting point)'
-      : 'your ' + fmt(prof) + ' of annual profit';
+      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical margins for ' + subName + ' to your revenue, which makes this a rougher starting point)'
+      : ownerPayRemoved
+        ? fmt(prof) + ' of annual profit, after setting aside ' + fmt(ownerPayRemoved) + ' to replace what you do ' +
+          '(you told us your own pay was still in that number, and buyers price the business without you in it)'
+        : 'your ' + fmt(prof) + ' of annual profit';
     $('valNote').textContent = 'Based on a ' + lowX.toFixed(1) + 'x\u2013' + highX.toFixed(1) +
       'x multiple applied to ' + profPhrase + ', adjusted for size, ' +
       'owner involvement, growth, customer concentration, and revenue quality. That is where ' +
-      subName + ' are trading today. Where you land inside the range \u2014 or above it \u2014 ' +
+      subName + ' are trading today. Where you land inside the range, or above it, ' +
       'depends almost entirely on whether buyers compete for your business.';
 
     renderBuyers(ind);
@@ -526,6 +579,11 @@
       ownerInvolvement: sel('vOwner'), revenueTrend: sel('vGrowth'),
       customerConcentration: sel('vConc'), revenueType: sel('vRec'),
       revenue: rev, profit: prof, profitEstimated: estimated, oversized: bigDeal,
+      // What the owner said about their own pay, and what we took out because of
+      // it. Both travel with the lead so the number in the email can be retraced.
+      profitBasis: estimated ? 'N/A (estimated from margins)' : sel('vProfitBasis'),
+      ownerPayRemoved: ownerPayRemoved,
+      belowManagerPay: belowManagerPay,
       estimateLow: low, estimateHigh: high,
       date: new Date().toISOString(), source: 'valuation-tool'
     };
@@ -536,8 +594,9 @@
       industry: lead.industry,
       state: lead.state,
       oversized: bigDeal,
-      // Oversized businesses get no range, so they carry no comparable value.
-      value: bigDeal ? 0 : Math.round((low + high) / 2),
+      // Oversized businesses, and ones with nothing left after a manager's pay,
+      // get no range on screen, so they carry no comparable value here either.
+      value: showRange ? Math.round((low + high) / 2) : 0,
       currency: 'USD'
     };
 
@@ -558,7 +617,7 @@
     // The lead still reaches us via the POST above and the mailto link below.
     clearStoredLeads();
 
-    const subject = 'Valuation inquiry \u2014 ' + name;
+    const subject = 'Valuation inquiry from ' + name;
     const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
       'Name: ' + name + '\nEmail: ' + email + (lead.phone ? '\nPhone: ' + lead.phone : '') +
       (lead.website ? '\nWebsite: ' + lead.website : '') + '\nState: ' + lead.state +
@@ -567,14 +626,20 @@
       '\nRevenue trend: ' + lead.revenueTrend + '\nLargest customer: ' + lead.customerConcentration +
       '\nRevenue type: ' + lead.revenueType + '\nAnnual revenue: ' + fmt(rev) +
       '\nAnnual profit: ' + fmt(prof) + (estimated ? ' (estimated from margins)' : '') +
-      '\nEstimated range: ' + (bigDeal ? 'needs a closer look \u2014 large business' : fmt(low) + ' \u2013 ' + fmt(high)) +
+      '\nOwn pay still in that number: ' + lead.profitBasis +
+      (ownerPayRemoved ? '\nManager salary set aside: ' + fmt(ownerPayRemoved) : '') +
+      '\nEstimated range: ' + (bigDeal
+        ? 'needs a closer look, large business'
+        : belowManagerPay
+          ? 'nothing left to price once a manager is paid'
+          : fmt(low) + ' to ' + fmt(high)) +
       '\n\nI\u2019d like to talk about what a real number could look like.';
     $('valEmailLink').setAttribute('href',
       'mailto:jack@saltcreekadvisory.com?cc=connor@saltcreekadvisory.com&subject=' +
       encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyTxt));
 
     showStep(4);
-    if (!bigDeal) {
+    if (showRange) {
       countUp($('valLow'), low, 1200);
       countUp($('valHigh'), high, 1400);
     }

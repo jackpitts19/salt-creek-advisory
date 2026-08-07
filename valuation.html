@@ -171,11 +171,19 @@
           <input id="vRevenue" class="val-input" type="text" inputmode="numeric" placeholder="$2,500,000" autocomplete="off">
         </div>
         <div class="val-field">
-          <label class="val-label" for="vProfit">Annual Profit (EBITDA or SDE) <span style="opacity:.5;">(blank if unsure)</span></label>
+          <label class="val-label" for="vProfit">Annual Profit <span style="opacity:.5;">(blank if unsure)</span></label>
           <input id="vProfit" class="val-input" type="text" inputmode="numeric" placeholder="$500,000" autocomplete="off">
         </div>
       </div>
-      <p class="val-help">Profit means earnings before interest, taxes, depreciation and amortization, plus any owner salary above market. A rough number is fine, and if you leave it blank, we&rsquo;ll estimate from typical margins in your industry.</p>
+      <div class="val-field">
+        <label class="val-label" for="vProfitBasis">Is your own pay still inside that profit number?</label>
+        <select id="vProfitBasis" class="val-select">
+          <option value="">Select one&hellip;</option>
+          <option value="excludesOwnerPay">No. I already subtracted what I pay myself</option>
+          <option value="includesOwnerPay">Yes. That number still includes what I pay myself</option>
+        </select>
+      </div>
+      <p class="val-help">Profit means earnings before interest, taxes, depreciation and amortization. The pay question matters more than it looks: a buyer has to hire someone to do your job, so if your own pay is still in that number, we set aside a market salary before pricing the business. A rough number is fine, and if you leave profit blank, we&rsquo;ll estimate from typical margins in your industry.</p>
       <div class="val-field" style="margin-top:1.5rem;">
         <label class="val-label" for="vWebsite">Company Website <span style="opacity:.5;">(optional, helps us give you a sharper read)</span></label>
         <input id="vWebsite" class="val-input" type="text" placeholder="yourcompany.com" autocomplete="off">
@@ -288,6 +296,10 @@
         <span class="val-result-eyebrow">This One Deserves a Closer Look</span>
         <p class="val-biglook-msg">Honestly? At your size, a calculator range isn&rsquo;t worth your time. Businesses like yours trade on things a tool can&rsquo;t see: buyer appetite, sector momentum, deal structure, and how the story gets told. Rather than hand you a number that could be off by tens of millions in either direction, we&rsquo;d like to take a real look. That conversation is free, confidential, and worth it at your scale.</p>
       </div>
+      <div id="valSmallLook" style="display:none;">
+        <span class="val-result-eyebrow">Let&rsquo;s Talk Before We Put a Number On It</span>
+        <p class="val-biglook-msg" id="valSmallLookMsg"></p>
+      </div>
 
       <div class="val-buyers" id="valBuyers">
         <span class="val-buyers-title" id="valBuyersTitle">Buyers active in your industry</span>
@@ -396,7 +408,7 @@
 </footer>
 
 <script src="main.js?v=87732339"></script>
-<script src="valuation.js" defer></script>
+<script src="valuation.js?v=bb6c7ddc" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
