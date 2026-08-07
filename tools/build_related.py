@@ -65,10 +65,15 @@ RELATED = {
         "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
         "lower-middle-market-ma-process"],
 
-    # Sector: IT managed services
+    # Sector: IT managed services. Same shape as pet care below, for the same
+    # reason: a reader on multiples is closer to picking a firm than to another
+    # explainer, so the advisor comparison sits second rather than last.
     "msp-valuation-multiples": [
-        "/msp-ma-advisor", "business-services-valuation-multiples",
-        "ebitda-and-business-valuation-basics"],
+        "/msp-ma-advisor", "best-ma-advisors-msp-managed-service-providers",
+        "business-services-valuation-multiples"],
+    "best-ma-advisors-msp-managed-service-providers": [
+        "/msp-ma-advisor", "msp-valuation-multiples",
+        "how-to-choose-an-ma-advisor"],
 
     # Sector: pet care. The advisor comparison sits in the middle of both other
     # pet care guides rather than at the end: a reader on multiples or roll-ups
@@ -105,7 +110,7 @@ RELATED = {
         "ebitda-and-business-valuation-basics"],
     "ma-advisor-business-services": [
         "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "/msp-ma-advisor"],
+        "best-ma-advisors-msp-managed-service-providers"],
 
     # Choosing an advisor
     "how-to-choose-an-ma-advisor": [
