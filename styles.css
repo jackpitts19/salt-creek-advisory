@@ -1890,11 +1890,17 @@
       line-height: 1.82;
     }
 
+    /* This and .impact-body were the same block built twice: same tint,
+       same hairline, same 3px copper stripe down the left, same two
+       column grid. Two identical accents on one page read as a habit
+       rather than an accent. .impact-body keeps the left rule because it
+       holds a pull quote and a rule in the margin is what that wants.
+       This one is a callout, so it takes the rule along the top instead. */
     .why-process-callout {
       margin-top: 3rem;
       background: rgba(184,115,51,0.04);
       border: 1px solid rgba(184,115,51,0.18);
-      border-left: 3px solid var(--copper2);
+      border-top: 3px solid var(--copper2);
       padding: 3.5rem 3rem;
       display: grid;
       grid-template-columns: 1fr 1.8fr;
@@ -2445,7 +2451,12 @@
     .nav-cta--val:hover { background: rgba(184,115,51,0.12); border-color: var(--copper2); color: var(--copper3); }
 
     /* Valuation band (home) */
-    .val-band { background: var(--navy3); padding: 8rem 6%; text-align: center; position: relative; overflow:hidden; border-top: 1px solid rgba(244,240,235,0.05); }
+    /* Deliberately shorter than the sections either side of it. The
+       homepage runs 9rem, 10rem, 6.5rem, 9rem, so this reads as a band
+       between two full sections rather than a fifth section of the same
+       height. Sections that are all one height are what makes a page
+       scroll like a template. */
+    .val-band { background: var(--navy3); padding: 6.5rem 6%; text-align: center; position: relative; overflow:hidden; border-top: 1px solid rgba(244,240,235,0.05); }
     .val-band::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(184,115,51,0.12) 0%, transparent 65%); pointer-events:none; }
     .val-band .wrap { position:relative; z-index:1; }
     .val-band-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-3); font-weight:300; color:var(--cream); line-height:1.12; margin-bottom:1.4rem; }
