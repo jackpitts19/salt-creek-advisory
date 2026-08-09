@@ -78,14 +78,21 @@ URLs. A previous pass matched on the bare slug and rewrote
 in seven places. `check_site.py` cannot catch that, because it does not follow
 external links. Diff the set of external URLs before and after.
 
+`tools/check_links.py` does follow them, and the weekly `link-rot` workflow runs
+it. That is a backstop measured in days, not a substitute for diffing the set
+before and after a bulk rewrite.
+
 ## Checks
 
 ```sh
 python3 tools/build_related.py     # Keep Reading blocks
 python3 tools/build_feed.py        # feed.xml and sitemap.xml, generated
+python3 tools/stamp_assets.py      # ?v= cache stamps on css and js
 python3 tools/check_site.py        # 0 errors required
 python3 tools/test_check_site.py   # the checker's own tests
+python3 tools/test_stamp_assets.py
 python3 tools/test_submit_indexnow.py
+python3 tools/test_check_links.py
 node     tools/test_worker_redirects.mjs
 ```
 
@@ -93,8 +100,16 @@ Run `build_feed.py` **after** committing the renames. It reads each non-article
 page's `lastmod` from `git log`, so running it against uncommitted work stamps
 the previous commit's date.
 
-There is no CI. These run when someone remembers, and `main` deploys to
-production within a minute of a push.
+`.github/workflows/checks.yml` runs all of the above on every push and pull
+request, so forgetting is no longer fatal. Its last step regenerates the three
+generated artifacts and fails if the result differs from what is committed,
+which is the check that catches a `feed.xml` left a commit behind. That failure
+is the workflow enforcing the `build_feed.py` ordering rule above: commit first,
+regenerate, amend.
+
+CI is a second pair of eyes, not the first. `main` still deploys to production
+within about a minute of a push, and the workflow finishes after the deploy
+starts. Run the checks locally before pushing anything you care about.
 
 ## Telling the engines
 

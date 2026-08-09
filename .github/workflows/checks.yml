@@ -1,0 +1,72 @@
+# Runs on every push, because main deploys to production about a minute after
+# one. Until now the only thing standing between a commit and the live site was
+# whether the person at the keyboard remembered to run tools/ by hand.
+#
+# The last job is the one that earns its keep. feed.xml, sitemap.xml, the Keep
+# Reading blocks and the ?v= asset stamps are all generated, all committed, and
+# all easy to leave a commit behind. Regenerating and diffing is the only way to
+# notice.
+name: checks
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # build_feed.py reads each non-article page's lastmod out of git log.
+          # A shallow clone has no history to read and would stamp everything
+          # with the same date.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          # Matches the interpreter these scripts are run on by hand. Testing on
+          # a newer one would let 3.10+ syntax pass here and fail on the laptop.
+          python-version: '3.9'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Site checker
+        run: python3 tools/check_site.py
+
+      - name: Python test suites
+        run: |
+          python3 tools/test_check_site.py
+          python3 tools/test_stamp_assets.py
+          python3 tools/test_submit_indexnow.py
+          python3 tools/test_check_links.py
+
+      - name: Worker redirect tests
+        run: node tools/test_worker_redirects.mjs
+
+      - name: Generated files are current
+        run: |
+          python3 tools/stamp_assets.py
+          python3 tools/build_related.py
+          python3 tools/build_feed.py
+          if ! git diff --quiet; then
+            echo "::error::Generated files are stale. Regenerate them and commit the result."
+            echo ""
+            echo "These changed when regenerated, which means the committed copies are behind:"
+            git --no-pager diff --stat
+            echo ""
+            echo "Fix: commit your work first, then run"
+            echo "  python3 tools/stamp_assets.py"
+            echo "  python3 tools/build_related.py"
+            echo "  python3 tools/build_feed.py"
+            echo "and amend. build_feed.py reads lastmod from git log, so running it"
+            echo "before the commit stamps the previous commit's date. See docs/url-scheme.md."
+            exit 1
+          fi
+          echo "feed.xml, sitemap.xml, Keep Reading blocks and asset stamps are all current."

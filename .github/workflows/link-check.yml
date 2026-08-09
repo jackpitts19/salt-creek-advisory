@@ -1,0 +1,92 @@
+# Link rot is the one kind of decay that never shows up in a diff. Nobody edits
+# a page and breaks a citation; a vendor reorganizes their blog eighteen months
+# later and a source silently starts 404ing under four statistics. So this runs
+# on a clock instead of on a push.
+#
+# Kept out of checks.yml deliberately. That workflow must be fast and offline so
+# it can gate every push. This one makes 258 outbound requests and depends on
+# other people's servers being up, which is not something a commit should wait
+# on or be blocked by.
+name: link-rot
+
+on:
+  schedule:
+    # Mondays at 08:00 Central. Early enough in the week that a dead citation
+    # gets fixed before it sits through another weekend.
+    - cron: '0 13 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Check external citations
+        id: check
+        run: |
+          set +e
+          python3 tools/check_links.py | tee /tmp/link-report.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        if: steps.check.outputs.status != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('/tmp/link-report.txt', 'utf8').trim();
+            const title = 'Dead external citations';
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              'The weekly link check found citations that return 404 or 410, or whose host no longer resolves.',
+              '',
+              'Entries marked `note` are not failures. Those hosts refuse robots and work fine in a browser,',
+              'so they are listed for context only. Only the `DEAD` lines need editing.',
+              '',
+              '```',
+              report,
+              '```',
+              '',
+              `Reproduce locally with \`python3 tools/check_links.py\`. [Workflow run](${run})`,
+            ].join('\n');
+
+            // Match on title rather than a label, so this needs no label to
+            // exist beforehand and cannot fail on a fresh repository.
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const existing = open.data.find(
+              (issue) => issue.title === title && !issue.pull_request
+            );
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
+
+      - name: Fail the run when citations are dead
+        if: steps.check.outputs.status != '0'
+        run: exit 1
