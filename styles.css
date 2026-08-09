@@ -236,6 +236,26 @@
 
     .eyebrow--light { color: rgba(244,240,235,0.55); }
 
+    /* Interior section labels. The copper-plus-rule eyebrow is a fanfare;
+       five of them down one page is five fanfares and none of them lands.
+       The hero and the contact section keep the full treatment because
+       they are the two moments that earn it. Everything between gets a
+       quiet label: no rule, less weight, muted rather than copper. */
+    .eyebrow--quiet {
+      color: var(--muted2);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+    }
+    .eyebrow--quiet::before { display: none; }
+
+    /* .eyebrow is a flex container, so text-align on the section does not
+       reach its contents; they stay flush left however the section is
+       aligned. The valuation band worked around this with an inline
+       justify-content, the contact section never did, so "Get In Touch"
+       sat hard left under a centred headline. Centre it from here. */
+    .contact .eyebrow,
+    .val-band .eyebrow { justify-content: center; }
+
     .btn-primary {
       display: inline-block;
       background: var(--cream);
@@ -1593,10 +1613,14 @@
       pointer-events: none;
     }
 
+    /* Left, not centred. The homepage now opens with three left-aligned
+       sections (hero, this, why-us) and closes with two centred ones
+       (val-band, contact). Centring every section is the default that
+       makes a page read as a template; reserving it for the two that ask
+       for a single action makes it mean something. */
     .impact-header {
-      text-align: center;
-      max-width: 780px;
-      margin: 0 auto 5rem;
+      max-width: 720px;
+      margin: 0 0 5rem;
     }
 
     .impact-h2 {
@@ -1608,9 +1632,16 @@
       margin-bottom: 1.5rem;
     }
 
+    /* The copper italic second line is the brand's signature, so it is
+       worth spending carefully. On the homepage it now appears exactly
+       twice: the hero opens with it and the contact section closes with
+       it. It used to run seven times down a single page, at which point
+       it stops reading as a flourish and starts reading as a template.
+       The markup keeps its <em> so the copy is untouched; these headings
+       simply set it upright. */
     .impact-h2 em {
-      font-style: italic;
-      color: var(--copper3);
+      font-style: normal;
+      color: inherit;
     }
 
     .impact-sub {
@@ -1619,7 +1650,7 @@
       color: var(--muted);
       line-height: 1.85;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 0;
     }
 
     .impact-stats {
@@ -1729,9 +1760,12 @@
       margin-bottom: 0.9rem;
     }
 
+    /* This one is an actual pull quote, so the italic is doing real
+       typographic work and stays. Dropping the copper keeps it from
+       reading as a third instance of the hero device. */
     .impact-body-quote em {
       font-style: italic;
-      color: var(--copper3);
+      color: var(--cream);
     }
 
     .impact-body-text {
@@ -1782,8 +1816,8 @@
     }
 
     .why-h2 em {
-      font-style: italic;
-      color: var(--copper3);
+      font-style: normal;
+      color: inherit;
     }
 
     .why-sub {
@@ -1878,8 +1912,8 @@
     }
 
     .why-process-callout h3 em {
-      font-style: italic;
-      color: var(--copper3);
+      font-style: normal;
+      color: inherit;
     }
 
     .why-process-callout p {
@@ -2415,7 +2449,7 @@
     .val-band::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(184,115,51,0.12) 0%, transparent 65%); pointer-events:none; }
     .val-band .wrap { position:relative; z-index:1; }
     .val-band-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-3); font-weight:300; color:var(--cream); line-height:1.12; margin-bottom:1.4rem; }
-    .val-band-h2 em { font-style:italic; color:var(--copper3); }
+    .val-band-h2 em { font-style: normal; color: inherit; }
     .val-band-sub { font-size:.97rem; font-weight:300; color: var(--muted); line-height:1.85; max-width:540px; margin:0 auto 2.75rem; }
     .val-band-note { display:block; margin-top:1.4rem; font-size:.62rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted2); }
 
