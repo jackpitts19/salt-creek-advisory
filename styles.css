@@ -914,11 +914,19 @@
       color: var(--copper3);
     }
 
+    /* minmax(0,1fr) rather than 1fr. A grid item defaults to
+       min-width:auto, so a plain 1fr track refuses to shrink below the
+       card's min-content width. The headshots carry width="628" and
+       width:100% is ignored for intrinsic sizing, so at 375px the track
+       still resolved to 424px and the page scrolled sideways by 68px. */
     .team-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 2px;
     }
+
+    .team-card { min-width: 0; }
+    .team-img-area img { max-width: 100%; }
 
     .team-card {
       background: var(--navy2);
@@ -1001,11 +1009,18 @@
       margin-bottom: 1.75rem;
     }
 
+    /* LinkedIn and the address sat on one non-wrapping row, and
+       connor@saltcreekadvisory.com is 251px on its own, so on a phone it
+       ran off the side of the card. Let the row wrap and let the address
+       break rather than push. */
     .team-socials {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.6rem 1rem;
+      flex-wrap: wrap;
     }
+
+    .team-social-link { min-width: 0; overflow-wrap: anywhere; }
 
     .team-social-link {
       display: inline-flex;
@@ -2370,7 +2385,7 @@
       .impact-body { grid-template-columns: 1fr; gap: 2rem; }
       .about .wrap,
       .podcast-inner { grid-template-columns: 1fr; gap: 4rem; }
-      .team-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: minmax(0, 1fr); }
       .compprocess-inner { grid-template-columns: 1fr; gap: 3rem; }
       .why-grid { grid-template-columns: 1fr 1fr; }
       .why-card { border-right: none; border-bottom: 1px solid rgba(244,240,235,0.06); }
