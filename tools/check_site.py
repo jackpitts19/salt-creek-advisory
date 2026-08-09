@@ -4,6 +4,7 @@
 Run from the repository root before committing:
 
     python3 tools/check_site.py
+    python3 tools/check_site.py --strict-year   # scheduled rollover job only
 
 Every check here stands for a bug that has already shipped at least once:
 orphaned articles, canonicals left pointing at the page they were duplicated
@@ -14,7 +15,10 @@ in their head, and none of this is visible until a crawler finds it.
 Read only: it changes nothing, it just refuses to stay quiet. Stdlib only, no
 build step, no dependencies.
 
-Exits 1 if any error is found, 0 otherwise. Warnings never fail the run.
+Exits 1 if any error is found, 0 otherwise. Warnings never fail the run, with
+one opt-in exception: --strict-year promotes the stale-guide-year warning to an
+error, so the scheduled rollover job can raise an issue about it. Nothing that
+gates a push passes that flag.
 """
 import datetime
 import glob
@@ -271,7 +275,7 @@ WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)
 WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
 
 
-def check_guide_year_is_current(warnings):
+def check_guide_year_is_current(errors, warnings, strict=False):
     """Say something when the guides are advertising last year.
 
     Everything else here checks internal consistency, which stays perfectly
@@ -282,6 +286,12 @@ def check_guide_year_is_current(warnings):
     A warning rather than an error on purpose. Refreshing the guides is
     editorial work with a real cost, and failing the build on New Year's Day
     would only teach someone to ignore the check.
+
+    Which leaves the opposite problem: a warning printed inside a green build is
+    a warning nobody reads. `strict` promotes it to an error, and only the
+    scheduled rollover job passes it. That job blocks no one, so it is free to
+    be loud; it turns the stale year into a tracking issue the way the weekly
+    link check does for dead citations. Pushes keep the quiet warning.
     """
     if not os.path.exists(WORKER_PATH):
         return
@@ -291,10 +301,11 @@ def check_guide_year_is_current(warnings):
     declared = int(found.group(1))
     now = datetime.date.today().year
     if declared < now:
-        warnings.append(
+        message = (
             "{}: CURRENT_GUIDE_YEAR is {} but it is now {}. Guide URLs and titles "
             "still say {}; refresh the content and roll the year.".format(
                 WORKER_PATH, declared, now, declared))
+        (errors if strict else warnings).append(message)
     elif declared > now:
         warnings.append(
             "{}: CURRENT_GUIDE_YEAR is {}, ahead of the current year {}".format(
@@ -342,7 +353,10 @@ def check_worker_slugs(errors, _warnings):
             "in {}, so its pre-rename URL is dead".format(base, suffix, base, WORKER_PATH))
 
 
-def main():
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    strict_year = "--strict-year" in argv
+
     paths = page_paths()
     if not paths:
         print("No HTML pages found. Run this from the repository root.", file=sys.stderr)
@@ -357,7 +371,7 @@ def main():
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
     check_worker_slugs(errors, warnings)
-    check_guide_year_is_current(warnings)
+    check_guide_year_is_current(errors, warnings, strict=strict_year)
 
     for warning in warnings:
         print("  warn  {}".format(warning))

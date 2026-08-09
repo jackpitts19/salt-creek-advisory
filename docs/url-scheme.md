@@ -53,6 +53,12 @@ when the year rolls.
 
 ## The January rollover
 
+You no longer have to remember this on your own. The weekly `guide-year`
+workflow opens a `Roll the guide year` issue once the calendar passes
+`CURRENT_GUIDE_YEAR`, with these steps in it. Nothing breaks while it sits
+open: old links still resolve forward in one hop. The guides just read as
+stale, which is the whole cost of being late.
+
 Content first. Renaming a 2026 guide to 2027 without refreshing what it says is
 the thing that turns a year-stamped URL into a liability rather than a signal.
 
@@ -137,6 +143,13 @@ change such as a rename round, not for routine edits.
 - It also warns, without failing, when `CURRENT_GUIDE_YEAR` falls behind the
   calendar. Everything can be perfectly self-consistent and still be
   advertising last year, and nothing else would say so.
+- That warning is deliberately quiet on a push, which left it easy to miss
+  entirely: a warning inside a green build is not a signal. So the weekly
+  `guide-year` workflow runs the same check with `--strict-year`, which
+  promotes it to an error, and opens a `Roll the guide year` issue the way
+  `link-rot` does for dead citations. It gates nothing, so it can afford to
+  fail loudly; pushes keep the warning. Reproduce it with
+  `python3 tools/check_site.py --strict-year`.
 - `test_worker_redirects.mjs` drives the real Worker and asserts hop counts, so
   a chain cannot reappear unnoticed. It also pins query-string preservation,
   because losing it would silently break `utm` attribution on every old link.

@@ -77,11 +77,11 @@ class CheckSiteTestCase(unittest.TestCase):
     def write_sitemap(self, routes):
         self.write("sitemap.xml", sitemap(routes))
 
-    def run_checker(self):
+    def run_checker(self, *argv):
         """Returns (exit_code, combined_output)."""
         out, err = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = check_site.main()
+            code = check_site.main(argv)
         return code, out.getvalue() + err.getvalue()
 
     def assertFails(self, needle):
@@ -272,6 +272,35 @@ class CheckSiteTestCase(unittest.TestCase):
         code, output = self.run_checker()
         self.assertEqual(code, 0, output)
         self.assertNotIn("CURRENT_GUIDE_YEAR is", output)
+
+    def test_strict_year_turns_a_stale_year_into_a_failure(self):
+        # The scheduled rollover job asks for this mode so a stale year can
+        # raise an issue. Pushes keep the warning: see the test above.
+        self.write_guide("alpha-guide", year="2019")
+        self.write_worker(["alpha-guide"], year="2019")
+        code, output = self.run_checker("--strict-year")
+        self.assertEqual(code, 1, "--strict-year should fail on a stale year:\n" + output)
+        self.assertIn("CURRENT_GUIDE_YEAR is 2019", output)
+
+    def test_strict_year_is_quiet_when_the_year_is_current(self):
+        # 51 weeks a year this is the path that runs, so it has to stay silent
+        # or the job becomes noise and gets muted.
+        current = str(datetime.date.today().year)
+        self.write_guide("alpha-guide", year=current)
+        self.write_worker(["alpha-guide"], year=current)
+        code, output = self.run_checker("--strict-year")
+        self.assertEqual(code, 0, "a current year should pass under --strict-year:\n" + output)
+        self.assertNotIn("CURRENT_GUIDE_YEAR is", output)
+
+    def test_strict_year_leaves_a_year_ahead_as_a_warning(self):
+        # Pre-stamping next year's guides early is a deliberate act, not rot,
+        # so it must not wake anyone up at 08:00 on a Monday.
+        ahead = str(datetime.date.today().year + 1)
+        self.write_guide("alpha-guide", year=ahead)
+        self.write_worker(["alpha-guide"], year=ahead)
+        code, output = self.run_checker("--strict-year")
+        self.assertEqual(code, 0, "a year ahead should warn, not fail:\n" + output)
+        self.assertIn("ahead of the current year", output)
 
     def test_missing_worker_skips_the_check(self):
         # The checker still has to run against a plain directory of HTML.
