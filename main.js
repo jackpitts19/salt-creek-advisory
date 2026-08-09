@@ -211,23 +211,12 @@ if (!reduceMotion && statNums.length) {
   statNums.forEach(el => statObserver.observe(el));
 }
 
-// Page transitions between internal pages
-if (!reduceMotion) {
-  document.querySelectorAll('a[href]').forEach(a => {
-    const href = a.getAttribute('href');
-    if (!href || href.startsWith('#') || href.startsWith('http') ||
-        href.startsWith('mailto') || href.startsWith('tel') || a.target === '_blank') return;
-    a.addEventListener('click', (e) => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      e.preventDefault();
-      document.body.classList.add('page-exit');
-      setTimeout(() => { window.location.href = href; }, 300);
-    });
-  });
-}
-window.addEventListener('pageshow', (e) => {
-  if (e.persisted) document.body.classList.remove('page-exit');
-});
+// Internal links navigate straight away. There used to be an exit
+// transition here that called preventDefault and then sat on a 300ms
+// timer before setting location.href. Pages on this site arrive in well
+// under that, so the timer was the slowest part of every click and it
+// made the site feel heavier than it is. The pageIn entrance in
+// styles.css still covers the arrival.
 
 // Reading progress bar
 const progressBar = document.createElement('div');

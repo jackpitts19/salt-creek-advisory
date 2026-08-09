@@ -2370,10 +2370,8 @@
     /* ============================================================
        MULTI-PAGE: TRANSITIONS, PAGE HERO, VALUATION, CTA BANDS
        ============================================================ */
-    main { animation: pageIn 0.65s cubic-bezier(0.22,0.61,0.36,1) both; }
-    @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    body.page-exit main, body.page-exit footer { animation: pageOut 0.3s ease forwards; }
-    @keyframes pageOut { to { opacity: 0; transform: translateY(-12px); } }
+    main { animation: pageIn 0.45s cubic-bezier(0.22,0.61,0.36,1) both; }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) { main { animation: none; } }
 
     .page-hero { background: var(--navy); padding: 170px 6% 90px; position: relative; overflow: hidden; }
