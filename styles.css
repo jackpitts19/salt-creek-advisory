@@ -23,6 +23,28 @@
       --copper3: #d4965e;
       --muted:   rgba(244,240,235,0.78);
       --muted2:  rgba(244,240,235,0.62);
+
+      /* Display scale, Cormorant Garamond headings.
+         A 1.2 ratio at both ends of every clamp, so the steps stay in
+         proportion whether the viewport is 360px or 2560px. These replaced
+         21 one-off clamps, several of which differed by a tenth of a rem
+         and read as identical: 2.6/4vw/3.8 next to 2.6/4.5vw/4.2 next to
+         2.6/5vw/4.3 is not three decisions, it is one decision made three
+         times. Reach for the nearest step rather than adding a new one.
+
+         display-1 is reserved for the homepage hero so that exactly one
+         element on the site is the largest. */
+      --fs-display-1: clamp(3rem, 5.5vw, 5rem);
+      --fs-display-2: clamp(2.6rem, 4.6vw, 4.2rem);
+      --fs-display-3: clamp(2.3rem, 3.9vw, 3.5rem);
+      --fs-display-4: clamp(2.05rem, 3.3vw, 2.95rem);
+      --fs-display-5: clamp(1.8rem, 2.8vw, 2.45rem);
+      --fs-display-6: clamp(1.55rem, 2.4vw, 2.05rem);
+
+      /* Numerals are set on their own scale: they carry no descenders and
+         read smaller than letterforms at the same size. */
+      --fs-stat:         clamp(4.5rem, 8vw, 7.5rem);
+      --fs-stat-compact: clamp(2.8rem, 4.3vw, 4.5rem);
     }
 
     html {
@@ -407,7 +429,7 @@
 
     .hero-h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3rem, 5.5vw, 5rem);
+      font-size: var(--fs-display-1);
       font-weight: 300;
       line-height: 1.08;
       color: var(--cream);
@@ -633,7 +655,7 @@
 
     .about-left-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      font-size: var(--fs-display-4);
       font-weight: 300;
       color: var(--navy);
       line-height: 1.18;
@@ -753,7 +775,7 @@
 
     .process-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 3.8vw, 3.6rem);
+      font-size: var(--fs-display-3);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.12;
@@ -861,7 +883,7 @@
 
     .team-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      font-size: var(--fs-display-4);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.18;
@@ -1026,7 +1048,7 @@
 
     .podcast-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.2vw, 2.9rem);
+      font-size: var(--fs-display-4);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.2;
@@ -1313,7 +1335,7 @@
 
     .contact-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.6rem, 4.5vw, 4.2rem);
+      font-size: var(--fs-display-2);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.15;
@@ -1579,7 +1601,7 @@
 
     .impact-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      font-size: var(--fs-display-2);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.08;
@@ -1626,7 +1648,7 @@
 
     .impact-stat-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(4.5rem, 8vw, 7.5rem);
+      font-size: var(--fs-stat);
       font-weight: 300;
       color: var(--copper3);
       line-height: 1;
@@ -1643,7 +1665,7 @@
     /* Word/verdict values (e.g. "Selective") read as an editorial callout, not a giant number,
        so a long unbreakable word can't force the grid past the viewport. */
     .impact-stat-num--word {
-      font-size: clamp(2.1rem, 3.2vw, 2.9rem);
+      font-size: var(--fs-display-4);
       font-style: italic;
       letter-spacing: -0.005em;
       line-height: 1.08;
@@ -1652,8 +1674,8 @@
 
     /* Compact stat rows: values with more glyphs (e.g. "$1.87B", "~$350B") stay on one line
        in a 4-up cell without shrinking the short, punchy numbers used on the homepage. */
-    .impact-stats--compact .impact-stat-num { font-size: clamp(2.8rem, 4.3vw, 4.5rem); }
-    .impact-stats--compact .impact-stat-num--word { font-size: clamp(2.2rem, 3.3vw, 2.9rem); }
+    .impact-stats--compact .impact-stat-num { font-size: var(--fs-stat-compact); }
+    .impact-stats--compact .impact-stat-num--word { font-size: var(--fs-display-4); }
 
     .impact-stat-label {
       font-size: 0.72rem;
@@ -1688,7 +1710,7 @@
 
     .impact-body-quote {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+      font-size: var(--fs-display-6);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.2;
@@ -1752,7 +1774,7 @@
 
     .why-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.6rem, 4vw, 3.8rem);
+      font-size: var(--fs-display-3);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.12;
@@ -1849,7 +1871,7 @@
 
     .why-process-callout h3 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+      font-size: var(--fs-display-5);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.15;
@@ -1908,7 +1930,7 @@
 
     .sectors-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 3.8vw, 3.6rem);
+      font-size: var(--fs-display-3);
       font-weight: 300;
       color: var(--navy);
       line-height: 1.12;
@@ -1962,7 +1984,7 @@
 
     .sector-flagship h3 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+      font-size: var(--fs-display-5);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.15;
@@ -2096,7 +2118,7 @@
     .sector-group-h2,
     .articles-group-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      font-size: var(--fs-display-5);
       font-weight: 400;
       color: var(--navy);
       margin: 0 0 1.75rem;
@@ -2137,7 +2159,7 @@
 
     .investors-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 3.8vw, 3.6rem);
+      font-size: var(--fs-display-3);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.12;
@@ -2215,7 +2237,7 @@
 
     .faq-h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 3.8vw, 3.6rem);
+      font-size: var(--fs-display-3);
       font-weight: 300;
       color: var(--cream);
       line-height: 1.12;
@@ -2378,7 +2400,7 @@
     .page-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 55% 60% at 85% 20%, rgba(184,115,51,0.12) 0%, transparent 65%); pointer-events:none; }
     .page-hero::after { content:''; position:absolute; inset:0; opacity:.1; pointer-events:none; background-image: radial-gradient(circle, rgba(184,115,51,0.35) 1px, transparent 1px); background-size:40px 40px; mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); }
     .page-hero .wrap { position: relative; z-index: 1; }
-    .page-hero-h1 { font-family:'Cormorant Garamond',serif; font-size: clamp(2.6rem,5vw,4.3rem); font-weight:300; color: var(--cream); line-height:1.1; margin-bottom: 1.5rem; max-width: 760px; letter-spacing:-0.01em; }
+    .page-hero-h1 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-2); font-weight:300; color: var(--cream); line-height:1.1; margin-bottom: 1.5rem; max-width: 760px; letter-spacing:-0.01em; }
     .page-hero-h1 em { font-style: italic; color: var(--copper3); }
     .page-hero-sub { font-size: 1rem; font-weight:300; color: var(--muted); line-height:1.85; max-width: 580px; }
     .page-hero .eyebrow, .page-hero-h1, .page-hero-sub { opacity:0; animation: heroRise .85s cubic-bezier(.22,.61,.36,1) forwards; }
@@ -2392,7 +2414,7 @@
     .val-band { background: var(--navy3); padding: 8rem 6%; text-align: center; position: relative; overflow:hidden; border-top: 1px solid rgba(244,240,235,0.05); }
     .val-band::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(184,115,51,0.12) 0%, transparent 65%); pointer-events:none; }
     .val-band .wrap { position:relative; z-index:1; }
-    .val-band-h2 { font-family:'Cormorant Garamond',serif; font-size: clamp(2.4rem,4.2vw,3.9rem); font-weight:300; color:var(--cream); line-height:1.12; margin-bottom:1.4rem; }
+    .val-band-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-3); font-weight:300; color:var(--cream); line-height:1.12; margin-bottom:1.4rem; }
     .val-band-h2 em { font-style:italic; color:var(--copper3); }
     .val-band-sub { font-size:.97rem; font-weight:300; color: var(--muted); line-height:1.85; max-width:540px; margin:0 auto 2.75rem; }
     .val-band-note { display:block; margin-top:1.4rem; font-size:.62rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted2); }
@@ -2466,7 +2488,7 @@
     }
 
     .next-cta { background: var(--navy3); padding: 7rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
-    .next-cta-h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,3.4vw,3rem); font-weight:300; color:var(--cream); line-height:1.15; margin-bottom:1.2rem; }
+    .next-cta-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin-bottom:1.2rem; }
     .next-cta-h2 em { font-style:italic; color:var(--copper3); }
     .next-cta-sub { font-size:.93rem; font-weight:300; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
     .next-cta-actions { display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap; }
@@ -2729,7 +2751,7 @@
     /* Outranks the 1.55rem card titles below it: same face and weight, so the
        size step and the tighter leading are what carry the hierarchy. */
     .articles-group-h2 {
-      font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+      font-size: var(--fs-display-5);
       line-height: 1.15;
       margin-bottom: 0.9rem;
     }
@@ -2822,7 +2844,7 @@
 
     .article-body h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+      font-size: var(--fs-display-6);
       font-weight: 400;
       color: var(--navy);
       line-height: 1.25;
@@ -3161,7 +3183,7 @@
     .capability-section-header { max-width: 640px; margin-bottom: 3rem; }
     .capability-section-header h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.2vw, 2.9rem);
+      font-size: var(--fs-display-4);
       font-weight: 300;
       line-height: 1.15;
       margin-bottom: 1.1rem;
