@@ -176,6 +176,7 @@
       border: 0.25px solid rgba(244,240,235,0.35);
       padding: 0.5rem 1.35rem;
       border-radius: 2px;
+      white-space: nowrap;
       transition: background 0.2s, border-color 0.2s;
     }
 
@@ -2320,9 +2321,6 @@
     }
 
     @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .nav-hamburger { display: flex; }
-      .nav-cta { display: none; }
       .impact { padding: 6rem 5%; }
       .impact-stats { grid-template-columns: 1fr 1fr; }
       .impact-body { padding: 2rem; }
@@ -2502,6 +2500,59 @@
       line-height: 1;
     }
     .nav-logo-text-sub { color: var(--copper2); font-weight: 400; }
+
+    /* ------------------------------------------------------------
+       NAV RESPONSIVE
+       The bar carries the wordmark, nine links and the valuation CTA.
+       That row only has room to breathe past ~1420px, so it steps down
+       twice and then hands off to the drawer, which already lists every
+       link plus Contact and the CTA.
+
+       The drawer used to take over at 640px. Between 641px and 1400px
+       the row overflowed instead of wrapping: on a 768px tablet the last
+       four links and the CTA sat off the right edge with no hamburger to
+       reach them, and at 1280px the wordmark butted directly against
+       "About" with zero gap.
+       ------------------------------------------------------------ */
+
+    /* space-between distributes leftover room, so when the row is full
+       it leaves none. An explicit gap keeps the three groups apart. */
+    nav { gap: clamp(1.25rem, 3vw, 3rem); }
+
+    /* 6% side padding scales with the viewport while the row's contents do
+       not, so the row runs out of room around 1470px, not at some rounder
+       number. Step down at 1560px to keep a margin either side of that. */
+    @media (max-width: 1560px) {
+      nav { padding: 0 4%; }
+      .nav-links { gap: 1.35rem; }
+      .nav-links a { font-size: 0.68rem; letter-spacing: 0.07em; }
+    }
+
+    @media (max-width: 1240px) {
+      nav { padding: 0 3%; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: 0.645rem; letter-spacing: 0.045em; }
+      .nav-logo { gap: 0.5rem; }
+      .nav-logo-text { font-size: 0.92rem; letter-spacing: 0.1em; }
+      .nav-cta { padding: 0.5rem 0.9rem; letter-spacing: 0.08em; }
+    }
+
+    @media (max-width: 1100px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      nav { padding: 0 5%; }
+      .nav-logo { gap: 0.7rem; }
+      .nav-logo-text { font-size: 1.02rem; letter-spacing: 0.16em; }
+      .nav-cta { padding: 0.5rem 1.1rem; letter-spacing: 0.1em; }
+    }
+
+    /* The CTA is the primary conversion action, so it stays in the bar
+       beside the hamburger instead of being buried. Only the narrowest
+       phones drop it, and the drawer still lists it there. */
+    @media (max-width: 600px) {
+      .nav-cta { display: none; }
+    }
+
     @media (max-width: 400px) { .nav-logo-text { font-size: 0.85rem; letter-spacing: 0.12em; } }
 
     /* Valuation buyer match */
