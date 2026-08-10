@@ -103,6 +103,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "ebitda-and-business-valuation-basics",
   "how-long-does-it-take-to-sell-a-business",
   "how-to-choose-an-ma-advisor",
+  "lower-middle-market-ma-outlook",
   "lower-middle-market-ma-process",
   "ma-advisor-business-services",
   "ma-advisor-fees",

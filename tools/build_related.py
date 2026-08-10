@@ -63,7 +63,7 @@ RELATED = {
     # asks for rollover equity and why.
     "ma-deal-structure": [
         "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
-        "lower-middle-market-ma-process"],
+        "lower-middle-market-ma-outlook"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
@@ -143,7 +143,14 @@ RELATED = {
         "quality-of-earnings-report"],
     "when-to-start-exit-planning": [
         "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
-        "how-long-does-it-take-to-sell-a-business"],
+        "lower-middle-market-ma-outlook"],
+
+    # Market conditions. Grouped with timing rather than valuation because the
+    # question it answers is sell now or wait. Its multiples are context for that
+    # decision rather than a price, and the guide itself says so at length.
+    "lower-middle-market-ma-outlook": [
+        "when-to-start-exit-planning", "ma-deal-structure",
+        "ebitda-and-business-valuation-basics"],
 
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [
@@ -151,7 +158,7 @@ RELATED = {
         "ebitda-and-business-valuation-basics"],
     "strategic-buyer-vs-private-equity-buyer": [
         "what-buyers-look-for-in-an-acquisition-target", "ma-deal-structure",
-        "lower-middle-market-ma-process"],
+        "lower-middle-market-ma-outlook"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
     # as mechanical, which is the one thing this block must not do.
