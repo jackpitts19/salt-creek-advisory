@@ -141,15 +141,23 @@
     .nav-links a:hover::after,
     .nav-links a.active::after { transform: scaleX(1); }
 
+    /* Three 1.5px bars and 4px of padding measured 23px tall, about half
+       the 44px a finger needs, on the one control that opens navigation
+       for every visitor below 1100px. The bars are unchanged; the button
+       around them now reaches 44px. align-items keeps them left aligned
+       inside the wider box so the mark does not appear to shift. */
     .nav-hamburger {
       display: none;
       flex-direction: column;
       justify-content: center;
+      align-items: flex-end;
       gap: 5px;
       background: none;
       border: none;
       cursor: pointer;
       padding: 4px;
+      min-width: 44px;
+      min-height: 44px;
     }
     .nav-hamburger span {
       display: block;
@@ -173,6 +181,18 @@
       z-index: 199;
       flex-direction: column;
       gap: 0;
+      /* The drawer is position:fixed and runs 609px tall with eleven
+         links, so on a short phone the tail of the list fell below the
+         fold with no way to reach it: 8px cut off at 640px tall, 80px at
+         568px, and the item lost is "Value My Business", the primary
+         call to action. Cap it to the space under the header and let it
+         scroll. svh as well as vh so the mobile browser's collapsing
+         chrome does not reintroduce the same overflow. */
+      max-height: calc(100vh - 72px);
+      max-height: calc(100svh - 72px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
     .nav-mobile-drawer.open { display: flex; }
     .nav-mobile-drawer a {
@@ -3286,3 +3306,57 @@
       white-space: nowrap;
       border: 0;
     }
+
+    /* ------------------------------------------------------------
+       TOUCH TARGETS
+       Inline links that measured 20-23px tall on a phone: the two
+       partners' email and phone links, the team card contacts, the
+       footer columns and the ghost buttons. min-height rather than a
+       fixed height, so the text stays where it is and only the hit
+       area grows.
+
+       Two conditions, not one. The width branch matches where the
+       drawer takes over and is the one that can be verified in a
+       headless browser, which reports pointer:fine whatever the
+       viewport is set to. The pointer branch then catches large touch
+       tablets sitting above 1100px. Either qualifying is enough.
+
+       This block lives at the end of the file on purpose. A media query
+       adds no specificity, so when it sat up with the nav rules the
+       later base declaration of .footer-col won and the gap override
+       silently did nothing. Keep new overrides here, below the rules
+       they are meant to beat.
+       ------------------------------------------------------------ */
+    @media (max-width: 1100px), (pointer: coarse) {
+      .contact-email-addr,
+      .contact-phone,
+      .team-social-link,
+      .footer-col a,
+      .footer-legal-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+
+      /* The 0.7rem column gap was sized for ~21px links. Now that each
+         link is 44px the gap separates them twice over and only makes
+         the footer longer to scroll past, so trim it back and let the
+         hit areas set the rhythm. */
+      .footer-col { gap: 0.25rem; }
+
+      .btn-ghost { min-height: 44px; }
+
+      /* btn-primary came out at 41px, which matters most on the
+         valuation form where "Continue" is tapped at every step. */
+      .btn-primary,
+      .sector-link { min-height: 44px; }
+
+      /* Wide enough to hit easily already, but it is a nav control and
+         the bar is 72px tall, so there is free height to give it. */
+      .nav-logo { min-height: 44px; }
+    }
+
+    /* Deliberately left short: the one remaining sub-44px link is inline
+       inside the footer's legal paragraph, and giving an inline link a
+       44px box breaks the line flow of the prose around it. Inline links
+       in running text are the standard exception to the target size. */
