@@ -2391,6 +2391,29 @@
       max-width: 700px;
     }
 
+    /* The accordion above is written for the dark FAQ section, where cream text
+       and cream hairlines sit on navy. Dropped onto a cream surface, as on the
+       valuation page, every one of those colors resolves to the background and
+       the questions disappear. This inverts the palette for light surfaces. */
+    .faq-list-light { border-color: rgba(7,17,26,0.10); }
+    .faq-list-light .faq-item { border-bottom-color: rgba(7,17,26,0.10); }
+    .faq-list-light .faq-q { color: var(--navy); }
+
+    /* Copper text at this size falls under 4.5:1 on cream, so the hover reads
+       through the wash and the icon rather than by recoloring the question. */
+    .faq-list-light .faq-q:hover {
+      color: var(--navy);
+      background: rgba(184,115,51,0.06);
+    }
+
+    .faq-list-light .faq-q-icon::before,
+    .faq-list-light .faq-q-icon::after { background: var(--copper); }
+    .faq-list-light .faq-a-inner { color: rgba(7,17,26,0.72); }
+
+    /* The global focus ring is --copper2, which is 2.75:1 here, under the 3:1
+       a focus indicator needs. --copper clears it. */
+    .faq-list-light .faq-q:focus-visible { outline-color: var(--copper); }
+
     /* ============================================================
        RESPONSIVE
        ============================================================ */
