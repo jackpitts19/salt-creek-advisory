@@ -100,6 +100,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "business-services-valuation-multiples",
   "childcare-daycare-valuation-multiples",
   "dog-daycare-pet-care-valuation-multiples",
+  "earnouts-escrow-holdbacks",
   "ebitda-and-business-valuation-basics",
   "how-long-does-it-take-to-sell-a-business",
   "how-to-choose-an-ma-advisor",

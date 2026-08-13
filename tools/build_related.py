@@ -56,14 +56,20 @@ RELATED = {
         "what-buyers-look-for-in-an-acquisition-target"],
     "working-capital-peg-ma": [
         "quality-of-earnings-report", "ma-deal-structure",
-        "lower-middle-market-ma-process"],
+        "earnouts-escrow-holdbacks"],
 
     # Reading an offer. Sits between the fundamentals and the buyer guides: the
     # peg is one of its six structures, and the buyer-type guide explains who
-    # asks for rollover equity and why.
+    # asks for rollover equity and why. The earnout guide leads the deal
+    # structure list and closes the peg list for the same reason: both are
+    # post-closing arithmetic run on books the buyer controls, so a reader who
+    # just learned the price can still move wants the other half of that.
     "ma-deal-structure": [
-        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
-        "lower-middle-market-ma-outlook"],
+        "earnouts-escrow-holdbacks", "working-capital-peg-ma",
+        "strategic-buyer-vs-private-equity-buyer"],
+    "earnouts-escrow-holdbacks": [
+        "ma-deal-structure", "working-capital-peg-ma",
+        "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
