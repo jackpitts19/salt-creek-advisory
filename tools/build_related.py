@@ -44,16 +44,25 @@ ROOT_PAGE_TITLES = {
 # Three destinations per guide. Sector guides lead with their sell-side page,
 # which is what a reader in that sector actually wants next.
 RELATED = {
-    # Fundamentals
+    # Fundamentals.
+    #
+    # These two carry the valuation-firms guide, which was reachable only from
+    # articles.html and from prose inside ma-advisor-fees: no Keep Reading block
+    # on the site pointed at it, which is the one way a reader who just finished
+    # a guide could have arrived. Both already link to it in the other
+    # direction, so this closes the loop rather than inventing a pairing. The
+    # slot comes from what-buyers-look-for both times because it is the
+    # best-linked target here at eight inbound; ma-glossary has one and cannot
+    # spare its.
     "ebitda-and-business-valuation-basics": [
-        "quality-of-earnings-report", "what-buyers-look-for-in-an-acquisition-target",
+        "quality-of-earnings-report", "best-business-valuation-firms-lower-middle-market",
         "ma-glossary-lower-middle-market"],
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
     "quality-of-earnings-report": [
         "working-capital-peg-ma", "ebitda-and-business-valuation-basics",
-        "what-buyers-look-for-in-an-acquisition-target"],
+        "best-business-valuation-firms-lower-middle-market"],
     "working-capital-peg-ma": [
         "quality-of-earnings-report", "ma-deal-structure",
         "earnouts-escrow-holdbacks"],
