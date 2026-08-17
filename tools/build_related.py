@@ -124,9 +124,13 @@ RELATED = {
     "how-to-choose-an-ma-advisor": [
         "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
         "top-lower-middle-market-investment-banks"],
+    # The buy-side guide replaces the $20M comparison here, which is already
+    # reachable from top-lower-middle-market-investment-banks. Fee guide to fee
+    # guide is the strongest bridge on the site: this page derives the sell-side
+    # arithmetic, and the buy-side one explains why a buyer cannot use it.
     "ma-advisor-fees": [
         "how-to-choose-an-ma-advisor", "sell-side-advisor-vs-business-broker",
-        "best-ma-advisors-selling-20-million-company"],
+        "buy-side-ma-advisor"],
     "sell-side-advisor-vs-business-broker": [
         "how-to-choose-an-ma-advisor", "ma-advisor-fees",
         "top-lower-middle-market-investment-banks"],
@@ -138,6 +142,14 @@ RELATED = {
         "how-to-choose-an-ma-advisor"],
     "best-business-valuation-firms-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "quality-of-earnings-report",
+        "how-to-choose-an-ma-advisor"],
+
+    # The only guide addressed to the buyer rather than the owner, so its three
+    # destinations are the sell-side mirrors of its own sections: the broker
+    # comparison it points at by name, the fee guide holding the Lehman
+    # arithmetic it contrasts buy-side pricing against, and advisor selection.
+    "buy-side-ma-advisor": [
+        "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
         "how-to-choose-an-ma-advisor"],
 
     # Process and timing
@@ -162,8 +174,14 @@ RELATED = {
     "what-buyers-look-for-in-an-acquisition-target": [
         "strategic-buyer-vs-private-equity-buyer", "quality-of-earnings-report",
         "ebitda-and-business-valuation-basics"],
+    # This is the one page whose whole subject is who the buyer is, so it is the
+    # reader closest to wanting the buy-side view. Deal structure yields the slot
+    # rather than outlook: ma-deal-structure already links back here, so the pair
+    # stays connected either way, whereas outlook lost its ma-deal-structure slot
+    # to the earnout guide and dropping it here too would leave it with one
+    # inbound Keep Reading link on the whole site.
     "strategic-buyer-vs-private-equity-buyer": [
-        "what-buyers-look-for-in-an-acquisition-target", "ma-deal-structure",
+        "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
         "lower-middle-market-ma-outlook"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads

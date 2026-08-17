@@ -98,6 +98,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "best-ma-advisors-pet-care-dog-daycare-businesses",
   "best-ma-advisors-selling-20-million-company",
   "business-services-valuation-multiples",
+  "buy-side-ma-advisor",
   "childcare-daycare-valuation-multiples",
   "dog-daycare-pet-care-valuation-multiples",
   "earnouts-escrow-holdbacks",
