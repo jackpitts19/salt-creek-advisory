@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#07111a" />
   <title>Business Valuation Tool | What Is My Business Worth?</title>
-  <meta name="description" content="Free business valuation tool. Answer a few questions and get a ballpark value range in about a minute, built from real industry transaction multiples." />
+  <meta name="description" content="Free business valuation tool. Answer a few questions and get a ballpark value range in about a minute, built from published industry multiples." />
   <link rel="canonical" href="https://saltcreekadvisory.com/valuation" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Salt Creek Advisory" />
   <meta property="og:title" content="Business Valuation Tool | What Is My Business Worth? | Salt Creek" />
-  <meta property="og:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from real industry transaction multiples." />
+  <meta property="og:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from published industry transaction multiple ranges." />
   <meta property="og:url" content="https://saltcreekadvisory.com/valuation" />
   <meta property="og:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -20,14 +20,14 @@
   <meta property="og:locale" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Business Valuation Tool | What Is My Business Worth? | Salt Creek" />
-  <meta name="twitter:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from real industry transaction multiples." />
+  <meta name="twitter:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from published industry transaction multiple ranges." />
   <meta name="twitter:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=c6790c13" />
+  <link rel="stylesheet" href="styles.css?v=45c4e099" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -62,7 +62,7 @@
       "name": "Is my information kept confidential?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. We treat every submission as confidential and never share it. Jack and Connor personally review each one."
+        "text": "Yes. Jack and Connor personally review every submission. We do not sell your information, and we never disclose it to buyers, lenders, or other market participants without your permission. Like any business, we use a small number of vendors to operate the site, including our form provider Formspree, which delivers and stores your submission for us. Our Privacy Policy names each of them."
       }
     }
   ]
@@ -70,7 +70,7 @@
   </script>
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
-  <script src="analytics.js?v=fe26e7e2" defer></script>
+  <script src="analytics.js?v=4cded3e6" defer></script>
 </head>
 <body>
 <nav id="nav">
@@ -113,7 +113,7 @@
   <div class="wrap">
     <span class="eyebrow">Free Valuation Tool</span>
     <h1 class="page-hero-h1">What is your business<br><em>actually worth?</em></h1>
-    <p class="page-hero-sub">A dozen quick dropdowns. About two minutes. A ballpark range built from real transaction multiples in your industry, and an honest conversation if you want one.</p>
+    <p class="page-hero-sub">A dozen quick dropdowns. About two minutes. A ballpark range built from published industry transaction multiple ranges, and an honest conversation if you want one.</p>
   </div>
 </section>
 
@@ -276,7 +276,14 @@
         <label class="val-label" for="vPhone">Phone <span style="opacity:.5;">(optional)</span></label>
         <input id="vPhone" class="val-input" type="tel" placeholder="(555) 555-5555" autocomplete="tel">
       </div>
-      <p class="val-trust">Your range appears instantly on the next screen. Every inquiry is confidential, and the only people who will ever see it are Jack and Connor.</p>
+      <p class="val-trust">Your range appears instantly on the next screen. Jack and Connor personally review every submission. We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
+      <div class="val-consent">
+        <p class="val-consent-assent">By clicking <strong>Show My Range</strong> you agree to our <a href="terms" target="_blank" rel="noopener">Terms of Use</a> and <a href="privacy" target="_blank" rel="noopener">Privacy Policy</a>, including the section titled <a href="terms#submissions" target="_blank" rel="noopener">What Sending Us Information Does and Does Not Do</a>.</p>
+        <label class="val-consent-check" for="vConsentPhone">
+          <input type="checkbox" id="vConsentPhone">
+          <span>Optional. I agree that Salt Creek Advisory may call and text me at the number I provided about my estimate and its services, including by automated dialing or prerecorded message. I do not have to agree to this to get my estimate. Message and data rates may apply. Reply STOP to stop texts.</span>
+        </label>
+      </div>
       <p class="val-error-msg" id="err3"></p>
       <div class="val-actions">
         <button class="btn-ghost val-back" id="back2" type="button">&#8592; Back</button>
@@ -313,7 +320,7 @@
         <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="btn-primary">Schedule With Jack &amp; Connor</a>
         <a href="#" id="valEmailLink" class="btn-ghost">Email Us This Estimate <span class="btn-ghost-arrow">&#8594;</span></a>
       </div>
-      <p class="val-disclaimer">This is a directional estimate based on industry transaction multiples, not a formal valuation or an offer. Real outcomes depend on dozens of factors a tool cannot see, and most of all on whether buyers compete for your business. We treat your information as confidential and never share it.</p>
+      <p class="val-disclaimer">This is a directional estimate based on industry transaction multiples, not a formal valuation or an offer. Real outcomes depend on dozens of factors a tool cannot see, and most of all on whether buyers compete for your business. We treat your information as confidential. We do not sell it, and we do not disclose it to buyers or other transaction participants without your consent.</p>
     </div>
   </div>
 </section>
@@ -351,7 +358,7 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" aria-expanded="false">Is my information kept confidential?<span class="faq-q-icon" aria-hidden="true"></span></button>
-          <div class="faq-a"><div class="faq-a-inner">Yes. We treat every submission as confidential and never share it. Jack and Connor personally review each one.</div></div>
+          <div class="faq-a"><div class="faq-a-inner">Yes. Jack and Connor personally review every submission. We do not sell your information, and we never disclose it to buyers, lenders, or other market participants without your permission. Like any business, we use a small number of vendors to operate the site, including our form provider Formspree, which delivers and stores your submission for us. Our <a href="privacy">Privacy Policy</a> names each of them.</div></div>
         </div>
       </div>
     </div>
@@ -410,7 +417,7 @@
 </footer>
 
 <script src="main.js?v=c8a70def"></script>
-<script src="valuation.js?v=bb6c7ddc" defer></script>
+<script src="valuation.js?v=4f8919b0" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

@@ -316,6 +316,10 @@
   // below so the line reads: const LEAD_ENDPOINT = 'https://formspree.io/f/abcdwxyz';
   const LEAD_ENDPOINT = 'https://formspree.io/f/xzdqavol';
 
+  // Bump this whenever terms.html changes materially. It is stored with each
+  // lead so a submission can be matched to the terms that were on screen.
+  const TERMS_VERSION = '2026-08-10';
+
   const $ = (id) => document.getElementById(id);
   const steps = document.querySelectorAll('.val-step');
   const dots = document.querySelectorAll('.val-progress span');
@@ -585,6 +589,15 @@
       ownerPayRemoved: ownerPayRemoved,
       belowManagerPay: belowManagerPay,
       estimateLow: low, estimateHigh: high,
+      // A consent clause nobody can prove was shown is worth nothing, so the
+      // acceptance travels with the lead. TERMS_VERSION pins each submission to
+      // the wording that was actually on screen when it was sent.
+      termsAcceptedAt: new Date().toISOString(),
+      termsVersion: TERMS_VERSION,
+      // TCPA prior express written consent. False means return-contact only:
+      // the CRM must not dial or text those, or this field just documents that
+      // we knew and did it anyway.
+      phoneConsent: $('vConsentPhone').checked,
       date: new Date().toISOString(), source: 'valuation-tool'
     };
 
