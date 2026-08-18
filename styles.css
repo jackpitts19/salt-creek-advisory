@@ -3007,6 +3007,23 @@
       margin: 2rem 0 0.9rem;
     }
 
+    /* Fourth level, first needed by the Chicago advisor comparison, where one firm
+       entry breaks its subsections out as headings. Deliberately not another serif
+       step down: h3 is already 1.35rem, and a 1.15rem serif under it reads as a
+       slightly smaller firm name rather than a different kind of thing. This
+       borrows the small-caps label treatment the site already uses for that job,
+       so a fourth level stays legible without adding a fourth size to the scale.
+       Scoped to .article-body, which is why podcast.html's two h4s are unaffected. */
+    .article-body h4 {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--copper);
+      line-height: 1.4;
+      margin: 1.9rem 0 0.7rem;
+    }
+
     .article-body p {
       font-size: 0.97rem;
       font-weight: 300;

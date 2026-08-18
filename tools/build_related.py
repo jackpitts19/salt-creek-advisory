@@ -144,11 +144,23 @@ RELATED = {
         "how-to-choose-an-ma-advisor", "ma-advisor-fees",
         "top-lower-middle-market-investment-banks"],
     "top-lower-middle-market-investment-banks": [
-        "best-ma-advisors-selling-20-million-company", "how-to-choose-an-ma-advisor",
+        "best-ma-advisors-selling-20-million-company", "best-ma-advisors-chicago",
+        "how-to-choose-an-ma-advisor"],
+
+    # The only geography-scoped comparison. It leans on the national league-table
+    # guide for the fee arithmetic it quotes rather than re-deriving it, so that
+    # sits first; advisor selection and the broker distinction are what a reader
+    # who has just narrowed to a shortlist wants next.
+    "best-ma-advisors-chicago": [
+        "top-lower-middle-market-investment-banks", "how-to-choose-an-ma-advisor",
         "sell-side-advisor-vs-business-broker"],
+    # Chicago takes the how-to-choose slot rather than a new one: that guide is
+    # the hub of this whole group at twelve inbound links and can spare one,
+    # and a reader sizing advisors for a $20M sale is the same reader who wants
+    # the named-firm shortlist one geography down.
     "best-ma-advisors-selling-20-million-company": [
         "top-lower-middle-market-investment-banks", "ma-advisor-fees",
-        "how-to-choose-an-ma-advisor"],
+        "best-ma-advisors-chicago"],
     "best-business-valuation-firms-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "quality-of-earnings-report",
         "how-to-choose-an-ma-advisor"],
