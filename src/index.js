@@ -101,6 +101,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "business-services-valuation-multiples",
   "buy-side-ma-advisor",
   "childcare-daycare-valuation-multiples",
+  "controlled-auction-vs-negotiated-sale",
   "dog-daycare-pet-care-valuation-multiples",
   "earnouts-escrow-holdbacks",
   "ebitda-and-business-valuation-basics",

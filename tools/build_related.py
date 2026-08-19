@@ -173,13 +173,23 @@ RELATED = {
         "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
         "how-to-choose-an-ma-advisor"],
 
-    # Process and timing
+    # Process and timing. The auction guide takes one slot from each of the two
+    # process guides rather than a new one: what-buyers-look-for is the best-linked
+    # target in this cluster at six inbound and quality-of-earnings has five, so
+    # both can spare one, and a reader who has just learned the sequence or the
+    # timeline is the reader deciding between a multi-buyer process and one buyer.
     "lower-middle-market-ma-process": [
         "how-long-does-it-take-to-sell-a-business", "when-to-start-exit-planning",
-        "what-buyers-look-for-in-an-acquisition-target"],
+        "controlled-auction-vs-negotiated-sale"],
     "how-long-does-it-take-to-sell-a-business": [
         "lower-middle-market-ma-process", "when-to-start-exit-planning",
-        "quality-of-earnings-report"],
+        "controlled-auction-vs-negotiated-sale"],
+    # Its own three run outward rather than back into the pair above: the process
+    # guide for the sequence it compresses, then the two pages a reader comparing
+    # bids needs next, which are who the bidders are and what their terms mean.
+    "controlled-auction-vs-negotiated-sale": [
+        "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
+        "ma-deal-structure"],
     "when-to-start-exit-planning": [
         "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
         "lower-middle-market-ma-outlook"],
