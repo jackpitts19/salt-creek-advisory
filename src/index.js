@@ -101,7 +101,6 @@ const YEAR_STAMPED_GUIDES = new Set([
   "business-services-valuation-multiples",
   "buy-side-ma-advisor",
   "childcare-daycare-valuation-multiples",
-  "controlled-auction-vs-negotiated-sale",
   "dog-daycare-pet-care-valuation-multiples",
   "earnouts-escrow-holdbacks",
   "ebitda-and-business-valuation-basics",
@@ -109,6 +108,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "how-to-choose-an-ma-advisor",
   "lower-middle-market-ma-outlook",
   "lower-middle-market-ma-process",
+  "m-and-a-auction-process-explained",
   "ma-advisor-business-services",
   "ma-advisor-fees",
   "ma-advisor-early-childhood-education",
@@ -133,18 +133,31 @@ const YEAR_STAMPED_GUIDES = new Set([
 // suffix needs four digits, and that segment has one digit then a hyphen.
 const GUIDE_PATH = /^\/articles\/([a-z0-9-]+?)(?:-(20\d{2}))?$/;
 
+// Guides that changed base slug after publication, old base to new base. Kept
+// separate from YEAR_STAMPED_GUIDES because check_site.py asserts that set
+// matches the files on disk in both directions, and an old slug has no file
+// behind it by definition. Renames compose with the year resolution below, so
+// a link carrying both an old slug and an old year still lands in one hop; a
+// second rename of the same guide edits the existing value rather than adding
+// a row, which is what keeps this a map and not a chain.
+const RENAMED_GUIDES = new Map([
+  ["controlled-auction-vs-negotiated-sale", "m-and-a-auction-process-explained"],
+]);
+
 /**
- * Maps any year-form of a known guide onto the current year. Returns `pathname`
- * untouched for essays, unknown paths, and guides already on the current year,
- * so the caller's redirect test stays a plain inequality.
+ * Maps any year-form of any known base slug of a guide onto its current URL.
+ * Returns `pathname` untouched for essays, unknown paths, and guides already
+ * on the current slug and year, so the caller's redirect test stays a plain
+ * inequality.
  */
 function resolveGuideYear(pathname) {
   const match = GUIDE_PATH.exec(pathname);
   if (!match) return pathname;
   const [, base, year] = match;
-  if (!YEAR_STAMPED_GUIDES.has(base)) return pathname;
-  if (year === CURRENT_GUIDE_YEAR) return pathname;
-  return `/articles/${base}-${CURRENT_GUIDE_YEAR}`;
+  const current = RENAMED_GUIDES.get(base) ?? base;
+  if (!YEAR_STAMPED_GUIDES.has(current)) return pathname;
+  if (current === base && year === CURRENT_GUIDE_YEAR) return pathname;
+  return `/articles/${current}-${CURRENT_GUIDE_YEAR}`;
 }
 
 function normalizePathname(pathname) {
