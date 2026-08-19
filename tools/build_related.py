@@ -180,14 +180,14 @@ RELATED = {
     # timeline is the reader deciding between a multi-buyer process and one buyer.
     "lower-middle-market-ma-process": [
         "how-long-does-it-take-to-sell-a-business", "when-to-start-exit-planning",
-        "controlled-auction-vs-negotiated-sale"],
+        "m-and-a-auction-process-explained"],
     "how-long-does-it-take-to-sell-a-business": [
         "lower-middle-market-ma-process", "when-to-start-exit-planning",
-        "controlled-auction-vs-negotiated-sale"],
+        "m-and-a-auction-process-explained"],
     # Its own three run outward rather than back into the pair above: the process
     # guide for the sequence it compresses, then the two pages a reader comparing
     # bids needs next, which are who the bidders are and what their terms mean.
-    "controlled-auction-vs-negotiated-sale": [
+    "m-and-a-auction-process-explained": [
         "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
         "ma-deal-structure"],
     "when-to-start-exit-planning": [

@@ -52,6 +52,23 @@ async function followAll(url, limit = 10) {
   throw new Error(`redirect loop starting at ${url}`);
 }
 
+test("a renamed guide redirects to its new slug in one hop", async () => {
+  const { chain, final } = await followAll(
+    `${SITE}/articles/controlled-auction-vs-negotiated-sale-2026`);
+  assert.equal(chain.length, 1, "a rename must not stack a hop onto the year resolution");
+  assert.equal(chain[0].status, 301);
+  assert.equal(final, `${SITE}/articles/m-and-a-auction-process-explained-2026`);
+});
+
+test("a renamed guide carrying an old year still lands in one hop", async () => {
+  // The case a rename table gets wrong: two corrections owed on one URL. Both
+  // are applied to the same pathname before any redirect leaves.
+  const { chain, final } = await followAll(
+    `http://www.saltcreekadvisory.com/articles/controlled-auction-vs-negotiated-sale-2024.html`);
+  assert.equal(chain.length, 1, "scheme, host, .html, slug and year correct together");
+  assert.equal(final, `${SITE}/articles/m-and-a-auction-process-explained-2026`);
+});
+
 test("a bare guide slug redirects to the current year", async () => {
   const { chain, final } = await followAll(`${SITE}/articles/msp-valuation-multiples`);
   assert.equal(chain.length, 1, "should take exactly one hop");
