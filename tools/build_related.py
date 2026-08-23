@@ -132,7 +132,7 @@ RELATED = {
     # 3.4%-3.9% wants the bracket arithmetic sitting behind that number.
     "how-to-choose-an-ma-advisor": [
         "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
-        "top-lower-middle-market-investment-banks"],
+        "top-lower-middle-market-investment-banks", "best-boutique-ma-firms"],
     # The buy-side guide replaces the $20M comparison here, which is already
     # reachable from top-lower-middle-market-investment-banks. Fee guide to fee
     # guide is the strongest bridge on the site: this page derives the sell-side
@@ -145,7 +145,7 @@ RELATED = {
         "top-lower-middle-market-investment-banks"],
     "top-lower-middle-market-investment-banks": [
         "best-ma-advisors-selling-20-million-company", "best-ma-advisors-chicago",
-        "how-to-choose-an-ma-advisor"],
+        "how-to-choose-an-ma-advisor", "best-boutique-ma-firms"],
 
     # The only geography-scoped comparison. It leans on the national league-table
     # guide for the fee arithmetic it quotes rather than re-deriving it, so that
@@ -153,7 +153,16 @@ RELATED = {
     # who has just narrowed to a shortlist wants next.
     "best-ma-advisors-chicago": [
         "top-lower-middle-market-investment-banks", "how-to-choose-an-ma-advisor",
-        "sell-side-advisor-vs-business-broker"],
+        "sell-side-advisor-vs-business-broker", "best-boutique-ma-firms"],
+
+    # The only national comparison scoped to "boutique" positioning rather than
+    # geography or size alone. The league-table guide is the natural sibling for
+    # the deal-size lens; Chicago is the other named-firm comparison a reader
+    # narrowing a shortlist would want; how-to-choose closes the loop back to
+    # picking one.
+    "best-boutique-ma-firms": [
+        "top-lower-middle-market-investment-banks", "best-ma-advisors-chicago",
+        "how-to-choose-an-ma-advisor"],
     # Chicago takes the how-to-choose slot rather than a new one: that guide is
     # the hub of this whole group at twelve inbound links and can spare one,
     # and a reader sizing advisors for a $20M sale is the same reader who wants

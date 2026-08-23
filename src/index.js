@@ -93,6 +93,7 @@ function getOriginalScheme(request, url) {
 const CURRENT_GUIDE_YEAR = "2026";
 
 const YEAR_STAMPED_GUIDES = new Set([
+  "best-boutique-ma-firms",
   "best-business-valuation-firms-lower-middle-market",
   "best-ma-advisors-chicago",
   "best-ma-advisors-msp-managed-service-providers",
