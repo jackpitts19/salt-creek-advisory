@@ -103,6 +103,16 @@ RELATED = {
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
         "roll-ups-legal-services-pet-care"],
 
+    # Sector: accounting and CPA firms. No accounting multiples guide exists, so
+    # this one leads with the buyer-type guide: the article's spine is a PE
+    # platform versus a regional or internal buyer, and that guide is the long
+    # form of the same question. Broker-versus-advisor sits second because the
+    # comparison itself spans a listing marketplace and a targeted process, and
+    # the EBITDA explainer closes it for the normalized-earnings arithmetic.
+    "best-ma-advisors-accounting-cpa-firms": [
+        "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
+        "ebitda-and-business-valuation-basics"],
+
     # Sector: HVAC and field services. There is no HVAC multiples guide yet, so
     # this one leans on the two guides that already carry the trade (HVAC is a
     # named vertical in business services and the busiest sub-sector in the
@@ -153,7 +163,8 @@ RELATED = {
         "buy-side-ma-advisor"],
     "sell-side-advisor-vs-business-broker": [
         "how-to-choose-an-ma-advisor", "ma-advisor-fees",
-        "top-lower-middle-market-investment-banks"],
+        "top-lower-middle-market-investment-banks",
+        "best-ma-advisors-accounting-cpa-firms"],
     "top-lower-middle-market-investment-banks": [
         "best-ma-advisors-selling-20-million-company", "best-ma-advisors-chicago",
         "how-to-choose-an-ma-advisor", "best-boutique-ma-firms"],
@@ -212,7 +223,7 @@ RELATED = {
         "ma-deal-structure"],
     "when-to-start-exit-planning": [
         "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
-        "lower-middle-market-ma-outlook"],
+        "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
 
     # Market conditions. Grouped with timing rather than valuation because the
     # question it answers is sell now or wait. Its multiples are context for that
@@ -233,7 +244,7 @@ RELATED = {
     # inbound Keep Reading link on the whole site.
     "strategic-buyer-vs-private-equity-buyer": [
         "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
-        "lower-middle-market-ma-outlook"],
+        "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
     # as mechanical, which is the one thing this block must not do.
