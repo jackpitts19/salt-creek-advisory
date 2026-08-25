@@ -96,6 +96,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "best-boutique-ma-firms",
   "best-business-valuation-firms-lower-middle-market",
   "best-ma-advisors-chicago",
+  "best-ma-advisors-hvac-companies",
   "best-ma-advisors-msp-managed-service-providers",
   "best-ma-advisors-pet-care-dog-daycare-businesses",
   "best-ma-advisors-selling-20-million-company",

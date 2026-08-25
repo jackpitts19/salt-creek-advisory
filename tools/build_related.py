@@ -103,6 +103,16 @@ RELATED = {
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
         "roll-ups-legal-services-pet-care"],
 
+    # Sector: HVAC and field services. There is no HVAC multiples guide yet, so
+    # this one leans on the two guides that already carry the trade (HVAC is a
+    # named vertical in business services and the busiest sub-sector in the
+    # industrials table), then the broker-versus-advisor explainer, which is the
+    # distinction the comparison itself turns on once a buyer-paid firm is in
+    # the field.
+    "best-ma-advisors-hvac-companies": [
+        "ma-advisor-business-services", "sell-side-advisor-vs-business-broker",
+        "how-to-choose-an-ma-advisor"],
+
     # Sector: early childhood education
     "childcare-daycare-valuation-multiples": [
         "ma-advisor-early-childhood-education", "ebitda-and-business-valuation-basics",
@@ -117,7 +127,7 @@ RELATED = {
         "what-buyers-look-for-in-an-acquisition-target"],
     "ma-advisor-industrials-manufacturing": [
         "manufacturing-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "lower-middle-market-ma-process"],
+        "lower-middle-market-ma-process", "best-ma-advisors-hvac-companies"],
 
     # Sector: business services
     "business-services-valuation-multiples": [
@@ -125,7 +135,8 @@ RELATED = {
         "ebitda-and-business-valuation-basics"],
     "ma-advisor-business-services": [
         "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "best-ma-advisors-msp-managed-service-providers"],
+        "best-ma-advisors-msp-managed-service-providers",
+        "best-ma-advisors-hvac-companies"],
 
     # Choosing an advisor. The fee guide sits second in the two comparisons that
     # quote a percentage without deriving it: a reader just told a $20M sale runs
