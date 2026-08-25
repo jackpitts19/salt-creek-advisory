@@ -3706,3 +3706,18 @@
       .home-people { grid-template-columns: 1fr; gap: 2.5rem; }
       .home-quote { margin-top: 3rem; }
     }
+
+    /* Temporary: ECE flagship card hidden 2026-08-25 (see sectors.html git
+       history to restore the card and this override). Without a flagship
+       sibling, .sectors-grid's 1.35fr/1fr split would strand .sectors-side
+       in the first column with the second column empty, so this collapses
+       it to one full-width track and lays the four remaining cards out in
+       a plain 2-up grid instead of their original single stacked column. */
+    .sectors-grid--simple { grid-template-columns: 1fr; }
+    .sectors-grid--simple .sectors-side {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: auto auto;
+    }
+    @media (max-width: 960px) {
+      .sectors-grid--simple .sectors-side { grid-template-columns: 1fr; }
+    }
