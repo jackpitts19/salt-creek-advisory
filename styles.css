@@ -3460,3 +3460,249 @@
        inside the footer's legal paragraph, and giving an inline link a
        44px box breaks the line flow of the prose around it. Inline links
        in running text are the standard exception to the target size. */
+
+    /* ============================================================
+       HOMEPAGE (2026 redesign)
+       One navy block at the top, one at the bottom, cream between.
+       The previous homepage was navy from hero to footer; this
+       restores the page to the brand's own rule that navy is the
+       accent, not the ground.
+       ============================================================ */
+    .hero--home {
+      min-height: auto;
+      padding: 150px 6% 88px;
+    }
+    .hero--home .hero-cred { margin-top: 3rem; }
+    .hero--home::after { display: none; }
+    .hero--home .hero-sub { max-width: 640px; }
+
+    .home-section {
+      background: var(--cream);
+      color: var(--navy);
+      padding: 5.5rem 6%;
+    }
+    .home-section--alt { background: var(--cream2); }
+    .home-section + .home-section { border-top: 1px solid rgba(7,17,26,0.08); }
+
+    .eyebrow--dark {
+      color: rgba(7,17,26,0.55);
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      margin-bottom: 0;
+    }
+    .eyebrow--dark::before { background: rgba(7,17,26,0.35); opacity: 1; }
+
+    .home-split {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .home-lede {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: var(--fs-display-4);
+      font-weight: 400;
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      color: var(--navy);
+      max-width: 880px;
+      margin-bottom: 2rem;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--copper);
+      border-bottom: 1px solid rgba(184,115,51,0.35);
+      padding-bottom: 0.2rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .home-link:hover { color: var(--navy); border-color: var(--navy); }
+    .home-link-arrow { display: inline-block; transition: transform 0.25s ease; }
+    .home-link:hover .home-link-arrow { transform: translateX(3px); }
+
+    .home-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .home-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid rgba(7,17,26,0.1);
+    }
+    .home-two-item h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: var(--fs-display-6);
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 0.9rem;
+      line-height: 1.15;
+    }
+    .home-two-item p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.72);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 1.5rem;
+    }
+
+    .home-sectors { padding-top: 3rem; }
+    .home-sectors-label {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.5);
+      margin-bottom: 1.25rem;
+    }
+    .home-sectors-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 0;
+      margin-bottom: 1.5rem;
+    }
+    .home-sectors-list li {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1;
+      padding-right: 1.5rem;
+      margin-right: 1.5rem;
+      border-right: 1px solid rgba(7,17,26,0.18);
+    }
+    .home-sectors-list li:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+    .home-sectors-list a { transition: color 0.2s; }
+    .home-sectors-list a:hover { color: var(--copper); }
+    .home-sectors-note {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.65);
+      line-height: 1.7;
+    }
+    .home-sectors-note a {
+      color: var(--copper);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .home-sectors-note a:hover { color: var(--navy); }
+
+    .home-how {
+      list-style: none;
+      border-top: 1px solid rgba(7,17,26,0.12);
+    }
+    .home-how li {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 3rem;
+      padding: 2.25rem 0;
+      border-bottom: 1px solid rgba(7,17,26,0.12);
+    }
+    .home-how h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: var(--fs-display-6);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--navy);
+    }
+    .home-how p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.72);
+      line-height: 1.75;
+      max-width: 540px;
+    }
+
+    .home-people {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 280px));
+      gap: 3rem;
+    }
+    .home-person {
+      display: flex;
+      flex-direction: column;
+      color: var(--navy);
+    }
+    .home-person img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 1.25rem;
+      filter: saturate(0.88);
+      transition: filter 0.3s;
+    }
+    .home-person:hover img { filter: saturate(1); }
+    .home-person-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+    .home-person-role {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 0.85rem;
+    }
+    .home-person-bio {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.68);
+      line-height: 1.7;
+    }
+
+    .home-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: var(--fs-display-5);
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--navy);
+      max-width: 720px;
+      margin-top: 3rem;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--copper);
+    }
+
+    .home-insights-grid { grid-template-columns: repeat(3, 1fr); }
+    .contact--home { padding: 5.5rem 6%; }
+    .home-insights-grid .article-card { padding: 2.25rem 2.25rem 2rem; }
+    .home-insights-grid .article-card h3 { flex-grow: 1; margin-bottom: 1.5rem; }
+
+    @media (max-width: 900px) {
+      .home-split { grid-template-columns: 1fr; gap: 1.5rem; }
+      .home-two { grid-template-columns: 1fr; gap: 2.5rem; }
+      .home-how li { grid-template-columns: 1fr; gap: 0.75rem; }
+      .home-people { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+      .home-insights-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .hero--home { padding: 128px 5% 72px; }
+      .home-section { padding: 4.5rem 5%; }
+      .home-head { flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
+      .home-sectors-list { flex-direction: column; gap: 0.9rem; }
+      .home-sectors-list li { border-right: 0; padding-right: 0; margin-right: 0; font-size: 1.3rem; }
+      .home-people { grid-template-columns: 1fr; gap: 2.5rem; }
+      .home-quote { margin-top: 3rem; }
+    }
