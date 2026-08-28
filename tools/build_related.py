@@ -75,7 +75,8 @@ RELATED = {
     # just learned the price can still move wants the other half of that.
     "ma-deal-structure": [
         "earnouts-escrow-holdbacks", "working-capital-peg-ma",
-        "strategic-buyer-vs-private-equity-buyer"],
+        "strategic-buyer-vs-private-equity-buyer",
+        "best-ma-advisors-plumbing-companies"],
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer"],
@@ -130,7 +131,18 @@ RELATED = {
     # the field.
     "best-ma-advisors-hvac-companies": [
         "ma-advisor-business-services", "sell-side-advisor-vs-business-broker",
-        "how-to-choose-an-ma-advisor"],
+        "how-to-choose-an-ma-advisor", "best-ma-advisors-plumbing-companies"],
+
+    # Sector: plumbing. Leads with HVAC, which is the nearest trade and shares
+    # three of the seven firms compared, then the broker-versus-advisor guide the
+    # article's own "Advisor type" test is the short form of. Buyer types closes
+    # it because the spine of this one is the three paths out (PE platform,
+    # strategic, individual) rather than a multiple. Its two inbound links come
+    # from HVAC and from ma-deal-structure, both of which had three and can carry
+    # a fourth, the way the accounting guide was wired in.
+    "best-ma-advisors-plumbing-companies": [
+        "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
+        "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: early childhood education
     "childcare-daycare-valuation-multiples": [

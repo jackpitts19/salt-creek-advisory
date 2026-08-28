@@ -105,6 +105,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "best-ma-advisors-hvac-companies",
   "best-ma-advisors-msp-managed-service-providers",
   "best-ma-advisors-pet-care-dog-daycare-businesses",
+  "best-ma-advisors-plumbing-companies",
   "best-ma-advisors-selling-20-million-company",
   "business-services-valuation-multiples",
   "buy-side-ma-advisor",
