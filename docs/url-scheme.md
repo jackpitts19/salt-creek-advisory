@@ -99,7 +99,16 @@ python3 tools/test_check_site.py   # the checker's own tests
 python3 tools/test_stamp_assets.py
 python3 tools/test_submit_indexnow.py
 python3 tools/test_check_links.py
+python3 tools/test_check_canonical.py
 node     tools/test_worker_redirects.mjs
+```
+
+Those are all offline. One more needs production to be up, so it is not part of
+the pre-push run and does not gate anything:
+
+```sh
+python3 tools/check_canonical.py              # every URL form, against production
+python3 tools/check_canonical.py --sample 5   # a quick smoke run
 ```
 
 Run `build_feed.py` **after** committing the renames. It reads each non-article
@@ -153,13 +162,28 @@ change such as a rename round, not for routine edits.
 - `test_worker_redirects.mjs` drives the real Worker and asserts hop counts, so
   a chain cannot reappear unnoticed. It also pins query-string preservation,
   because losing it would silently break `utm` attribution on every old link.
+- `check_canonical.py` is the only guard that leaves the building. Everything
+  above proves the code is right; this one proves the code is reachable, which
+  is a different claim and the one a crawler tests. Detach the www custom domain
+  in the Cloudflare dashboard, move the Worker route, or half-land a deploy, and
+  every check above stays green while production serves each article at two URLs.
+  Nothing in the repository changed, so nothing in the repository could notice.
+  It fails only on a real split (a non-canonical URL serving 200, a chain, a
+  redirect to the wrong page, a dead canonical, or a canonical tag that
+  disagrees with the URL it was served at). A timeout or a 429 is reported and
+  ignored, because a daily job that cries wolf is a daily job someone mutes.
 
 ## After deploying a rename
 
-None of this is automated and none of it is anyone's job by default.
+Step 1 is automated now. The rest is not, and none of it is anyone's job by
+default.
 
-1. Spot-check two or three old URLs against production, not just the local
-   tests: `curl -sI https://saltcreekadvisory.com/articles/<old-slug>` should
+1. Verify production, not just the local tests: `python3 tools/check_canonical.py`
+   probes every URL form of every page and exits non-zero if any of them serves a
+   second copy instead of redirecting. The `canonical-check` workflow runs the
+   same command daily and opens an issue, so a regression surfaces within a day
+   even if nobody runs it here. For a single URL by hand,
+   `curl -sI https://saltcreekadvisory.com/articles/<old-slug>` should still
    return `301` with the new `Location`.
 2. Resubmit `sitemap.xml` in Google Search Console, and request indexing on the
    handful of guides that carry the most traffic.

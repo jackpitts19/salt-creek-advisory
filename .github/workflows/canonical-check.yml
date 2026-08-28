@@ -1,0 +1,128 @@
+# Every other guard in this repository is offline, and offline guards cannot see
+# the failure that matters most here. test_worker_redirects.mjs imports
+# src/index.js and drives it in-process, so it proves the redirect logic is
+# correct. It cannot prove the Worker is reachable, that the www custom domain is
+# still attached in the Cloudflare dashboard, or that the last deploy actually
+# landed. Those are different claims, and only the second kind is what a crawler
+# sees.
+#
+# So this is the one check that has to leave the building. Detach www, move the
+# route, or half-land a deploy, and src/index.js is still correct, all fourteen
+# redirect tests still pass, check_site.py still reports zero errors, and
+# production quietly starts serving the same article at two URLs. Nothing in the
+# repository changed, so nothing in the repository can notice. url-scheme.md has
+# always asked a human to curl a few old URLs after a rename, under a heading
+# that admits "None of this is automated and none of it is anyone's job by
+# default." This is that paragraph, on a clock.
+#
+# Daily rather than weekly, which is the opposite of the link-rot job next door.
+# That one is weekly because it makes 258 requests to other people's servers.
+# This one makes about 307 HEAD requests to our own Cloudflare edge, so it costs
+# nobody anything, and the thing it detects burns crawl budget and splits
+# citation signal every hour it goes unnoticed. Detection latency is the product.
+#
+# Kept out of checks.yml deliberately, for the same reason link-rot is: that
+# workflow gates every push and must stay fast and offline. This one depends on
+# production being up, which is not something a commit should wait on. The
+# offline half, tools/test_check_canonical.py, does run in checks.yml.
+name: canonical-check
+
+on:
+  schedule:
+    # Daily at 08:15 Central. Late enough that an overnight deploy has settled,
+    # early enough that a regression gets a full working day of attention.
+    - cron: '15 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  canonical:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # Matches checks.yml and the interpreter these scripts are run on by
+          # hand. Testing on a newer one would let 3.10+ syntax pass here and
+          # fail on the laptop.
+          python-version: '3.9'
+
+      - name: Probe production for duplicate URLs
+        id: check
+        run: |
+          set +e
+          python3 tools/check_canonical.py | tee /tmp/canonical-report.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        if: steps.check.outputs.status != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('/tmp/canonical-report.txt', 'utf8').trim();
+            const title = 'Production is serving more than one URL per page';
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              'The daily canonical check found production serving a page at a URL that should have',
+              'redirected, or redirecting somewhere other than the canonical URL.',
+              '',
+              'This is the failure that splits citation signal, crawl budget and link equity across',
+              'two URLs for one page. It is almost never a code change: the usual causes are the www',
+              'custom domain being detached in the Cloudflare dashboard, a Worker route being moved,',
+              'or a deploy that half-landed. Check the Cloudflare dashboard before reading src/index.js.',
+              '',
+              'What each verdict means:',
+              '',
+              '- `DUPLICATE` a non-canonical URL served 200 instead of redirecting. This is the split itself.',
+              '- `CHAIN` more than one hop. Each extra hop sheds authority from the inbound link.',
+              '- `TARGET` a redirect that lands somewhere other than the canonical URL.',
+              '- `DEAD` a canonical URL that is not 200.',
+              '- `TAG` a page whose <link rel="canonical"> disagrees with the URL it was served at.',
+              '',
+              'Lines marked `note` are blocked, not broken: a timeout, a reset or a 429. They never',
+              'fail the run and need no action.',
+              '',
+              '```',
+              report,
+              '```',
+              '',
+              `Reproduce locally with \`python3 tools/check_canonical.py\`. [Workflow run](${run})`,
+            ].join('\n');
+
+            // Matched on title rather than a label, mirroring link-check.yml, so
+            // this needs no label to exist beforehand and cannot fail on a fresh
+            // repository.
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const existing = open.data.find(
+              (issue) => issue.title === title && !issue.pull_request
+            );
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
+
+      - name: Fail the run when production serves duplicate URLs
+        if: steps.check.outputs.status != '0'
+        run: exit 1
