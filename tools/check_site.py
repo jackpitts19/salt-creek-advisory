@@ -203,8 +203,38 @@ def check_schema_required_fields(path, html, errors, _warnings):
                                                   ", ".join(missing)))
 
 
+ANCHOR_OPEN = re.compile(r"<a[\s>]", re.IGNORECASE)
+ANCHOR_CLOSE = re.compile(r"</a\s*>", re.IGNORECASE)
+
+
+def check_anchor_balance(path, html, errors, _warnings):
+    """Every <a> must have exactly one </a>, per page.
+
+    check_internal_links validates where an href POINTS, not that the anchor
+    around it is well formed, so a link missing its opening tag passes every
+    other check on this site while rendering raw markup to the reader. That is
+    not hypothetical: a bulk retarget on this repo turned one anchor into
+    `... </a> or href="../valuation">try the free preliminary valuation tool</a>`,
+    which shipped a visible `href="../valuation">` in the middle of a sentence on
+    a live guide, and green checks all the way through. Counting the tags is the
+    cheapest thing that would have caught it.
+
+    A mismatch means an unclosed anchor (which swallows following markup into the
+    link) or an orphaned closer (which means an opening tag was lost). Both are
+    rendering bugs, so both are errors rather than warnings.
+    """
+    opened = len(ANCHOR_OPEN.findall(html))
+    closed = len(ANCHOR_CLOSE.findall(html))
+    if opened == closed:
+        return
+    errors.append(
+        "{}: {} <a> opening tags but {} </a> closing tags, so an anchor is "
+        "malformed and its markup renders as visible text".format(path, opened, closed))
+
+
 PAGE_CHECKS = (
     check_internal_links,
+    check_anchor_balance,
     check_head_tags,
     check_canonical,
     check_json_ld,
@@ -381,13 +411,21 @@ def check_llms_txt_coverage(errors, _warnings):
     listed = read(LLMS_PATH)
     for path in sorted(glob.glob("articles/*.html")):
         route = route_for(path)
-        if "{}{}".format(SITE, route) not in listed:
+        # Anchored so a slug that is a prefix of a longer one cannot pass on the
+        # longer one's entry. llms.txt writes markdown links, so the URL is always
+        # followed by ")" here; allowing whitespace or end keeps it tolerant.
+        if not re.search(re.escape("{}{}".format(SITE, route)) + r"(?![0-9a-z-])", listed):
             errors.append(
                 "{} is not listed in {}, so answer engines have no summary of it "
                 "(publish checklist step 6)".format(path, LLMS_PATH))
 
-    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/articles/[a-z0-9-]+", listed))):
-        if not os.path.exists(file_for(url[len(SITE):])):
+    # Every self URL, not just articles. llms.txt lists 14 root pages too, and a stale
+    # entry for any of them teaches an assistant to cite a 404 just as effectively.
+    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/[a-z0-9/-]*", listed))):
+        route = url[len(SITE):] or "/"
+        if route == "/":
+            continue
+        if not os.path.exists(file_for(route)):
             errors.append(
                 "{}: lists {}, which no longer exists, so an assistant citing it "
                 "would send a reader to a 404".format(LLMS_PATH, url))
@@ -421,7 +459,9 @@ def check_related_symmetry(errors, _warnings):
     targets_by_key = {}
     for key, body in RELATED_ENTRY.findall(block.group(1)):
         targets_by_key[key] = RELATED_SLUG.findall(body)
-    referenced = {t for targets in targets_by_key.values() for t in targets}
+    # Self-references excluded: a guide listing itself would satisfy an inbound-link
+    # check while still having zero links in, which is the dental bug wearing a hat.
+    referenced = {t for key, targets in targets_by_key.items() for t in targets if t != key}
 
     on_disk = {
         os.path.basename(path)[: -len(".html")]

@@ -338,6 +338,69 @@ class CheckSiteTestCase(unittest.TestCase):
 
 
 
+
+class AnchorBalanceTestCase(unittest.TestCase):
+    """A link missing its opening tag renders raw markup and passes every other check."""
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write("sitemap.xml", sitemap(["/", "/about"]))
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def assertFails(self, needle):
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
+        self.assertIn(needle, output)
+
+    def test_balanced_anchors_pass(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "balanced anchors should pass:\n" + output)
+
+    def test_an_anchor_missing_its_opening_tag_fails(self):
+        """The exact bug this check was written for.
+
+        A bulk retarget produced `</a> or href="/about">text</a>`, which shipped a
+        visible href= in the middle of a sentence while every other check stayed
+        green, because the href still pointed somewhere real.
+        """
+        self.write("index.html", page("/", body=(
+            '<p>you can <a href="/about">ask us</a> or href="/about">try the tool</a>.</p>')))
+        self.assertFails("malformed")
+
+    def test_an_unclosed_anchor_fails(self):
+        self.write("index.html", page("/", body='<p><a href="/about">About</p>'))
+        self.assertFails("malformed")
+
+    def test_the_error_names_the_page_and_both_counts(self):
+        self.write("index.html", page("/", body=(
+            '<p><a href="/about">a</a> or href="/about">b</a></p>')))
+        code, output = self.run_checker()
+        self.assertEqual(code, 1)
+        self.assertIn("index.html", output)
+        self.assertIn("<a> opening tags", output)
+
+
 class PublishChecklistTestCase(unittest.TestCase):
     """The two publish-checklist steps that drift silently: llms.txt and RELATED.
 
@@ -451,6 +514,55 @@ class PublishChecklistTestCase(unittest.TestCase):
         self.write_related({
             "guide-one": ["an-essay"], "an-essay": ["guide-one"], "ghost-guide": ["guide-one"]})
         self.assertFails("no article on disk matches")
+
+    def test_a_guide_listing_itself_does_not_count_as_an_inbound_link(self):
+        """A self-reference would satisfy the check while nothing links in.
+
+        That is the dental bug wearing a hat: the key exists, the target list is
+        non-empty, and the page still has zero inbound links.
+        """
+        # guide-one's ONLY reference is its own. an-essay still has a real inbound
+        # link from guide-one, so only guide-one should be reported.
+        self.write_related({
+            "guide-one": ["guide-one", "an-essay"], "an-essay": ["an-essay"]})
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "a self-reference must not count:\n" + output)
+        self.assertIn("'guide-one' is a RELATED key", output)
+        self.assertNotIn("'an-essay' is a RELATED key", output)
+
+    def test_a_stale_root_url_in_llms_txt_fails(self):
+        """llms.txt lists 14 root pages too, and a stale one cites a 404 just as well."""
+        self.write("llms.txt",
+                   "# Site\n"
+                   "- [g]({0}/articles/guide-one-2026): x\n"
+                   "- [e]({0}/articles/an-essay): x\n"
+                   "- [gone]({0}/a-page-that-was-deleted): x\n".format(SITE))
+        self.assertFails("which no longer exists")
+
+    def test_a_slug_that_is_a_prefix_of_another_is_not_satisfied_by_the_longer_entry(self):
+        """The forward check is anchored, so a prefix cannot ride on a longer slug.
+
+        No collision exists on the real site today, but the four year-free essays are
+        exactly the shape that creates one, so the check is anchored rather than trusting
+        that nobody ever adds a slug containing another.
+        """
+        self.write("articles/an-essay-part-two.html", page("/articles/an-essay-part-two"))
+        self.write("index.html", page("/", body=(
+            '<a href="/articles/guide-one-2026">One</a>'
+            '<a href="/articles/an-essay">Essay</a>'
+            '<a href="/articles/an-essay-part-two">Two</a>')))
+        self.write("sitemap.xml", sitemap([
+            "/", "/articles/guide-one-2026", "/articles/an-essay", "/articles/an-essay-part-two"]))
+        self.write_related({
+            "guide-one": ["an-essay"],
+            "an-essay": ["guide-one"],
+            "an-essay-part-two": ["guide-one"]})
+        # Only the LONGER slug is listed. The shorter one must still be reported.
+        self.write("llms.txt",
+                   "# Site\n"
+                   "- [g]({0}/articles/guide-one-2026): x\n"
+                   "- [two]({0}/articles/an-essay-part-two): x\n".format(SITE))
+        self.assertFails("articles/an-essay.html is not listed")
 
     def test_a_missing_related_map_is_skipped_not_failed(self):
         os.remove(os.path.join(self._tmp.name, "tools", "build_related.py"))
