@@ -20,10 +20,11 @@ const CONTENT_SECURITY_POLICY = [
   // that beacon at the edge, so it appears in no local build and shows up only
   // when testing the deployed site.
   "script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com",
-  // 'unsafe-inline' is still required by the 21 style="" attributes left in the
-  // markup. It was 61: the 40 that were one identical in-copy link declaration
-  // pasted per-tag now share the .text-link rule in styles.css. Clearing the
-  // remaining 21 one-off layout tweaks would let this drop to 'self'.
+  // 'unsafe-inline' is still required by the style="" attributes left in the
+  // markup. It was 61: 38 of them were one identical in-copy link declaration
+  // pasted per-tag on the three sector/FAQ pages, and those now share the
+  // .text-link rule in styles.css. The rest are one-off layout tweaks, plus two
+  // inside articles/, which are left alone by policy.
   // Scoped to style only; script-src carries no inline escape hatch.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
