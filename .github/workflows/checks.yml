@@ -46,6 +46,9 @@ jobs:
           python3 tools/test_stamp_assets.py
           python3 tools/test_submit_indexnow.py
           python3 tools/test_check_links.py
+          # The offline half of the canonical check. The probe itself needs
+          # production and runs in canonical-check.yml, not here.
+          python3 tools/test_check_canonical.py
 
       - name: Worker redirect tests
         run: node tools/test_worker_redirects.mjs
