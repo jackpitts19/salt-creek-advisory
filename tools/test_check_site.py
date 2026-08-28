@@ -28,8 +28,12 @@ SITE = check_site.SITE
 
 
 def page(route, title="Sample Page", description="A sample description.",
-         canonical=None, head="", body=""):
-    """A minimal page that passes every check unless an argument breaks it."""
+         canonical=None, head="", body="", footer_legal=True):
+    """A minimal page that passes every check unless an argument breaks it.
+
+    footer_legal defaults on because every real page carries the regulatory
+    disclosure; pass False to build the one case that omits it.
+    """
     if canonical is None:
         canonical = SITE + route
     canonical_tag = '<link rel="canonical" href="{}" />'.format(canonical) if canonical else ""
@@ -40,7 +44,11 @@ def page(route, title="Sample Page", description="A sample description.",
     return (
         '<!DOCTYPE html><html lang="en"><head>'
         + title_tag + description_tag + canonical_tag + head
-        + "</head><body>" + body + "</body></html>"
+        + "</head><body>" + body
+        + ('<p class="footer-legal">Salt Creek Advisory LLC operates as an investment '
+           "bank. Not a broker-dealer, not a registered investment adviser.</p>"
+           if footer_legal else "")
+        + "</body></html>"
     )
 
 
@@ -399,6 +407,53 @@ class AnchorBalanceTestCase(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("index.html", output)
         self.assertIn("<a> opening tags", output)
+
+
+
+class FooterDisclosureTestCase(unittest.TestCase):
+    """The regulatory disclosure is compliance surface, not decoration.
+
+    It drifted the way an unguarded thing does: 56 of 58 pages carried it, and the
+    two that did not were the sector landing pages, the highest commercial intent
+    pages on a financial services site.
+    """
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write("sitemap.xml", sitemap(["/", "/about"]))
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def test_pages_carrying_the_disclosure_pass(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "disclosure present should pass:\n" + output)
+
+    def test_a_page_without_the_disclosure_fails(self):
+        self.write("about.html", page("/about", footer_legal=False))
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "missing disclosure must fail:\n" + output)
+        self.assertIn("footer-legal", output)
+        self.assertIn("about.html", output)
 
 
 class PublishChecklistTestCase(unittest.TestCase):

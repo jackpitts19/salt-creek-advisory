@@ -232,8 +232,33 @@ def check_anchor_balance(path, html, errors, _warnings):
         "malformed and its markup renders as visible text".format(path, opened, closed))
 
 
+FOOTER_LEGAL = re.compile(r'class="footer-legal"', re.IGNORECASE)
+
+
+def check_footer_disclosure(path, html, errors, _warnings):
+    """Every page carries the regulatory disclosure, not just most of them.
+
+    This is a financial-services site, so the footer paragraph naming the M&A
+    broker exemption, and stating plainly that the firm is not a broker-dealer,
+    not an RIA, and does not custody client funds, is the compliance surface
+    rather than decoration.
+
+    It drifted exactly the way an unguarded thing does. 56 of 58 pages carried it
+    and the two that did not were msp-ma-advisor.html and pet-care-ma-advisor.html,
+    the two highest commercial intent pages on the site, the ones a buyer actually
+    lands on from a sector search. Every other check here looks at the head, the
+    link graph, or the schema; nothing looked at the footer, so nothing noticed.
+    """
+    if FOOTER_LEGAL.search(html):
+        return
+    errors.append(
+        "{}: no <p class=\"footer-legal\"> regulatory disclosure, which every other "
+        "page carries and which a financial services page needs".format(path))
+
+
 PAGE_CHECKS = (
     check_internal_links,
+    check_footer_disclosure,
     check_anchor_balance,
     check_head_tags,
     check_canonical,
