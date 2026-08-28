@@ -113,6 +113,15 @@ RELATED = {
         "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
         "ebitda-and-business-valuation-basics"],
 
+    # Sector: dental and orthodontics. There is no dental multiples guide yet,
+    # so this leans on the SDE-versus-EBITDA explainer, which is the distinction
+    # the whole comparison turns on once a DSO and an individual dentist bid on
+    # the same practice, then the broker-versus-advisor piece, since three of
+    # the seven firms are brokers rather than sell-side advisors.
+    "best-ma-advisors-dental-practices": [
+        "ebitda-and-business-valuation-basics", "sell-side-advisor-vs-business-broker",
+        "how-to-choose-an-ma-advisor"],
+
     # Sector: HVAC and field services. There is no HVAC multiples guide yet, so
     # this one leans on the two guides that already carry the trade (HVAC is a
     # named vertical in business services and the busiest sub-sector in the
