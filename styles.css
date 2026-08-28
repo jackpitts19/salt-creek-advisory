@@ -286,26 +286,20 @@
       text-transform: uppercase;
       padding: 0.85rem 2.4rem;
       border-radius: 2px;
-      transition: background 0.25s, color 0.25s;
-      position: relative;
-      overflow: hidden;
+      transition: background 0.25s, color 0.25s, transform 0.12s;
     }
-    .btn-primary::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 55%;
-      height: 100%;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
-      transform: skewX(-18deg);
-      transition: left 0.55s ease;
-    }
-    .btn-primary:hover::after { left: 160%; }
+    /* The skewed white sheen that used to sweep across this on hover is gone.
+       Its rgba(255,255,255,0.2) was the only pure white in this stylesheet, on a
+       palette that otherwise routes every light value through --cream, and the
+       gloss sweep is the single most recognisable component of the stock dark
+       landing page. It fired on the highest-intent element on every page.
+       What is left is the documented behaviour: lighten on hover, and a 1px
+       paper press on click. */
     .btn-primary:hover {
       background: var(--copper2);
       color: var(--cream);
     }
+    .btn-primary:active { transform: translateY(1px); }
 
     .btn-ghost {
       display: inline-flex;
@@ -334,25 +328,28 @@
     /* ============================================================
        REVEAL ANIMATIONS
        ============================================================ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.12s; }
-    .reveal-delay-2 { transition-delay: 0.24s; }
-    .reveal-delay-3 { transition-delay: 0.36s; }
-    .reveal-delay-4 { transition-delay: 0.48s; }
+    /* Content is never hidden by CSS. This used to be opacity:0 with main.js
+       adding .visible on scroll, which meant any failure to run that one script
+       blanked the page: measured on the live homepage, 2,341 characters of body
+       copy sat at opacity 0 with zero characters visible. A marketing page has
+       to render its own content, and 329 elements across 53 pages were staked on
+       a single network request.
+
+       Dropping it also removes the fade-up-on-every-section behaviour, which is
+       the most recognisable tic of a generated marketing template. Sections now
+       simply are there, the way a printed page is. The hero keeps its entrance
+       via heroRise below, which is pure CSS with animation-fill-mode: forwards
+       and therefore cannot fail this way.
+
+       The class names stay in the markup so this is one stylesheet change rather
+       than an edit to 53 files; they are inert. */
+    .reveal,
+    .reveal.visible { opacity: 1; transform: none; }
 
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
       .hero-scroll { animation: none !important; opacity: 1 !important; }
       .hero-scroll-line::after { animation: none !important; }
-      .podcast-card-waveform span { animation: none; opacity: 0.3; }
       .hero-inner > .eyebrow,
       .hero-inner > .hero-h1,
       .hero-inner > .hero-sub,
@@ -1166,36 +1163,11 @@
     }
 
     /* Podcast card waveform */
-    .podcast-card-waveform {
-      display: flex;
-      align-items: flex-end;
-      gap: 3px;
-      height: 22px;
-      margin-bottom: 1.75rem;
-    }
-
-    .podcast-card-waveform span {
-      display: block;
-      width: 3px;
-      border-radius: 2px;
-      background: rgba(184,115,51,0.28);
-      animation: podwave 1.6s ease-in-out infinite;
-    }
-
-    .podcast-card-waveform span:nth-child(1) { height: 38%; animation-delay: 0s; }
-    .podcast-card-waveform span:nth-child(2) { height: 68%; animation-delay: 0.12s; }
-    .podcast-card-waveform span:nth-child(3) { height: 100%; animation-delay: 0.24s; }
-    .podcast-card-waveform span:nth-child(4) { height: 52%; animation-delay: 0.36s; }
-    .podcast-card-waveform span:nth-child(5) { height: 82%; animation-delay: 0.48s; }
-    .podcast-card-waveform span:nth-child(6) { height: 44%; animation-delay: 0.6s; }
-    .podcast-card-waveform span:nth-child(7) { height: 72%; animation-delay: 0.72s; }
-    .podcast-card-waveform span:nth-child(8) { height: 58%; animation-delay: 0.84s; }
-    .podcast-card-waveform span:nth-child(9) { height: 30%; animation-delay: 0.96s; }
-
-    @keyframes podwave {
-      0%, 100% { transform: scaleY(1); opacity: 1; }
-      50% { transform: scaleY(0.35); opacity: 0.5; }
-    }
+    /* A nine-bar level meter used to animate here, forever, above a static list
+       of episode titles. There is no player on this page: every listen path is
+       an outbound link to Spotify, Apple or YouTube. So it was a meter for audio
+       that was never playing, which is decoration pretending to be state. The
+       card opens on its eyebrow instead. */
 
     /* Episode list */
     .podcast-eps {
@@ -3047,6 +3019,12 @@
     .article-body li::marker { color: var(--copper2); }
 
     .article-body strong { color: var(--navy); font-weight: 600; }
+
+    /* In-copy links outside .article-body. This exact declaration was pasted
+       inline into 40 <a> tags across five pages, which is why style-src still
+       carries 'unsafe-inline'. One rule, one place to change it. */
+    .text-link { color: var(--copper3); border-bottom: 1px solid rgba(184,115,51,0.35); }
+    .text-link:hover { color: var(--copper2); border-bottom-color: var(--copper2); }
 
     .article-body a { color: var(--copper); border-bottom: 1px solid rgba(184,115,51,0.35); }
     .article-body a:hover { color: var(--copper2); }
