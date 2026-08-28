@@ -36,17 +36,9 @@ document.querySelectorAll('img[data-fallback]').forEach(img => {
   if (img.complete && img.naturalWidth === 0) applyImageFallback(img);
 });
 
-// Reveal animations
-const revealEls = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-revealEls.forEach(el => revealObserver.observe(el));
+// The scroll-reveal observer that used to live here is gone. It was the only
+// thing that made .reveal content visible, so a failure to reach this line left
+// the page blank. Entrances are CSS-only now (see heroRise in styles.css).
 
 // Nav scrolled state
 const navEl = document.getElementById('nav');
@@ -101,19 +93,13 @@ if (articlesTabBar) {
       panel.setAttribute('tabindex', '0');
     });
 
-    const selectTab = (index, { moveFocus = false, forceReveal = true } = {}) => {
+    const selectTab = (index, { moveFocus = false } = {}) => {
       tabs.forEach((tab, i) => {
         const isActive = i === index;
         tab.setAttribute('aria-selected', String(isActive));
         tab.setAttribute('tabindex', isActive ? '0' : '-1');
         panels[i].classList.toggle('is-active', isActive);
       });
-      // A panel that was display:none never tripped the reveal observer, so its
-      // cards would sit at opacity 0 when switched to. On first paint we leave
-      // them alone and let the observer run its normal staggered entrance.
-      if (forceReveal) {
-        panels[index].querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-      }
       if (moveFocus) tabs[index].focus();
     };
 
@@ -165,7 +151,7 @@ if (articlesTabBar) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
 
-    selectTab(initial === -1 ? 0 : initial, { forceReveal: false });
+    selectTab(initial === -1 ? 0 : initial);
 
     if (initial !== -1) {
       // Removing the fragment above is enough on its own: the page then loads at
@@ -183,33 +169,13 @@ if (articlesTabBar) {
   }
 }
 
-// Stat count-up
-const statNums = document.querySelectorAll('.impact-stat-num');
-if (!reduceMotion && statNums.length) {
-  const statObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      statObserver.unobserve(entry.target);
-      const el = entry.target;
-      const raw = el.textContent.trim();
-      const match = raw.match(/^([^0-9]*)(\d+)(.*)$/);
-      if (!match) return;
-      const prefix = match[1], target = parseInt(match[2], 10), suffix = match[3];
-      if (target === 0) return;
-      const duration = 1300;
-      const start = performance.now();
-      const tick = (now) => {
-        const t = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = prefix + Math.round(target * eased) + suffix;
-        if (t < 1) requestAnimationFrame(tick);
-      };
-      el.textContent = prefix + '0' + suffix;
-      requestAnimationFrame(tick);
-    });
-  }, { threshold: 0.4 });
-  statNums.forEach(el => statObserver.observe(el));
-}
+// The stat count-up that used to live here is gone. Its regex captured only the
+// first digit run (/^([^0-9]*)(\d+)(.*)$/), so every decimal stat animated its
+// leading digit while the decimals sat frozen as a static suffix: "$1.87B" began
+// life as "$0.87B", "8.78%" as "0.78%", "8.9x" as "0.9x". Six of the eight values
+// it touched are approximations or ratios ("~$350B", "~60%", "8.9x", "Selective"),
+// so ratcheting them added nothing a reader trusts, and the brand system bans
+// motion on numbers outright. The figures now render as written.
 
 // Internal links navigate straight away. There used to be an exit
 // transition here that called preventDefault and then sat on a 300ms
