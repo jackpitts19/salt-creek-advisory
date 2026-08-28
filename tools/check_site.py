@@ -203,8 +203,63 @@ def check_schema_required_fields(path, html, errors, _warnings):
                                                   ", ".join(missing)))
 
 
+ANCHOR_OPEN = re.compile(r"<a[\s>]", re.IGNORECASE)
+ANCHOR_CLOSE = re.compile(r"</a\s*>", re.IGNORECASE)
+
+
+def check_anchor_balance(path, html, errors, _warnings):
+    """Every <a> must have exactly one </a>, per page.
+
+    check_internal_links validates where an href POINTS, not that the anchor
+    around it is well formed, so a link missing its opening tag passes every
+    other check on this site while rendering raw markup to the reader. That is
+    not hypothetical: a bulk retarget on this repo turned one anchor into
+    `... </a> or href="../valuation">try the free preliminary valuation tool</a>`,
+    which shipped a visible `href="../valuation">` in the middle of a sentence on
+    a live guide, and green checks all the way through. Counting the tags is the
+    cheapest thing that would have caught it.
+
+    A mismatch means an unclosed anchor (which swallows following markup into the
+    link) or an orphaned closer (which means an opening tag was lost). Both are
+    rendering bugs, so both are errors rather than warnings.
+    """
+    opened = len(ANCHOR_OPEN.findall(html))
+    closed = len(ANCHOR_CLOSE.findall(html))
+    if opened == closed:
+        return
+    errors.append(
+        "{}: {} <a> opening tags but {} </a> closing tags, so an anchor is "
+        "malformed and its markup renders as visible text".format(path, opened, closed))
+
+
+FOOTER_LEGAL = re.compile(r'class="footer-legal"', re.IGNORECASE)
+
+
+def check_footer_disclosure(path, html, errors, _warnings):
+    """Every page carries the regulatory disclosure, not just most of them.
+
+    This is a financial-services site, so the footer paragraph naming the M&A
+    broker exemption, and stating plainly that the firm is not a broker-dealer,
+    not an RIA, and does not custody client funds, is the compliance surface
+    rather than decoration.
+
+    It drifted exactly the way an unguarded thing does. 56 of 58 pages carried it
+    and the two that did not were msp-ma-advisor.html and pet-care-ma-advisor.html,
+    the two highest commercial intent pages on the site, the ones a buyer actually
+    lands on from a sector search. Every other check here looks at the head, the
+    link graph, or the schema; nothing looked at the footer, so nothing noticed.
+    """
+    if FOOTER_LEGAL.search(html):
+        return
+    errors.append(
+        "{}: no <p class=\"footer-legal\"> regulatory disclosure, which every other "
+        "page carries and which a financial services page needs".format(path))
+
+
 PAGE_CHECKS = (
     check_internal_links,
+    check_footer_disclosure,
+    check_anchor_balance,
     check_head_tags,
     check_canonical,
     check_json_ld,
@@ -273,6 +328,12 @@ WORKER_PATH = os.path.join("src", "index.js")
 WORKER_YEAR = re.compile(r'const CURRENT_GUIDE_YEAR = "(\d{4})"')
 WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)", re.DOTALL)
 WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
+
+LLMS_PATH = "llms.txt"
+RELATED_PATH = os.path.join("tools", "build_related.py")
+RELATED_MAP = re.compile(r"RELATED\s*=\s*\{(.*?)\n\}", re.DOTALL)
+RELATED_ENTRY = re.compile(r'"([a-z0-9\-/]+)":\s*\[(.*?)\]', re.DOTALL)
+RELATED_SLUG = re.compile(r'"([a-z0-9\-/]+)"')
 
 
 def check_guide_year_is_current(errors, warnings, strict=False):
@@ -353,6 +414,120 @@ def check_worker_slugs(errors, _warnings):
             "in {}, so its pre-rename URL is dead".format(base, suffix, base, WORKER_PATH))
 
 
+def check_llms_txt_coverage(errors, _warnings):
+    """Every article has to appear in llms.txt, in both directions.
+
+    llms.txt is how an answer engine learns what this site actually covers, so a
+    guide missing from it is invisible to exactly the surface the firm is trying
+    to win. Nothing else notices: the page renders, the sitemap lists it, every
+    other check passes, and the only symptom is an assistant that has never heard
+    of it. That is step 6 of the publish checklist in docs/url-scheme.md, and it
+    is the step that actually got skipped when the dental guide shipped, which is
+    why it is enforced here rather than trusted to a list.
+
+    The reverse direction matters too: an entry describing a page that no longer
+    exists teaches an assistant to cite a 404.
+
+    Skipped when llms.txt is absent, so the checker still runs against a plain
+    directory of HTML.
+    """
+    if not os.path.exists(LLMS_PATH):
+        return
+    listed = read(LLMS_PATH)
+    for path in sorted(glob.glob("articles/*.html")):
+        route = route_for(path)
+        # Anchored so a slug that is a prefix of a longer one cannot pass on the
+        # longer one's entry. llms.txt writes markdown links, so the URL is always
+        # followed by ")" here; allowing whitespace or end keeps it tolerant.
+        if not re.search(re.escape("{}{}".format(SITE, route)) + r"(?![0-9a-z-])", listed):
+            errors.append(
+                "{} is not listed in {}, so answer engines have no summary of it "
+                "(publish checklist step 6)".format(path, LLMS_PATH))
+
+    # Every self URL, not just articles. llms.txt lists 14 root pages too, and a stale
+    # entry for any of them teaches an assistant to cite a 404 just as effectively.
+    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/[a-z0-9/-]*", listed))):
+        route = url[len(SITE):] or "/"
+        if route == "/":
+            continue
+        if not os.path.exists(file_for(route)):
+            errors.append(
+                "{}: lists {}, which no longer exists, so an assistant citing it "
+                "would send a reader to a 404".format(LLMS_PATH, url))
+
+
+def check_related_symmetry(errors, _warnings):
+    """Every guide needs a Keep Reading block AND inbound links from other blocks.
+
+    The RELATED map in tools/build_related.py is the site's internal linking, so
+    a guide that is a key but never a target gets a Keep Reading block of its own
+    while nothing links back to it. It is not orphaned in the sitemap sense that
+    check_orphans catches, because its card on articles.html still counts, so it
+    passes every other check while sitting at one inbound link against three to
+    eight for its peers. That is a page telling search engines it does not matter.
+
+    This is exactly what happened to the dental guide: added as a key, never as a
+    target, and nothing said so. Both halves of publish checklist step 5 are
+    checked here, plus that every target resolves to something real.
+
+    Skipped when tools/build_related.py is absent.
+    """
+    if not os.path.exists(RELATED_PATH):
+        return
+    block = RELATED_MAP.search(read(RELATED_PATH))
+    if not block:
+        errors.append(
+            "{}: could not find the RELATED map, so internal linking cannot be "
+            "verified".format(RELATED_PATH))
+        return
+
+    targets_by_key = {}
+    for key, body in RELATED_ENTRY.findall(block.group(1)):
+        targets_by_key[key] = RELATED_SLUG.findall(body)
+    # Self-references excluded: a guide listing itself would satisfy an inbound-link
+    # check while still having zero links in, which is the dental bug wearing a hat.
+    referenced = {t for key, targets in targets_by_key.items() for t in targets if t != key}
+
+    on_disk = {
+        os.path.basename(path)[: -len(".html")]
+        for path in glob.glob("articles/*.html")
+    }
+    suffix_year = WORKER_YEAR.search(read(WORKER_PATH)) if os.path.exists(WORKER_PATH) else None
+    suffix = "-" + suffix_year.group(1) if suffix_year else ""
+
+    def base_of(slug):
+        return slug[: -len(suffix)] if suffix and slug.endswith(suffix) else slug
+
+    bases = {base_of(slug) for slug in on_disk}
+    # Which bases actually carry the year on disk, derived rather than listed, so
+    # the four year-free essays stay bare without being enumerated a second time.
+    # build_related.py's own stamp() does exactly this; assuming the suffix here
+    # instead would report every essay as a broken target.
+    stamped_bases = {base_of(slug) for slug in on_disk if suffix and slug.endswith(suffix)}
+
+    for base in sorted(bases - set(targets_by_key)):
+        errors.append(
+            "'{}' has no entry in the RELATED map in {}, so it renders no Keep "
+            "Reading block (publish checklist step 5)".format(base, RELATED_PATH))
+    for base in sorted(set(targets_by_key) - bases):
+        errors.append(
+            "{}: RELATED has an entry for '{}' but no article on disk matches "
+            "it".format(RELATED_PATH, base))
+    for base in sorted(set(targets_by_key) - referenced):
+        errors.append(
+            "'{}' is a RELATED key in {} but no other guide lists it as a target, "
+            "so nothing links to it (publish checklist step 5)".format(base, RELATED_PATH))
+    for target in sorted(referenced):
+        if target.startswith("/"):
+            route = target
+        else:
+            route = "/articles/" + target + (suffix if target in stamped_bases else "")
+        if not os.path.exists(file_for(route)):
+            errors.append(
+                "{}: RELATED points at '{}', which resolves to {}, which does not "
+                "exist".format(RELATED_PATH, target, route))
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     strict_year = "--strict-year" in argv
@@ -371,6 +546,8 @@ def main(argv=None):
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
     check_worker_slugs(errors, warnings)
+    check_llms_txt_coverage(errors, warnings)
+    check_related_symmetry(errors, warnings)
     check_guide_year_is_current(errors, warnings, strict=strict_year)
 
     for warning in warnings:

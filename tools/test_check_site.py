@@ -28,8 +28,12 @@ SITE = check_site.SITE
 
 
 def page(route, title="Sample Page", description="A sample description.",
-         canonical=None, head="", body=""):
-    """A minimal page that passes every check unless an argument breaks it."""
+         canonical=None, head="", body="", footer_legal=True):
+    """A minimal page that passes every check unless an argument breaks it.
+
+    footer_legal defaults on because every real page carries the regulatory
+    disclosure; pass False to build the one case that omits it.
+    """
     if canonical is None:
         canonical = SITE + route
     canonical_tag = '<link rel="canonical" href="{}" />'.format(canonical) if canonical else ""
@@ -40,7 +44,11 @@ def page(route, title="Sample Page", description="A sample description.",
     return (
         '<!DOCTYPE html><html lang="en"><head>'
         + title_tag + description_tag + canonical_tag + head
-        + "</head><body>" + body + "</body></html>"
+        + "</head><body>" + body
+        + ('<p class="footer-legal">Salt Creek Advisory LLC operates as an investment '
+           "bank. Not a broker-dealer, not a registered investment adviser.</p>"
+           if footer_legal else "")
+        + "</body></html>"
     )
 
 
@@ -335,6 +343,286 @@ class CheckSiteTestCase(unittest.TestCase):
         code, output = self.run_checker()
         self.assertEqual(code, 0, "a long description should not fail the run")
         self.assertNotIn("meta description is", output)
+
+
+
+
+class AnchorBalanceTestCase(unittest.TestCase):
+    """A link missing its opening tag renders raw markup and passes every other check."""
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write("sitemap.xml", sitemap(["/", "/about"]))
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def assertFails(self, needle):
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
+        self.assertIn(needle, output)
+
+    def test_balanced_anchors_pass(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "balanced anchors should pass:\n" + output)
+
+    def test_an_anchor_missing_its_opening_tag_fails(self):
+        """The exact bug this check was written for.
+
+        A bulk retarget produced `</a> or href="/about">text</a>`, which shipped a
+        visible href= in the middle of a sentence while every other check stayed
+        green, because the href still pointed somewhere real.
+        """
+        self.write("index.html", page("/", body=(
+            '<p>you can <a href="/about">ask us</a> or href="/about">try the tool</a>.</p>')))
+        self.assertFails("malformed")
+
+    def test_an_unclosed_anchor_fails(self):
+        self.write("index.html", page("/", body='<p><a href="/about">About</p>'))
+        self.assertFails("malformed")
+
+    def test_the_error_names_the_page_and_both_counts(self):
+        self.write("index.html", page("/", body=(
+            '<p><a href="/about">a</a> or href="/about">b</a></p>')))
+        code, output = self.run_checker()
+        self.assertEqual(code, 1)
+        self.assertIn("index.html", output)
+        self.assertIn("<a> opening tags", output)
+
+
+
+class FooterDisclosureTestCase(unittest.TestCase):
+    """The regulatory disclosure is compliance surface, not decoration.
+
+    It drifted the way an unguarded thing does: 56 of 58 pages carried it, and the
+    two that did not were the sector landing pages, the highest commercial intent
+    pages on a financial services site.
+    """
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write("sitemap.xml", sitemap(["/", "/about"]))
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def test_pages_carrying_the_disclosure_pass(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "disclosure present should pass:\n" + output)
+
+    def test_a_page_without_the_disclosure_fails(self):
+        self.write("about.html", page("/about", footer_legal=False))
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "missing disclosure must fail:\n" + output)
+        self.assertIn("footer-legal", output)
+        self.assertIn("about.html", output)
+
+
+class PublishChecklistTestCase(unittest.TestCase):
+    """The two publish-checklist steps that drift silently: llms.txt and RELATED.
+
+    Both are enforced by check_site.py rather than trusted to a list in the docs,
+    because trusting the list is exactly what failed. The dental guide shipped
+    satisfying steps 1 through 4, missing step 6 entirely and half of step 5, and
+    every check on the site stayed green while it sat at one inbound internal link
+    against three to eight for its peers.
+    """
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        # A guide, an essay (deliberately year-free), and a hub linking to both,
+        # so the baseline satisfies the orphan and sitemap checks too.
+        self.write("index.html", page("/", body=(
+            '<a href="/articles/guide-one-2026">One</a>'
+            '<a href="/articles/an-essay">Essay</a>')))
+        self.write("articles/guide-one-2026.html", page("/articles/guide-one-2026"))
+        self.write("articles/an-essay.html", page("/articles/an-essay"))
+        self.write("src/index.js", 'const CURRENT_GUIDE_YEAR = "2026"\n'
+                   'const YEAR_STAMPED_GUIDES = new Set([\n  "guide-one",\n])\n')
+        self.write("sitemap.xml", sitemap(["/", "/articles/guide-one-2026", "/articles/an-essay"]))
+        self.write_llms(["guide-one-2026", "an-essay"])
+        self.write_related({"guide-one": ["an-essay"], "an-essay": ["guide-one"]})
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def write_llms(self, slugs):
+        lines = ["# Site"] + [
+            "- [{0}]({1}/articles/{0}): a summary".format(slug, SITE) for slug in slugs]
+        self.write("llms.txt", "\n".join(lines) + "\n")
+
+    def write_related(self, mapping):
+        rows = "".join(
+            '    "{}": [{}],\n'.format(key, ", ".join('"{}"'.format(t) for t in targets))
+            for key, targets in mapping.items())
+        self.write("tools/build_related.py", "RELATED = {\n" + rows + "}\n")
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def assertFails(self, needle):
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
+        self.assertIn(needle, output)
+
+    def test_a_complete_site_passes(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "complete site should pass:\n" + output)
+
+    def test_an_essay_is_not_stamped_with_the_year(self):
+        """The regression this check got wrong first time.
+
+        Essays carry no year, so resolving a RELATED target by blindly appending
+        the suffix reports all four of them as broken links on a healthy site.
+        build_related.py derives which bases are stamped from disk; so must this.
+        """
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "essays must not be year-stamped:\n" + output)
+        self.assertNotIn("an-essay-2026", output)
+
+    # --- step 6: llms.txt ------------------------------------------------------
+
+    def test_an_article_missing_from_llms_txt_fails(self):
+        self.write_llms(["an-essay"])
+        self.assertFails("publish checklist step 6")
+
+    def test_llms_txt_naming_a_deleted_article_fails(self):
+        """An entry for a page that is gone teaches an assistant to cite a 404."""
+        self.write_llms(["guide-one-2026", "an-essay", "guide-that-was-deleted-2026"])
+        self.assertFails("which no longer exists")
+
+    def test_a_missing_llms_txt_is_skipped_not_failed(self):
+        os.remove(os.path.join(self._tmp.name, "llms.txt"))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "absent llms.txt should skip:\n" + output)
+
+    # --- step 5: the RELATED map ----------------------------------------------
+
+    def test_a_guide_that_is_never_a_target_fails(self):
+        """The dental bug exactly: a key with a Keep Reading block and no inbound links."""
+        self.write_related({"guide-one": ["an-essay"], "an-essay": []})
+        self.assertFails("no other guide lists it as a target")
+
+    def test_a_guide_with_no_related_entry_fails(self):
+        self.write_related({"guide-one": ["guide-one"]})
+        self.assertFails("has no entry in the RELATED map")
+
+    def test_a_related_target_that_does_not_exist_fails(self):
+        self.write_related({
+            "guide-one": ["an-essay"],
+            "an-essay": ["guide-one", "a-guide-that-does-not-exist"]})
+        self.assertFails("which does not exist")
+
+    def test_a_related_entry_with_no_article_behind_it_fails(self):
+        self.write_related({
+            "guide-one": ["an-essay"], "an-essay": ["guide-one"], "ghost-guide": ["guide-one"]})
+        self.assertFails("no article on disk matches")
+
+    def test_a_guide_listing_itself_does_not_count_as_an_inbound_link(self):
+        """A self-reference would satisfy the check while nothing links in.
+
+        That is the dental bug wearing a hat: the key exists, the target list is
+        non-empty, and the page still has zero inbound links.
+        """
+        # guide-one's ONLY reference is its own. an-essay still has a real inbound
+        # link from guide-one, so only guide-one should be reported.
+        self.write_related({
+            "guide-one": ["guide-one", "an-essay"], "an-essay": ["an-essay"]})
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "a self-reference must not count:\n" + output)
+        self.assertIn("'guide-one' is a RELATED key", output)
+        self.assertNotIn("'an-essay' is a RELATED key", output)
+
+    def test_a_stale_root_url_in_llms_txt_fails(self):
+        """llms.txt lists 14 root pages too, and a stale one cites a 404 just as well."""
+        self.write("llms.txt",
+                   "# Site\n"
+                   "- [g]({0}/articles/guide-one-2026): x\n"
+                   "- [e]({0}/articles/an-essay): x\n"
+                   "- [gone]({0}/a-page-that-was-deleted): x\n".format(SITE))
+        self.assertFails("which no longer exists")
+
+    def test_a_slug_that_is_a_prefix_of_another_is_not_satisfied_by_the_longer_entry(self):
+        """The forward check is anchored, so a prefix cannot ride on a longer slug.
+
+        No collision exists on the real site today, but the four year-free essays are
+        exactly the shape that creates one, so the check is anchored rather than trusting
+        that nobody ever adds a slug containing another.
+        """
+        self.write("articles/an-essay-part-two.html", page("/articles/an-essay-part-two"))
+        self.write("index.html", page("/", body=(
+            '<a href="/articles/guide-one-2026">One</a>'
+            '<a href="/articles/an-essay">Essay</a>'
+            '<a href="/articles/an-essay-part-two">Two</a>')))
+        self.write("sitemap.xml", sitemap([
+            "/", "/articles/guide-one-2026", "/articles/an-essay", "/articles/an-essay-part-two"]))
+        self.write_related({
+            "guide-one": ["an-essay"],
+            "an-essay": ["guide-one"],
+            "an-essay-part-two": ["guide-one"]})
+        # Only the LONGER slug is listed. The shorter one must still be reported.
+        self.write("llms.txt",
+                   "# Site\n"
+                   "- [g]({0}/articles/guide-one-2026): x\n"
+                   "- [two]({0}/articles/an-essay-part-two): x\n".format(SITE))
+        self.assertFails("articles/an-essay.html is not listed")
+
+    def test_a_missing_related_map_is_skipped_not_failed(self):
+        os.remove(os.path.join(self._tmp.name, "tools", "build_related.py"))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "absent build_related.py should skip:\n" + output)
 
 
 if __name__ == "__main__":
