@@ -47,8 +47,11 @@ when the year rolls.
    only for an essay, which stays year-free.
 4. Add a card to `articles.html`, or the checker fails it as an orphan.
 5. Add the bare base slug to `RELATED` in `tools/build_related.py`, both as a
-   key and as a target of two or three related guides.
-6. Add an entry to `llms.txt`.
+   key and as a target of two or three related guides. Both halves matter and
+   both are enforced by `check_site.py`: a key with no inbound target renders a
+   Keep Reading block that nothing links back to.
+6. Add an entry to `llms.txt`. Also enforced. A guide missing here is invisible
+   to answer engines while looking perfectly healthy everywhere else.
 7. Run the checks below.
 
 ## The January rollover
@@ -162,6 +165,16 @@ change such as a rename round, not for routine edits.
 - `test_worker_redirects.mjs` drives the real Worker and asserts hop counts, so
   a chain cannot reappear unnoticed. It also pins query-string preservation,
   because losing it would silently break `utm` attribution on every old link.
+- `check_site.py` also enforces publish-checklist steps 5 and 6, which used to be
+  trusted to the list above and were the two that actually drifted. The dental
+  guide shipped satisfying steps 1 through 4, absent from `llms.txt` entirely and
+  present in `RELATED` as a key but never as a target, so it rendered a Keep
+  Reading block while nothing linked back to it. It sat at one inbound internal
+  link against three to eight for its peers, and every check on the site stayed
+  green, because a page with a card on `articles.html` is not an orphan by the
+  sitemap definition `check_orphans` uses. Both halves are now mechanical: every
+  article must appear in `llms.txt` and every `RELATED` key must be some other
+  guide's target, in both directions, with every target resolving to a real file.
 - `check_canonical.py` is the only guard that leaves the building. Everything
   above proves the code is right; this one proves the code is reachable, which
   is a different claim and the one a crawler tests. Detach the www custom domain

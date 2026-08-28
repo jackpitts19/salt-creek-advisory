@@ -274,6 +274,12 @@ WORKER_YEAR = re.compile(r'const CURRENT_GUIDE_YEAR = "(\d{4})"')
 WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)", re.DOTALL)
 WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
 
+LLMS_PATH = "llms.txt"
+RELATED_PATH = os.path.join("tools", "build_related.py")
+RELATED_MAP = re.compile(r"RELATED\s*=\s*\{(.*?)\n\}", re.DOTALL)
+RELATED_ENTRY = re.compile(r'"([a-z0-9\-/]+)":\s*\[(.*?)\]', re.DOTALL)
+RELATED_SLUG = re.compile(r'"([a-z0-9\-/]+)"')
+
 
 def check_guide_year_is_current(errors, warnings, strict=False):
     """Say something when the guides are advertising last year.
@@ -353,6 +359,110 @@ def check_worker_slugs(errors, _warnings):
             "in {}, so its pre-rename URL is dead".format(base, suffix, base, WORKER_PATH))
 
 
+def check_llms_txt_coverage(errors, _warnings):
+    """Every article has to appear in llms.txt, in both directions.
+
+    llms.txt is how an answer engine learns what this site actually covers, so a
+    guide missing from it is invisible to exactly the surface the firm is trying
+    to win. Nothing else notices: the page renders, the sitemap lists it, every
+    other check passes, and the only symptom is an assistant that has never heard
+    of it. That is step 6 of the publish checklist in docs/url-scheme.md, and it
+    is the step that actually got skipped when the dental guide shipped, which is
+    why it is enforced here rather than trusted to a list.
+
+    The reverse direction matters too: an entry describing a page that no longer
+    exists teaches an assistant to cite a 404.
+
+    Skipped when llms.txt is absent, so the checker still runs against a plain
+    directory of HTML.
+    """
+    if not os.path.exists(LLMS_PATH):
+        return
+    listed = read(LLMS_PATH)
+    for path in sorted(glob.glob("articles/*.html")):
+        route = route_for(path)
+        if "{}{}".format(SITE, route) not in listed:
+            errors.append(
+                "{} is not listed in {}, so answer engines have no summary of it "
+                "(publish checklist step 6)".format(path, LLMS_PATH))
+
+    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/articles/[a-z0-9-]+", listed))):
+        if not os.path.exists(file_for(url[len(SITE):])):
+            errors.append(
+                "{}: lists {}, which no longer exists, so an assistant citing it "
+                "would send a reader to a 404".format(LLMS_PATH, url))
+
+
+def check_related_symmetry(errors, _warnings):
+    """Every guide needs a Keep Reading block AND inbound links from other blocks.
+
+    The RELATED map in tools/build_related.py is the site's internal linking, so
+    a guide that is a key but never a target gets a Keep Reading block of its own
+    while nothing links back to it. It is not orphaned in the sitemap sense that
+    check_orphans catches, because its card on articles.html still counts, so it
+    passes every other check while sitting at one inbound link against three to
+    eight for its peers. That is a page telling search engines it does not matter.
+
+    This is exactly what happened to the dental guide: added as a key, never as a
+    target, and nothing said so. Both halves of publish checklist step 5 are
+    checked here, plus that every target resolves to something real.
+
+    Skipped when tools/build_related.py is absent.
+    """
+    if not os.path.exists(RELATED_PATH):
+        return
+    block = RELATED_MAP.search(read(RELATED_PATH))
+    if not block:
+        errors.append(
+            "{}: could not find the RELATED map, so internal linking cannot be "
+            "verified".format(RELATED_PATH))
+        return
+
+    targets_by_key = {}
+    for key, body in RELATED_ENTRY.findall(block.group(1)):
+        targets_by_key[key] = RELATED_SLUG.findall(body)
+    referenced = {t for targets in targets_by_key.values() for t in targets}
+
+    on_disk = {
+        os.path.basename(path)[: -len(".html")]
+        for path in glob.glob("articles/*.html")
+    }
+    suffix_year = WORKER_YEAR.search(read(WORKER_PATH)) if os.path.exists(WORKER_PATH) else None
+    suffix = "-" + suffix_year.group(1) if suffix_year else ""
+
+    def base_of(slug):
+        return slug[: -len(suffix)] if suffix and slug.endswith(suffix) else slug
+
+    bases = {base_of(slug) for slug in on_disk}
+    # Which bases actually carry the year on disk, derived rather than listed, so
+    # the four year-free essays stay bare without being enumerated a second time.
+    # build_related.py's own stamp() does exactly this; assuming the suffix here
+    # instead would report every essay as a broken target.
+    stamped_bases = {base_of(slug) for slug in on_disk if suffix and slug.endswith(suffix)}
+
+    for base in sorted(bases - set(targets_by_key)):
+        errors.append(
+            "'{}' has no entry in the RELATED map in {}, so it renders no Keep "
+            "Reading block (publish checklist step 5)".format(base, RELATED_PATH))
+    for base in sorted(set(targets_by_key) - bases):
+        errors.append(
+            "{}: RELATED has an entry for '{}' but no article on disk matches "
+            "it".format(RELATED_PATH, base))
+    for base in sorted(set(targets_by_key) - referenced):
+        errors.append(
+            "'{}' is a RELATED key in {} but no other guide lists it as a target, "
+            "so nothing links to it (publish checklist step 5)".format(base, RELATED_PATH))
+    for target in sorted(referenced):
+        if target.startswith("/"):
+            route = target
+        else:
+            route = "/articles/" + target + (suffix if target in stamped_bases else "")
+        if not os.path.exists(file_for(route)):
+            errors.append(
+                "{}: RELATED points at '{}', which resolves to {}, which does not "
+                "exist".format(RELATED_PATH, target, route))
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     strict_year = "--strict-year" in argv
@@ -371,6 +481,8 @@ def main(argv=None):
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
     check_worker_slugs(errors, warnings)
+    check_llms_txt_coverage(errors, warnings)
+    check_related_symmetry(errors, warnings)
     check_guide_year_is_current(errors, warnings, strict=strict_year)
 
     for warning in warnings:

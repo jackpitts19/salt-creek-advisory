@@ -337,5 +337,126 @@ class CheckSiteTestCase(unittest.TestCase):
         self.assertNotIn("meta description is", output)
 
 
+
+class PublishChecklistTestCase(unittest.TestCase):
+    """The two publish-checklist steps that drift silently: llms.txt and RELATED.
+
+    Both are enforced by check_site.py rather than trusted to a list in the docs,
+    because trusting the list is exactly what failed. The dental guide shipped
+    satisfying steps 1 through 4, missing step 6 entirely and half of step 5, and
+    every check on the site stayed green while it sat at one inbound internal link
+    against three to eight for its peers.
+    """
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+        # A guide, an essay (deliberately year-free), and a hub linking to both,
+        # so the baseline satisfies the orphan and sitemap checks too.
+        self.write("index.html", page("/", body=(
+            '<a href="/articles/guide-one-2026">One</a>'
+            '<a href="/articles/an-essay">Essay</a>')))
+        self.write("articles/guide-one-2026.html", page("/articles/guide-one-2026"))
+        self.write("articles/an-essay.html", page("/articles/an-essay"))
+        self.write("src/index.js", 'const CURRENT_GUIDE_YEAR = "2026"\n'
+                   'const YEAR_STAMPED_GUIDES = new Set([\n  "guide-one",\n])\n')
+        self.write("sitemap.xml", sitemap(["/", "/articles/guide-one-2026", "/articles/an-essay"]))
+        self.write_llms(["guide-one-2026", "an-essay"])
+        self.write_related({"guide-one": ["an-essay"], "an-essay": ["guide-one"]})
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def write(self, path, content):
+        full = os.path.join(self._tmp.name, path)
+        parent = os.path.dirname(full)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(full, "w", encoding="utf-8") as handle:
+            handle.write(content)
+
+    def write_llms(self, slugs):
+        lines = ["# Site"] + [
+            "- [{0}]({1}/articles/{0}): a summary".format(slug, SITE) for slug in slugs]
+        self.write("llms.txt", "\n".join(lines) + "\n")
+
+    def write_related(self, mapping):
+        rows = "".join(
+            '    "{}": [{}],\n'.format(key, ", ".join('"{}"'.format(t) for t in targets))
+            for key, targets in mapping.items())
+        self.write("tools/build_related.py", "RELATED = {\n" + rows + "}\n")
+
+    def run_checker(self, *argv):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def assertFails(self, needle):
+        code, output = self.run_checker()
+        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
+        self.assertIn(needle, output)
+
+    def test_a_complete_site_passes(self):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "complete site should pass:\n" + output)
+
+    def test_an_essay_is_not_stamped_with_the_year(self):
+        """The regression this check got wrong first time.
+
+        Essays carry no year, so resolving a RELATED target by blindly appending
+        the suffix reports all four of them as broken links on a healthy site.
+        build_related.py derives which bases are stamped from disk; so must this.
+        """
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "essays must not be year-stamped:\n" + output)
+        self.assertNotIn("an-essay-2026", output)
+
+    # --- step 6: llms.txt ------------------------------------------------------
+
+    def test_an_article_missing_from_llms_txt_fails(self):
+        self.write_llms(["an-essay"])
+        self.assertFails("publish checklist step 6")
+
+    def test_llms_txt_naming_a_deleted_article_fails(self):
+        """An entry for a page that is gone teaches an assistant to cite a 404."""
+        self.write_llms(["guide-one-2026", "an-essay", "guide-that-was-deleted-2026"])
+        self.assertFails("which no longer exists")
+
+    def test_a_missing_llms_txt_is_skipped_not_failed(self):
+        os.remove(os.path.join(self._tmp.name, "llms.txt"))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "absent llms.txt should skip:\n" + output)
+
+    # --- step 5: the RELATED map ----------------------------------------------
+
+    def test_a_guide_that_is_never_a_target_fails(self):
+        """The dental bug exactly: a key with a Keep Reading block and no inbound links."""
+        self.write_related({"guide-one": ["an-essay"], "an-essay": []})
+        self.assertFails("no other guide lists it as a target")
+
+    def test_a_guide_with_no_related_entry_fails(self):
+        self.write_related({"guide-one": ["guide-one"]})
+        self.assertFails("has no entry in the RELATED map")
+
+    def test_a_related_target_that_does_not_exist_fails(self):
+        self.write_related({
+            "guide-one": ["an-essay"],
+            "an-essay": ["guide-one", "a-guide-that-does-not-exist"]})
+        self.assertFails("which does not exist")
+
+    def test_a_related_entry_with_no_article_behind_it_fails(self):
+        self.write_related({
+            "guide-one": ["an-essay"], "an-essay": ["guide-one"], "ghost-guide": ["guide-one"]})
+        self.assertFails("no article on disk matches")
+
+    def test_a_missing_related_map_is_skipped_not_failed(self):
+        os.remove(os.path.join(self._tmp.name, "tools", "build_related.py"))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "absent build_related.py should skip:\n" + output)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

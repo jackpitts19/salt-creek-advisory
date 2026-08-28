@@ -56,7 +56,7 @@ RELATED = {
     # spare its.
     "ebitda-and-business-valuation-basics": [
         "quality-of-earnings-report", "best-business-valuation-firms-lower-middle-market",
-        "ma-glossary-lower-middle-market"],
+        "ma-glossary-lower-middle-market", "best-ma-advisors-dental-practices"],
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
@@ -112,7 +112,7 @@ RELATED = {
     # the EBITDA explainer closes it for the normalized-earnings arithmetic.
     "best-ma-advisors-accounting-cpa-firms": [
         "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
-        "ebitda-and-business-valuation-basics"],
+        "ebitda-and-business-valuation-basics", "best-ma-advisors-dental-practices"],
 
     # Sector: dental and orthodontics. There is no dental multiples guide yet,
     # so this leans on the SDE-versus-EBITDA explainer, which is the distinction
@@ -265,7 +265,8 @@ RELATED = {
     # inbound Keep Reading link on the whole site.
     "strategic-buyer-vs-private-equity-buyer": [
         "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
-        "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
+        "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms",
+        "best-ma-advisors-dental-practices"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
     # as mechanical, which is the one thing this block must not do.
