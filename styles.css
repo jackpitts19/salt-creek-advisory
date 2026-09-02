@@ -635,7 +635,7 @@
        ============================================================ */
     .about {
       background: var(--cream);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       border-top: none;
       position: relative;
       overflow: hidden;
@@ -788,7 +788,7 @@
        ============================================================ */
     .process {
       background: var(--navy2);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
     }
 
@@ -807,7 +807,7 @@
 
     .process-header {
       max-width: 580px;
-      margin-bottom: 5rem;
+      margin-bottom: 3.25rem;
     }
 
     .process-h2 {
@@ -897,7 +897,7 @@
        ============================================================ */
     .team {
       background: var(--navy);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
     }
 
@@ -915,7 +915,7 @@
     }
 
     .team-header {
-      margin-bottom: 5rem;
+      margin-bottom: 3.25rem;
     }
 
     .team-h2 {
@@ -1063,7 +1063,7 @@
        ============================================================ */
     .podcast {
       background: var(--navy2);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
     }
 
@@ -1290,7 +1290,7 @@
       background-image:
         radial-gradient(ellipse 70% 50% at 50% 100%, rgba(184,115,51,0.09) 0%, transparent 70%),
         radial-gradient(ellipse 40% 30% at 50% 0%, rgba(184,115,51,0.05) 0%, transparent 60%);
-      padding: 9rem 0;
+      padding: 6.5rem 0;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -1610,7 +1610,7 @@
        ============================================================ */
     .impact {
       background: var(--navy);
-      padding: 9rem 6%;
+      padding: 6.5rem 6%;
       border-top: 1px solid rgba(244,240,235,0.05);
       position: relative;
       overflow: hidden;
@@ -1671,7 +1671,7 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
       border: 1px solid rgba(244,240,235,0.07);
-      margin-bottom: 4rem;
+      margin-bottom: 2.75rem;
     }
 
     .impact-stat {
@@ -1722,6 +1722,7 @@
     .impact-stats--compact .impact-stat-num--word { font-size: var(--fs-display-4); }
 
     .impact-stat-label {
+      text-wrap: balance;
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.18em;
@@ -1759,6 +1760,7 @@
       color: var(--cream);
       line-height: 1.2;
       position: relative;
+      text-wrap: balance;
     }
 
     .impact-body-quote::before {
@@ -1793,7 +1795,7 @@
        ============================================================ */
     .why-us {
       background: var(--navy3);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       border-top: 1px solid rgba(244,240,235,0.05);
       position: relative;
       overflow: hidden;
@@ -1816,7 +1818,7 @@
 
     .why-header {
       max-width: 640px;
-      margin-bottom: 5rem;
+      margin-bottom: 3.25rem;
     }
 
     .why-h2 {
@@ -1947,7 +1949,7 @@
        ============================================================ */
     .sectors {
       background: var(--cream);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
       overflow: hidden;
     }
@@ -2186,7 +2188,7 @@
        ============================================================ */
     .investors {
       background: var(--navy2);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
       overflow: hidden;
     }
@@ -2265,7 +2267,7 @@
        ============================================================ */
     .faq {
       background: var(--navy);
-      padding: 10rem 6%;
+      padding: 6.5rem 6%;
       position: relative;
     }
 
@@ -2285,7 +2287,7 @@
 
     .faq-header {
       text-align: center;
-      margin-bottom: 4.5rem;
+      margin-bottom: 3rem;
     }
 
     .faq-h2 {
@@ -2294,7 +2296,9 @@
       font-weight: 300;
       color: var(--cream);
       line-height: 1.12;
-      margin-bottom: 1.25rem;
+      margin: 0 auto 1.25rem;
+      max-width: 30ch;
+      text-wrap: balance;
     }
 
     .faq-h2 em { font-style: italic; color: var(--copper3); }
@@ -2472,13 +2476,25 @@
     @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) { main { animation: none; } }
 
-    .page-hero { background: var(--navy); padding: 170px 6% 90px; position: relative; overflow: hidden; }
+    .page-hero { background: var(--navy); padding: 150px 6% 72px; position: relative; overflow: hidden; }
     .page-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 55% 60% at 85% 20%, rgba(184,115,51,0.12) 0%, transparent 65%); pointer-events:none; }
     .page-hero::after { content:''; position:absolute; inset:0; opacity:.1; pointer-events:none; background-image: radial-gradient(circle, rgba(184,115,51,0.35) 1px, transparent 1px); background-size:40px 40px; mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); }
     .page-hero .wrap { position: relative; z-index: 1; }
     .page-hero-h1 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-2); font-weight:300; color: var(--cream); line-height:1.1; margin-bottom: 1.5rem; max-width: 760px; letter-spacing:-0.01em; }
     .page-hero-h1 em { font-style: italic; color: var(--copper3); }
     .page-hero-sub { font-size: 1rem; font-weight:300; color: var(--muted); line-height:1.85; max-width: 580px; }
+
+    /* Seam corrections.
+       The hero already contributes 90px below its subhead, and the section that
+       follows adds another 160px. That 250px runs on 17 pages and, where the
+       hero and the next section share a background (.page-hero and .impact are
+       both var(--navy)), it separates nothing the eye can resolve. */
+    .page-hero + section { padding-top: 5rem; }
+
+    /* Two consecutive .why-us panels are the same component on the same
+       var(--navy3) background, so 320px between them reads as a gap rather
+       than a chapter break. */
+    .why-us + .why-us { padding-top: 4rem; }
     .page-hero .eyebrow, .page-hero-h1, .page-hero-sub { opacity:0; animation: heroRise .85s cubic-bezier(.22,.61,.36,1) forwards; }
     .page-hero-h1 { animation-delay:.12s; } .page-hero-sub { animation-delay:.26s; }
     @media (prefers-reduced-motion: reduce){ .page-hero .eyebrow,.page-hero-h1,.page-hero-sub{animation:none;opacity:1;} }
@@ -2604,8 +2620,8 @@
       .related-guides-list a { font-size:1.05rem; padding:1rem 1.15rem; }
     }
 
-    .next-cta { background: var(--navy3); padding: 7rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
-    .next-cta-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin-bottom:1.2rem; }
+    .next-cta { background: var(--navy3); padding: 5.5rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
+    .next-cta-h2 { font-family:'Cormorant Garamond',serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin:0 auto 1.2rem; max-width: 30ch; text-wrap: balance; }
     .next-cta-h2 em { font-style:italic; color:var(--copper3); }
     .next-cta-sub { font-size:.93rem; font-weight:300; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
     .next-cta-actions { display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap; }
@@ -2751,7 +2767,7 @@
     /* ===== Articles index ===== */
     .articles-list {
       background: var(--cream);
-      padding: 7rem 6% 9rem;
+      padding: 5.5rem 6% 6.5rem;
       position: relative;
       overflow: hidden;
     }
@@ -2871,6 +2887,15 @@
       font-size: var(--fs-display-5);
       line-height: 1.15;
       margin-bottom: 0.9rem;
+    }
+
+    .sector-group-intro {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.62);
+      line-height: 1.8;
+      max-width: 44em;
+      margin: 0 0 2.75rem;
     }
 
     .articles-group-intro {
