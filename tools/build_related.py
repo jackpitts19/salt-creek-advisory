@@ -65,7 +65,8 @@ RELATED = {
         "best-business-valuation-firms-lower-middle-market"],
     "working-capital-peg-ma": [
         "quality-of-earnings-report", "ma-deal-structure",
-        "earnouts-escrow-holdbacks"],
+        "earnouts-escrow-holdbacks",
+        "seller-risk-protection-deal-structuring"],
 
     # Reading an offer. Sits between the fundamentals and the buyer guides: the
     # peg is one of its six structures, and the buyer-type guide explains who
@@ -79,7 +80,17 @@ RELATED = {
         "best-ma-advisors-plumbing-companies"],
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
-        "strategic-buyer-vs-private-equity-buyer"],
+        "strategic-buyer-vs-private-equity-buyer",
+        "seller-risk-protection-deal-structuring"],
+
+    # Post-closing risk. The earnout guide answers "will I be paid the rest of
+    # the price"; this one answers "how much of what I was already paid can be
+    # taken back". Same reader, one question later, so each leads the other's
+    # list, and the peg carries it too because both are arithmetic run after
+    # the wire clears.
+    "seller-risk-protection-deal-structuring": [
+        "earnouts-escrow-holdbacks", "ma-deal-structure",
+        "working-capital-peg-ma"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
