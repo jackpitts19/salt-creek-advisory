@@ -62,7 +62,8 @@ RELATED = {
         "lower-middle-market-ma-process"],
     "quality-of-earnings-report": [
         "working-capital-peg-ma", "ebitda-and-business-valuation-basics",
-        "best-business-valuation-firms-lower-middle-market"],
+        "best-business-valuation-firms-lower-middle-market",
+        "due-diligence-selling-a-business"],
     "working-capital-peg-ma": [
         "quality-of-earnings-report", "ma-deal-structure",
         "earnouts-escrow-holdbacks",
@@ -243,7 +244,7 @@ RELATED = {
     # timeline is the reader deciding between a multi-buyer process and one buyer.
     "lower-middle-market-ma-process": [
         "how-long-does-it-take-to-sell-a-business", "when-to-start-exit-planning",
-        "m-and-a-auction-process-explained"],
+        "m-and-a-auction-process-explained", "due-diligence-selling-a-business"],
     "how-long-does-it-take-to-sell-a-business": [
         "lower-middle-market-ma-process", "when-to-start-exit-planning",
         "m-and-a-auction-process-explained"],
@@ -252,10 +253,20 @@ RELATED = {
     # bids needs next, which are who the bidders are and what their terms mean.
     "m-and-a-auction-process-explained": [
         "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
-        "ma-deal-structure"],
+        "ma-deal-structure", "due-diligence-selling-a-business"],
     "when-to-start-exit-planning": [
         "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
+    # Diligence. Sits immediately after the LOI in the sequence the two process
+    # guides describe and after the bid comparison the auction guide ends on, so
+    # all three carry it as a fourth destination rather than displacing one of
+    # their existing three. Its own list runs into the financial workstream: the
+    # QoE guide is one part of the review this page places in context, the peg is
+    # the number diligence sets, and what-buyers-look-for is the same reader one
+    # step earlier, before there is an LOI to diligence.
+    "due-diligence-selling-a-business": [
+        "quality-of-earnings-report", "working-capital-peg-ma",
+        "what-buyers-look-for-in-an-acquisition-target"],
 
     # Market conditions. Grouped with timing rather than valuation because the
     # question it answers is sell now or wait. Its multiples are context for that
