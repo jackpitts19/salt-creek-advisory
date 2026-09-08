@@ -111,7 +111,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "buy-side-ma-advisor",
   "childcare-daycare-valuation-multiples",
   "dog-daycare-pet-care-valuation-multiples",
-  "due-diligence-selling-a-business",
+  "due-diligence-checklist-selling-a-business",
   "earnouts-escrow-holdbacks",
   "ebitda-and-business-valuation-basics",
   "how-long-does-it-take-to-sell-a-business",
@@ -153,6 +153,7 @@ const GUIDE_PATH = /^\/articles\/([a-z0-9-]+?)(?:-(20\d{2}))?$/;
 // a row, which is what keeps this a map and not a chain.
 const RENAMED_GUIDES = new Map([
   ["controlled-auction-vs-negotiated-sale", "m-and-a-auction-process-explained"],
+  ["due-diligence-selling-a-business", "due-diligence-checklist-selling-a-business"],
 ]);
 
 /**
