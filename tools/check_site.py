@@ -256,6 +256,65 @@ def check_footer_disclosure(path, html, errors, _warnings):
         "page carries and which a financial services page needs".format(path))
 
 
+THIRD_PARTY_FONT_HOSTS = ("fonts.googleapis.com", "fonts.gstatic.com")
+FONT_PRELOAD = re.compile(r'<link\b[^>]*\brel="preload"[^>]*>', re.I)
+LINK_HREF = re.compile(r'\bhref="([^"]+)"', re.I)
+LINK_AS = re.compile(r'\bas="([^"]+)"', re.I)
+STYLESHEET = "styles.css"
+FONT_URL = re.compile(r"url\(\s*['\"]?([^'\")]+\.woff2?)['\"]?\s*\)", re.I)
+
+
+def font_file_for(path, href):
+    """Where a font href on this page lands on disk. Root-absolute or relative."""
+    href = href.split("?", 1)[0]
+    if href.startswith("/"):
+        return href.lstrip("/")
+    return os.path.normpath(os.path.join(os.path.dirname(path), href))
+
+
+def check_fonts(path, html, errors, _warnings):
+    """Fonts are self-hosted. See docs/fonts.md.
+
+    A page that still pulls a third-party font stylesheet reintroduces the
+    render-blocking request the migration removed, and a font preload that
+    points at nothing is a 404 on every page view that no other check sees,
+    because nothing else here reads asset paths out of <link rel="preload">.
+    """
+    # A bare substring match on purpose: a <link>, a preconnect, an @import in
+    # an inline style and a stray URL in a comment are all the same mistake. The
+    # cost is that prose naming a Google Fonts host would also fail; no page does.
+    for host in THIRD_PARTY_FONT_HOSTS:
+        if host in html:
+            errors.append("{}: references {}; fonts are self-hosted under fonts/".format(path, host))
+    for tag in FONT_PRELOAD.findall(html):
+        kind = LINK_AS.search(tag)
+        if not kind or kind.group(1).lower() != "font":
+            continue
+        href = LINK_HREF.search(tag)
+        if not href:
+            errors.append("{}: font preload without an href".format(path))
+            continue
+        target = font_file_for(path, href.group(1))
+        if not os.path.isfile(target):
+            errors.append("{}: font preload {} has no file at {}".format(path, href.group(1), target))
+
+
+def check_font_files(errors, _warnings):
+    """Every font the stylesheet names must exist on disk.
+
+    A typo in an @font-face src ships silently: the browser falls back to the
+    system font and nothing in CI notices. No tool here parses CSS otherwise.
+    Skipped when there is no stylesheet, which is only the synthetic test sites.
+    """
+    if not os.path.isfile(STYLESHEET):
+        return
+    css = read(STYLESHEET)
+    for url in FONT_URL.findall(css):
+        target = font_file_for(STYLESHEET, url)
+        if not os.path.isfile(target):
+            errors.append("{}: @font-face names {} but there is no file at {}".format(STYLESHEET, url, target))
+
+
 PAGE_CHECKS = (
     check_internal_links,
     check_footer_disclosure,
@@ -265,6 +324,7 @@ PAGE_CHECKS = (
     check_json_ld,
     check_schema_required_fields,
     check_images,
+    check_fonts,
 )
 
 
@@ -548,6 +608,7 @@ def main(argv=None):
     check_worker_slugs(errors, warnings)
     check_llms_txt_coverage(errors, warnings)
     check_related_symmetry(errors, warnings)
+    check_font_files(errors, warnings)
     check_guide_year_is_current(errors, warnings, strict=strict_year)
 
     for warning in warnings:

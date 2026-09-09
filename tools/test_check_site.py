@@ -344,6 +344,59 @@ class CheckSiteTestCase(unittest.TestCase):
         self.assertEqual(code, 0, "a long description should not fail the run")
         self.assertNotIn("meta description is", output)
 
+    # --- fonts are self-hosted ------------------------------------------------
+
+    def test_a_page_pulling_a_google_fonts_stylesheet_fails(self):
+        self.write("about.html", page(
+            "/about",
+            head='<link href="https://fonts.googleapis.com/css2?family=Inter" rel="stylesheet" />'))
+        self.assertFails("references fonts.googleapis.com")
+
+    def test_a_preconnect_to_a_font_host_fails(self):
+        self.write("about.html", page(
+            "/about", head='<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />'))
+        self.assertFails("references fonts.gstatic.com")
+
+    def test_a_font_preload_with_no_file_behind_it_fails(self):
+        self.write("about.html", page(
+            "/about",
+            head='<link rel="preload" href="/fonts/missing.woff2" as="font" type="font/woff2" crossorigin />'))
+        self.assertFails("font preload /fonts/missing.woff2 has no file at fonts/missing.woff2")
+
+    def test_a_font_preload_with_a_file_behind_it_passes(self):
+        self.write("fonts/inter-var.woff2", "wOF2")
+        self.write("about.html", page(
+            "/about",
+            head='<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />'))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
+
+    def test_a_relative_font_preload_resolves_from_the_page_directory(self):
+        self.write("fonts/inter-var.woff2", "wOF2")
+        self.write("articles/guide.html", page(
+            "/articles/guide",
+            head='<link rel="preload" href="../fonts/inter-var.woff2" as="font" crossorigin />'))
+        self.write("index.html", page("/", body='<a href="/about">About</a><a href="/articles/guide">G</a>'))
+        self.write_sitemap(["/", "/about", "/articles/guide"])
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
+
+    def test_a_non_font_preload_is_left_alone(self):
+        self.write("hero.jpg", "jpg")
+        self.write("about.html", page(
+            "/about", head='<link rel="preload" href="/hero.jpg" as="image" />'))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
+
+    def test_a_stylesheet_font_url_without_a_file_fails(self):
+        self.write("styles.css", "@font-face { font-family: X; src: url('fonts/nope.woff2') format('woff2'); }")
+        self.assertFails("styles.css: @font-face names fonts/nope.woff2 but there is no file at fonts/nope.woff2")
+
+    def test_a_stylesheet_font_url_with_a_file_passes(self):
+        self.write("fonts/ok.woff2", "wOF2")
+        self.write("styles.css", '@font-face { font-family: X; src: url("fonts/ok.woff2") format("woff2"); }')
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, output)
 
 
 
