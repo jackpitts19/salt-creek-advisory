@@ -111,7 +111,8 @@ RELATED = {
         "roll-ups-legal-services-pet-care"],
     "roll-ups-legal-services-pet-care": [
         "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
-        "dog-daycare-pet-care-valuation-multiples"],
+        "dog-daycare-pet-care-valuation-multiples",
+        "roll-up-buy-and-build-acquisition-advisory"],
     "best-ma-advisors-pet-care-dog-daycare-businesses": [
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
         "roll-ups-legal-services-pet-care"],
@@ -235,7 +236,20 @@ RELATED = {
     # arithmetic it contrasts buy-side pricing against, and advisor selection.
     "buy-side-ma-advisor": [
         "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
-        "how-to-choose-an-ma-advisor"],
+        "roll-up-buy-and-build-acquisition-advisory"],
+
+    # The buyer running a program rather than a single deal. It takes the
+    # how-to-choose slot above rather than a new one: that guide is the hub of
+    # the whole advisor cluster at fourteen inbound and can spare one, and a
+    # reader who has just finished the one-deal buy-side guide is exactly the
+    # reader for the multi-deal version. Its own three go back to that guide,
+    # to the sector article on the same phenomenon, and to quality of earnings,
+    # which is the section this guide leans on hardest: applying one earnings
+    # policy across a pipeline is the difference between arbitrage and a
+    # platform built on unverified numbers.
+    "roll-up-buy-and-build-acquisition-advisory": [
+        "buy-side-ma-advisor", "roll-ups-legal-services-pet-care",
+        "quality-of-earnings-report"],
 
     # Process and timing. The auction guide takes one slot from each of the two
     # process guides rather than a new one: what-buyers-look-for is the best-linked
@@ -273,7 +287,7 @@ RELATED = {
     # decision rather than a price, and the guide itself says so at length.
     "lower-middle-market-ma-outlook": [
         "when-to-start-exit-planning", "ma-deal-structure",
-        "ebitda-and-business-valuation-basics"],
+        "roll-up-buy-and-build-acquisition-advisory"],
 
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [
