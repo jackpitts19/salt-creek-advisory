@@ -7,8 +7,9 @@ const ALLOWED_METHODS = ["GET", "HEAD", "OPTIONS"];
 // markup: an entry missing here shows up as a console CSP violation, not a
 // silent degradation.
 //   googletagmanager / google-analytics -> GA4 (analytics.js)
-//   fonts.googleapis / fonts.gstatic    -> the Cormorant Garamond + Inter faces
 //   formspree.io                        -> valuation.js lead capture POST
+// No font host is listed on purpose: Cormorant Garamond and Inter are served
+// from this origin under /fonts (see docs/fonts.md), so 'self' covers them.
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -26,8 +27,8 @@ const CONTENT_SECURITY_POLICY = [
   // .text-link rule in styles.css. The rest are one-off layout tweaks, plus two
   // inside articles/, which are left alone by policy.
   // Scoped to style only; script-src carries no inline escape hatch.
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
   "img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com",
   // www.google.com is GA4's Google-signals endpoint: gtag beacons user_engagement
   // there in addition to google-analytics.com. Omitting it costs engagement data
