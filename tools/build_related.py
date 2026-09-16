@@ -241,7 +241,8 @@ RELATED = {
     # brokerage or consulting models rather than sell-side advisors.
     "best-exit-planning-advisors-consultants": [
         "when-to-start-exit-planning", "how-to-choose-an-ma-advisor",
-        "sell-side-advisor-vs-business-broker"],
+        "sell-side-advisor-vs-business-broker",
+        "family-business-succession-planning"],
 
     # The only guide addressed to the buyer rather than the owner, so its three
     # destinations are the sell-side mirrors of its own sections: the broker
@@ -281,8 +282,20 @@ RELATED = {
     "m-and-a-auction-process-explained": [
         "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
         "ma-deal-structure", "due-diligence-checklist-selling-a-business"],
+    # The branch of the succession question where no family member or employee
+    # is ready. It reads as the next page after the general succession guide, so
+    # that guide carries it second, and the family-business essay (whose reader
+    # is this owner) and the transition-scoped advisor comparison carry it last.
+    # Its own three: the general guide it cites for timing, the buyer-type guide
+    # it cites twice, and the auction explainer for the competitive process its
+    # whole argument about unsolicited offers rests on, which the body never
+    # links, so the Keep Reading block is the only path there.
+    "family-business-succession-planning": [
+        "when-to-start-exit-planning", "strategic-buyer-vs-private-equity-buyer",
+        "m-and-a-auction-process-explained"],
     "when-to-start-exit-planning": [
-        "best-exit-planning-advisors-consultants", "lower-middle-market-ma-process",
+        "best-exit-planning-advisors-consultants", "family-business-succession-planning",
+        "lower-middle-market-ma-process",
         "what-buyers-look-for-in-an-acquisition-target",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
     # Diligence. Sits immediately after the LOI in the sequence the two process
@@ -326,7 +339,8 @@ RELATED = {
         "coming-home-family-midwest-fourth-of-july", "how-to-choose-an-ma-advisor"],
     "community-midwest-selling-a-family-business": [
         "why-we-built-salt-creek-around-relationships",
-        "coming-home-family-midwest-fourth-of-july", "when-to-start-exit-planning"],
+        "coming-home-family-midwest-fourth-of-july", "when-to-start-exit-planning",
+        "family-business-succession-planning"],
     "coming-home-family-midwest-fourth-of-july": [
         "community-midwest-selling-a-family-business",
         "why-we-built-salt-creek-around-relationships", "how-ai-is-actually-changing-business"],

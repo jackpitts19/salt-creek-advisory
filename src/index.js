@@ -116,6 +116,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "due-diligence-checklist-selling-a-business",
   "earnouts-escrow-holdbacks",
   "ebitda-and-business-valuation-basics",
+  "family-business-succession-planning",
   "how-long-does-it-take-to-sell-a-business",
   "how-to-choose-an-ma-advisor",
   "lower-middle-market-ma-outlook",
