@@ -397,6 +397,32 @@
 
        The class names stay in the markup so this is one stylesheet change rather
        than an edit to 53 files; they are inert. */
+    /* Keyboard users landed on the first of ~12 nav links on every page. This is the
+       standard escape hatch: off-screen until focused, then a real target. Cream on
+       navy so it clears 3:1 against whatever hero sits behind it. */
+    .skip-link {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translate(-50%, -110%);
+      z-index: 1000;
+      background: var(--navy);
+      color: var(--cream);
+      border: 1px solid var(--copper2);
+      padding: 0.75rem 1.25rem;
+      font-family: 'Inter','Inter Fallback',Arial,sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.18s ease;
+    }
+
+    .skip-link:focus { transform: translate(-50%, 0.5rem); }
+
+    main:focus { outline: none; }
+
     .reveal,
     .reveal.visible { opacity: 1; transform: none; }
 
@@ -2415,7 +2441,14 @@
     .faq-a {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.45s ease;
+      visibility: hidden;
+      transition: max-height 0.45s ease, visibility 0s linear 0.45s;
+    }
+
+    .faq-item.open .faq-a,
+    .faq-a.open {
+      visibility: visible;
+      transition: max-height 0.45s ease, visibility 0s linear 0s;
     }
 
     .faq-a-inner {
@@ -2583,7 +2616,7 @@
     .val-step-title { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size:1.8rem; font-weight:400; color:var(--cream); margin-bottom:2rem; line-height:1.2; }
     .val-field { margin-bottom: 1.5rem; }
     .val-label { display:block; font-size:.62rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted2); margin-bottom:.55rem; }
-    .val-input, .val-select { width:100%; background: rgba(7,17,26,0.6); border:1px solid rgba(244,240,235,0.12); color:var(--cream); font-family:'Inter','Inter Fallback',Arial,sans-serif; font-size:.95rem; font-weight:300; padding:.85rem 1rem; border-radius:2px; transition: border-color .25s, box-shadow .25s; }
+    .val-input, .val-select { width:100%; background: rgba(7,17,26,0.6); border:1px solid rgba(244,240,235,0.12); color:var(--cream); font-family:'Inter','Inter Fallback',Arial,sans-serif; font-size:1rem; font-weight:300; padding:.85rem 1rem; border-radius:2px; transition: border-color .25s, box-shadow .25s; }
     .val-input::placeholder { color: rgba(244,240,235,0.3); }
     .val-input:focus, .val-select:focus { outline:none; border-color: var(--copper2); box-shadow: 0 0 0 3px rgba(184,115,51,0.12); }
     .val-select option { background: var(--navy3); color: var(--cream); }
@@ -2933,7 +2966,11 @@
     .articles-tabs-on .articles-group { display: none; }
     .articles-tabs-on .articles-group.is-active { display: block; }
     .articles-tabs-on .articles-group + .articles-group { margin-top: 0; }
+    /* main.js makes each panel focusable (tabindex=0) when the tab UI is on, so the
+       outline cannot simply be removed. Suppress it for pointer users, keep it for
+       keyboard users, which is what :focus-visible is for. */
     .articles-tabs-on .articles-group:focus { outline: none; }
+    .articles-tabs-on .articles-group:focus-visible { outline: 2px solid var(--copper2); outline-offset: 4px; }
 
     /* Outranks the 1.55rem card titles below it: same face and weight, so the
        size step and the tighter leading are what carry the hierarchy. */
