@@ -187,7 +187,8 @@ RELATED = {
     # 3.4%-3.9% wants the bracket arithmetic sitting behind that number.
     "how-to-choose-an-ma-advisor": [
         "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
-        "top-lower-middle-market-investment-banks", "best-boutique-ma-firms"],
+        "top-lower-middle-market-investment-banks", "best-boutique-ma-firms",
+        "best-exit-planning-advisors-consultants"],
     # The buy-side guide replaces the $20M comparison here, which is already
     # reachable from top-lower-middle-market-investment-banks. Fee guide to fee
     # guide is the strongest bridge on the site: this page derives the sell-side
@@ -230,6 +231,18 @@ RELATED = {
         "ebitda-and-business-valuation-basics", "quality-of-earnings-report",
         "how-to-choose-an-ma-advisor"],
 
+    # The only comparison scoped to the transition rather than to the sale: it
+    # ranges across an M&A advisor, a family-succession consultant, a brokerage
+    # franchise and a credentialing body, which is the set an owner who has not
+    # yet decided between an internal transfer and an outside sale is choosing
+    # from. Its own three run back toward that decision: the succession guide it
+    # cites twice in its own prose, advisor selection for the sale path, and the
+    # broker-versus-advisor distinction, since two of the six profiled are
+    # brokerage or consulting models rather than sell-side advisors.
+    "best-exit-planning-advisors-consultants": [
+        "when-to-start-exit-planning", "how-to-choose-an-ma-advisor",
+        "sell-side-advisor-vs-business-broker"],
+
     # The only guide addressed to the buyer rather than the owner, so its three
     # destinations are the sell-side mirrors of its own sections: the broker
     # comparison it points at by name, the fee guide holding the Lehman
@@ -269,7 +282,8 @@ RELATED = {
         "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
         "ma-deal-structure", "due-diligence-checklist-selling-a-business"],
     "when-to-start-exit-planning": [
-        "lower-middle-market-ma-process", "what-buyers-look-for-in-an-acquisition-target",
+        "best-exit-planning-advisors-consultants", "lower-middle-market-ma-process",
+        "what-buyers-look-for-in-an-acquisition-target",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
     # Diligence. Sits immediately after the LOI in the sequence the two process
     # guides describe and after the bid comparison the auction guide ends on, so
@@ -287,7 +301,8 @@ RELATED = {
     # decision rather than a price, and the guide itself says so at length.
     "lower-middle-market-ma-outlook": [
         "when-to-start-exit-planning", "ma-deal-structure",
-        "roll-up-buy-and-build-acquisition-advisory"],
+        "roll-up-buy-and-build-acquisition-advisory",
+        "best-exit-planning-advisors-consultants"],
 
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [
