@@ -1,19 +1,46 @@
 // Salt Creek Advisory, shared site behavior
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Mobile hamburger
+// Mobile hamburger. On a phone this is the ONLY navigation control on the page,
+// so it has to announce its state and it has to be dismissable the two ways every
+// other drawer on the web is: tap away, or press Escape. Previously it did
+// neither, and aria-expanded was never set at all, so a screen reader user was
+// told nothing about whether the menu was open.
 const hamburger = document.getElementById('hamburger');
 const drawer = document.getElementById('mobileDrawer');
+
+const setDrawer = (open) => {
+  if (!hamburger || !drawer) return;
+  hamburger.classList.toggle('open', open);
+  drawer.classList.toggle('open', open);
+  hamburger.setAttribute('aria-expanded', String(open));
+  hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+};
+
+const closeDrawer = () => setDrawer(false);
+
 if (hamburger && drawer) {
+  hamburger.setAttribute('aria-expanded', 'false');
   hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('open');
-    drawer.classList.toggle('open');
+    setDrawer(!drawer.classList.contains('open'));
+  });
+
+  // Tap anywhere outside the drawer and the button that opened it.
+  document.addEventListener('click', (e) => {
+    if (!drawer.classList.contains('open')) return;
+    if (drawer.contains(e.target) || hamburger.contains(e.target)) return;
+    closeDrawer();
+  });
+
+  // Escape closes and hands focus back to the control that opened it, so a
+  // keyboard user is not dropped at the top of the document.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !drawer.classList.contains('open')) return;
+    closeDrawer();
+    hamburger.focus();
   });
 }
-const closeDrawer = () => {
-  if (hamburger) hamburger.classList.remove('open');
-  if (drawer) drawer.classList.remove('open');
-};
+
 // Delegated so the markup needs no inline onclick, which lets the CSP drop
 // 'unsafe-inline' from script-src.
 if (drawer) {

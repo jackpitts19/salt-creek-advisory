@@ -3830,3 +3830,162 @@
       .home-people { grid-template-columns: 1fr; gap: 2.5rem; }
       .home-quote { margin-top: 3rem; }
     }
+
+    /* ============================================================
+       PHONE PASS (2026-09-16)
+       Appended at the end deliberately. The touch-target block above
+       carries a comment explaining that a later base declaration once
+       silently beat an earlier override; the homepage section is
+       declared after it, so homepage selectors have to be corrected
+       from here to win. Measured on a real 390px viewport, not assumed.
+       ============================================================ */
+
+    /* Tap targets. Apple and WCAG 2.2 both want ~44px; these measured
+       19-25px. .sector-link already had a min-height rule in the block
+       above and it did nothing, because the element is a bare inline
+       <a> and min-height does not apply to inline boxes. The display
+       value is the actual fix; the min-height was always correct. */
+    @media (max-width: 1100px), (pointer: coarse) {
+      .sector-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+
+      .home-link { min-height: 44px; }
+
+      .home-sectors-list a {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+      }
+      /* The 0.9rem gap was sized for ~21px rows. With 44px hit areas the
+         rows already separate themselves, and the extra gap only makes
+         the block longer to scroll. Same reasoning as .footer-col above. */
+      .home-sectors-list { gap: 0.25rem; }
+
+      .home-sectors-note a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      /* Headlines carry authored <br> breaks. At 390px the display floor
+         was large enough to force an extra wrap, which stranded single
+         words on their own line. balance evens the ragged edge, and the
+         lower floor lets the authored breaks hold. */
+      .hero-h1,
+      .page-hero-h1 { text-wrap: balance; }
+
+      :root {
+        --fs-display-1: clamp(2.5rem, 5.5vw, 5rem);
+        --fs-display-2: clamp(2.15rem, 4.6vw, 4.2rem);
+      }
+
+      /* Body copy for an owner in their fifties reading on a phone. These
+         sat at 13.3-15.2px. The mobile block higher up raised their
+         contrast but never their size. Line heights are already 1.78-1.85,
+         so only the size moves. */
+      .process-step p,
+      .why-card p,
+      .why-sub,
+      .why-process-callout p,
+      .impact-stat-desc,
+      .impact-body-text,
+      .about-right p,
+      .team-bio,
+      .podcast-desc,
+      .value-card p,
+      .sector-card p,
+      .article-card p,
+      .next-cta-sub { font-size: 1rem; }
+
+      .footer-desc,
+      .footer-col a { font-size: 0.9rem; }
+
+      /* Tracked uppercase at 9.6-11.5px is the hardest text on the site to
+         read. Step the scale up and let the size carry the emphasis, so the
+         tracking can relax slightly and keep the same optical texture. */
+      .eyebrow { font-size: 0.74rem; }
+      .val-step-kicker { font-size: 0.7rem; }
+      .articles-jump a { font-size: 0.75rem; }
+      .impact-stat-label { font-size: 0.8rem; }
+    }
+
+    /* Source and caveat notes under the sector tables. They were seven inline
+       styles carrying font-size:0.82rem plus opacity:0.6, and the opacity
+       compounded on an already muted colour the same way the valuation label
+       hints did. One class, an explicit colour, and a real size on a phone. */
+    .source-note {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(244,240,235,0.6);
+    }
+
+    @media (max-width: 640px) {
+      .source-note { font-size: 0.9rem; }
+    }
+
+    /* Four market stats stayed 2-up at 390px, which gave each 45px numeral
+       a 175px wide, 558px tall cell. One column per stat instead. */
+    @media (max-width: 560px) {
+      .impact-stats { grid-template-columns: 1fr; }
+      .impact-stats .impact-stat:nth-child(2),
+      .impact-stats .impact-stat:nth-child(3),
+      .impact-stats .impact-stat:nth-child(4) { border-left: 0; }
+      .impact-stat { padding: 2.5rem 1.5rem; }
+    }
+
+    /* The comparison table sits in a wrapper with overflow-x:auto, but the
+       table had no min-width, so instead of scrolling it squeezed itself
+       into 351px and crushed each column to about 73px of text. Give it a
+       real width so the existing scroll actually engages, and say so, since
+       a scroll nobody knows about is the same as no scroll. */
+    @media (max-width: 720px) {
+      .comp-table { min-width: 560px; }
+      .comp-table-wrap { position: relative; }
+      .comp-table-wrap::after {
+        content: 'Swipe to compare →';
+        display: block;
+        position: sticky;
+        left: 0;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted2);
+        padding-top: 0.75rem;
+      }
+    }
+
+    /* The hero on an iPhone SE (375x667) pushed the primary CTA to 583-705px,
+       so the buttons were cut by the fold on the shortest phone still in wide
+       use. The spacing was tuned for a desktop hero. Recovering about 130px of
+       vertical rhythm puts both buttons fully on the first screen without
+       touching the type scale. */
+    @media (max-width: 640px) {
+      .hero-h1 { margin-bottom: 1.5rem; }
+      .hero-sub { margin-bottom: 2rem; }
+      .hero--home .hero-cred { margin-top: 2rem; }
+    }
+
+    /* NOT DONE: the footer is 2,182px tall on a 375px phone, roughly three full
+       screens on every page. Forcing two columns below 520px was tried and
+       REVERTED: .footer-left shares the grid, so it squeezed to 98px and the
+       firm description wrapped to one word per line while connor@ overflowed
+       its column. The single column is correct at this width. Shortening the
+       footer needs a content decision (the description, or the regulatory
+       disclosure, which is a legal call), not a grid change. */
+
+    /* The wordmark stepped from 16.32px to 13.6px at exactly 400px, a 20% jump
+       that lands between the current iPhone sizes: the 390px models got the
+       small one and the 430px models the large one, for no reason a reader
+       could see. Scale it continuously instead. */
+    @media (max-width: 400px) {
+      .nav-logo-text {
+        font-size: clamp(0.85rem, 4.08vw, 1.02rem);
+        letter-spacing: 0.12em;
+      }
+    }
