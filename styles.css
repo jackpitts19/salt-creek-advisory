@@ -75,6 +75,18 @@
       --copper:  #b87333;
       --copper2: #c4844a;
       --copper3: #d4965e;
+      /* Copper on a LIGHT ground. The brand copper is tuned for navy, where it
+         clears AA comfortably (--copper 5.02:1, --copper3 7.54:1). On cream it
+         does not: --copper is 3.34:1, --copper2 2.74:1, --copper3 2.22:1, so
+         every inline link in every guide, every card label and the focus ring
+         sat below the WCAG AA floor. Same hue family, measured against the real
+         backgrounds this site actually paints.
+         --copper-ink    5.17:1 on --cream, 4.76:1 on the warmest light
+                         ground this site paints (the row-best table tint). Body text.
+         --copper-accent 3.23:1 on --cream, 5.20:1 on navy. Large display
+                         italics and the focus ring, which need 3:1 not 4.5:1. */
+      --copper-ink: #8e582a;
+      --copper-accent: #b6783a;
       --muted:   rgba(244,240,235,0.78);
       --muted2:  rgba(244,240,235,0.62);
 
@@ -374,7 +386,7 @@
 
     a:focus-visible,
     button:focus-visible {
-      outline: 2px solid var(--copper2);
+      outline: 2px solid var(--copper-accent);
       outline-offset: 3px;
       border-radius: 2px;
     }
@@ -814,7 +826,7 @@
       font-weight: 600;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper2);
+      color: var(--copper-ink);
       margin-bottom: 0.75rem;
     }
 
@@ -830,7 +842,7 @@
     .value-card p {
       font-size: 0.87rem;
       font-weight: 300;
-      color: rgba(7,17,26,0.55);
+      color: rgba(7,17,26,0.64);
       line-height: 1.78;
     }
 
@@ -2192,7 +2204,7 @@
     .sector-card p {
       font-size: 0.89rem;
       font-weight: 300;
-      color: rgba(7,17,26,0.58);
+      color: rgba(7,17,26,0.64);
       line-height: 1.8;
     }
 
@@ -2202,7 +2214,7 @@
       font-weight: 600;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       margin-bottom: 0.9rem;
     }
 
@@ -2218,7 +2230,7 @@
       margin-top: 0.55rem;
       font-size: 0.82rem;
       font-weight: 300;
-      color: rgba(7,17,26,0.5);
+      color: rgba(7,17,26,0.64);
     }
 
     .sector-card-next:hover { color: var(--copper2); }
@@ -2261,7 +2273,7 @@
     }
 
     .sector-group-h2 em,
-    .articles-group-h2 em { font-style: italic; color: var(--copper3); }
+    .articles-group-h2 em { font-style: italic; color: var(--copper-accent); }
 
     /* ============================================================
        INVESTORS / BUY-SIDE
@@ -2540,10 +2552,17 @@
       .hero-cred-sep { display: none; }
       .sector-flagship-stats { flex-wrap: wrap; gap: 1.5rem; }
 
-      /* Improve text contrast on mobile */
+      /* Improve text contrast on mobile. This block used to do the opposite of
+         its own comment: it LOWERED the cream alpha over navy, and lower alpha
+         on a dark ground is less contrast, not more. --muted2 fell from 0.62
+         (6.83:1) to 0.45 (4.10:1 on --navy, 4.03:1 on --navy3), which put the
+         valuation form labels and helper text under the 4.5:1 AA floor on the
+         one surface where the site asks for a phone number. The nine selectors
+         below were pinned to 0.75, also under the 0.78 they inherit on desktop.
+         Every value here is now at or above its desktop counterpart. */
       :root {
-        --muted: rgba(244,240,235,0.7);
-        --muted2: rgba(244,240,235,0.45);
+        --muted: rgba(244,240,235,0.82);
+        --muted2: rgba(244,240,235,0.72);
       }
       .hero-sub,
       .why-card p,
@@ -2553,7 +2572,7 @@
       .about-right p,
       .team-bio,
       .contact-sub,
-      .podcast-desc { color: rgba(244,240,235,0.75); }
+      .podcast-desc { color: rgba(244,240,235,0.85); }
     }
   
     /* ============================================================
@@ -2616,6 +2635,17 @@
     .val-step-title { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size:1.8rem; font-weight:400; color:var(--cream); margin-bottom:2rem; line-height:1.2; }
     .val-field { margin-bottom: 1.5rem; }
     .val-label { display:block; font-size:.62rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted2); margin-bottom:.55rem; }
+    /* Parenthetical hints inside a .val-label. They used inline opacity:.5, which
+       multiplied the label's already muted colour down to roughly 0.36 effective
+       alpha and measured 3.04:1. Differentiate by case and tracking rather than by
+       opacity, so the hint still reads as secondary and still clears AA. */
+    .val-label-hint {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+      color: rgba(244,240,235,0.62);
+    }
+
     .val-input, .val-select { width:100%; background: rgba(7,17,26,0.6); border:1px solid rgba(244,240,235,0.12); color:var(--cream); font-family:'Inter','Inter Fallback',Arial,sans-serif; font-size:1rem; font-weight:300; padding:.85rem 1rem; border-radius:2px; transition: border-color .25s, box-shadow .25s; }
     .val-input::placeholder { color: rgba(244,240,235,0.3); }
     .val-input:focus, .val-select:focus { outline:none; border-color: var(--copper2); box-shadow: 0 0 0 3px rgba(184,115,51,0.12); }
@@ -2910,7 +2940,7 @@
     .article-card p {
       font-size: 0.89rem;
       font-weight: 300;
-      color: rgba(7,17,26,0.58);
+      color: rgba(7,17,26,0.64);
       line-height: 1.8;
       margin-bottom: 1.25rem;
       flex-grow: 1;
@@ -2921,10 +2951,10 @@
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--copper2);
+      color: var(--copper-ink);
     }
 
-    .article-card:hover .article-card-arrow { color: var(--copper); }
+    .article-card:hover .article-card-arrow { color: var(--navy); }
 
     .articles-jump {
       display: flex;
@@ -2952,11 +2982,11 @@
     }
 
     .articles-jump a:hover,
-    .articles-jump a:focus-visible { color: var(--copper); }
+    .articles-jump a:focus-visible { color: var(--copper-ink); }
 
     .articles-jump a[aria-selected="true"] {
-      color: var(--copper);
-      border-bottom-color: var(--copper);
+      color: var(--copper-ink);
+      border-bottom-color: var(--copper-ink);
     }
 
     .articles-group + .articles-group { margin-top: 5rem; }
@@ -2970,7 +3000,7 @@
        outline cannot simply be removed. Suppress it for pointer users, keep it for
        keyboard users, which is what :focus-visible is for. */
     .articles-tabs-on .articles-group:focus { outline: none; }
-    .articles-tabs-on .articles-group:focus-visible { outline: 2px solid var(--copper2); outline-offset: 4px; }
+    .articles-tabs-on .articles-group:focus-visible { outline: 2px solid var(--copper-accent); outline-offset: 4px; }
 
     /* Outranks the 1.55rem card titles below it: same face and weight, so the
        size step and the tighter leading are what carry the hierarchy. */
@@ -3057,7 +3087,7 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       margin-bottom: 0.9rem;
     }
 
@@ -3139,11 +3169,11 @@
     /* In-copy links outside .article-body. This exact declaration was pasted
        inline into 40 <a> tags across five pages, which is why style-src still
        carries 'unsafe-inline'. One rule, one place to change it. */
-    .text-link { color: var(--copper3); border-bottom: 1px solid rgba(184,115,51,0.35); }
-    .text-link:hover { color: var(--copper2); border-bottom-color: var(--copper2); }
+    .text-link { color: var(--copper-ink); border-bottom: 1px solid rgba(146,93,46,0.4); }
+    .text-link:hover { color: var(--navy); border-bottom-color: var(--navy); }
 
-    .article-body a { color: var(--copper); border-bottom: 1px solid rgba(184,115,51,0.35); }
-    .article-body a:hover { color: var(--copper2); }
+    .article-body a { color: var(--copper-ink); border-bottom: 1px solid rgba(146,93,46,0.4); }
+    .article-body a:hover { color: var(--navy); border-bottom-color: var(--navy); }
 
     .article-body blockquote {
       margin: 2rem 0;
@@ -3218,9 +3248,9 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       padding: 0.8rem 1rem;
-      border-bottom: 2px solid rgba(184,115,51,0.35);
+      border-bottom: 2px solid rgba(146,93,46,0.4);
     }
 
     .article-body td {
@@ -3273,7 +3303,7 @@
       background: rgba(184,115,51,0.08);
     }
 
-    .article-body th.col-best { color: var(--copper2); }
+    .article-body th.col-best { color: var(--copper-ink); }
 
     .article-body td.col-best {
       font-weight: 500;
@@ -3314,7 +3344,7 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       margin-bottom: 0.9rem;
     }
 
@@ -3464,7 +3494,7 @@
     }
     .capability-section.navy .capability-section-header h2 { color: var(--cream); }
     .capability-section.cream .capability-section-header h2 { color: var(--navy); }
-    .capability-section-header h2 em { font-style: italic; color: var(--copper3); }
+    .capability-section-header h2 em { font-style: italic; color: var(--copper-accent); }
     .capability-section.navy .capability-section-header p { color: var(--muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8; }
     .capability-section.cream .capability-section-header p { color: rgba(7,17,26,0.62); font-size: 0.95rem; font-weight: 300; line-height: 1.8; }
 
@@ -3579,7 +3609,7 @@
     .home-section + .home-section { border-top: 1px solid rgba(7,17,26,0.08); }
 
     .eyebrow--dark {
-      color: rgba(7,17,26,0.55);
+      color: rgba(7,17,26,0.64);
       font-weight: 500;
       letter-spacing: 0.22em;
       margin-bottom: 0;
@@ -3612,7 +3642,7 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       border-bottom: 1px solid rgba(184,115,51,0.35);
       padding-bottom: 0.2rem;
       transition: color 0.2s, border-color 0.2s;
@@ -3660,7 +3690,7 @@
       font-weight: 600;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(7,17,26,0.5);
+      color: rgba(7,17,26,0.64);
       margin-bottom: 1.25rem;
     }
     .home-sectors-list {
@@ -3690,7 +3720,7 @@
       line-height: 1.7;
     }
     .home-sectors-note a {
-      color: var(--copper);
+      color: var(--copper-ink);
       font-weight: 500;
       white-space: nowrap;
     }
@@ -3755,7 +3785,7 @@
       font-weight: 600;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--copper);
+      color: var(--copper-ink);
       margin-bottom: 0.85rem;
     }
     .home-person-bio {
