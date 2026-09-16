@@ -56,7 +56,8 @@ RELATED = {
     # spare its.
     "ebitda-and-business-valuation-basics": [
         "quality-of-earnings-report", "best-business-valuation-firms-lower-middle-market",
-        "ma-glossary-lower-middle-market", "best-ma-advisors-dental-practices"],
+        "ma-glossary-lower-middle-market", "best-ma-advisors-dental-practices",
+        "dental-practice-valuation-multiples"],
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
@@ -136,14 +137,24 @@ RELATED = {
         "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
         "ebitda-and-business-valuation-basics", "best-ma-advisors-dental-practices"],
 
-    # Sector: dental and orthodontics. There is no dental multiples guide yet,
-    # so this leans on the SDE-versus-EBITDA explainer, which is the distinction
-    # the whole comparison turns on once a DSO and an individual dentist bid on
-    # the same practice, then the broker-versus-advisor piece, since three of
-    # the seven firms are brokers rather than sell-side advisors.
+    # Sector: dental and orthodontics. The dental multiples guide leads: it is
+    # the long form of the SDE-versus-EBITDA distinction the whole comparison
+    # turns on once a DSO and an individual dentist bid on the same practice.
+    # Then the EBITDA explainer, the broker-versus-advisor piece, since three of
+    # the seven firms are brokers rather than sell-side advisors, and the
+    # how-to-choose guide for the evaluation itself.
     "best-ma-advisors-dental-practices": [
-        "ebitda-and-business-valuation-basics", "sell-side-advisor-vs-business-broker",
-        "how-to-choose-an-ma-advisor"],
+        "dental-practice-valuation-multiples", "ebitda-and-business-valuation-basics",
+        "sell-side-advisor-vs-business-broker", "how-to-choose-an-ma-advisor"],
+
+    # Sector: dental and orthodontics, the multiples guide. Leads with the dental
+    # advisor comparison, which asks the same buyer-type question from the
+    # advisor side, then the EBITDA explainer for the replacement-compensation
+    # arithmetic, then earnouts, because a DSO offer at 60% to 70% cash at
+    # closing leaves the rest deferred.
+    "dental-practice-valuation-multiples": [
+        "best-ma-advisors-dental-practices", "ebitda-and-business-valuation-basics",
+        "earnouts-escrow-holdbacks"],
 
     # Sector: HVAC and field services. There is no HVAC multiples guide yet, so
     # this one leans on the two guides that already carry the trade (HVAC is a
