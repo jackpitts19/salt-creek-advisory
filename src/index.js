@@ -129,6 +129,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "ma-deal-structure",
   "ma-glossary-lower-middle-market",
   "manufacturing-valuation-multiples",
+  "msp-sale-readiness-checklist",
   "msp-valuation-multiples",
   "quality-of-earnings-report",
   "roll-up-buy-and-build-acquisition-advisory",

@@ -98,10 +98,19 @@ RELATED = {
     # explainer, so the advisor comparison sits second rather than last.
     "msp-valuation-multiples": [
         "/msp-ma-advisor", "best-ma-advisors-msp-managed-service-providers",
-        "business-services-valuation-multiples"],
+        "business-services-valuation-multiples", "msp-sale-readiness-checklist"],
     "best-ma-advisors-msp-managed-service-providers": [
         "/msp-ma-advisor", "msp-valuation-multiples",
-        "how-to-choose-an-ma-advisor"],
+        "how-to-choose-an-ma-advisor", "msp-sale-readiness-checklist"],
+    # The readiness checklist is the page an MSP owner reads before either of the
+    # two above is useful, and both carry it as a fourth destination rather than
+    # displacing one. Its body already links both of them by name, so its own
+    # list runs to the pages the body describes without linking: diligence, which
+    # is what its six-month section prepares for, and the earnout and escrow
+    # guide, which is where every unresolved issue in it ends up.
+    "msp-sale-readiness-checklist": [
+        "/msp-ma-advisor", "due-diligence-checklist-selling-a-business",
+        "earnouts-escrow-holdbacks"],
 
     # Sector: pet care. The advisor comparison sits in the middle of both other
     # pet care guides rather than at the end: a reader on multiples or roll-ups
