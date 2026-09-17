@@ -132,6 +132,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "manufacturing-valuation-multiples",
   "msp-sale-readiness-checklist",
   "msp-valuation-multiples",
+  "prepare-dog-daycare-business-for-sale",
   "quality-of-earnings-report",
   "roll-up-buy-and-build-acquisition-advisory",
   "roll-ups-legal-services-pet-care",

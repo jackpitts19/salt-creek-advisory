@@ -118,14 +118,24 @@ RELATED = {
     # is closer to picking a firm than to reading another sector explainer.
     "dog-daycare-pet-care-valuation-multiples": [
         "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
-        "roll-ups-legal-services-pet-care"],
+        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale"],
     "roll-ups-legal-services-pet-care": [
         "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
         "dog-daycare-pet-care-valuation-multiples",
         "roll-up-buy-and-build-acquisition-advisory"],
     "best-ma-advisors-pet-care-dog-daycare-businesses": [
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
-        "roll-ups-legal-services-pet-care"],
+        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale"],
+    # The pet care readiness guide is the counterpart to the MSP checklist above
+    # and is wired the same way: the two sector guides a reader would already be
+    # on carry it as a fourth destination rather than displacing one. Its body
+    # links the advisor page and the multiples guide by name, so its own list
+    # runs to what the body only describes: the diligence request its three-to-six
+    # month section prepares for, and the earnout and escrow guide, which is where
+    # an unresolved add-back or license question ends up in the terms.
+    "prepare-dog-daycare-business-for-sale": [
+        "/pet-care-ma-advisor", "due-diligence-checklist-selling-a-business",
+        "earnouts-escrow-holdbacks"],
 
     # Sector: accounting and CPA firms. No accounting multiples guide exists, so
     # this one leads with the buyer-type guide: the article's spine is a PE
