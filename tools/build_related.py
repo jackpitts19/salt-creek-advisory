@@ -39,6 +39,7 @@ EXISTING_BLOCK = re.compile(re.escape(START) + r".*?" + re.escape(END) + r"\n*",
 ROOT_PAGE_TITLES = {
     "/msp-ma-advisor": "Sell Your MSP: IT Managed Services M&A",
     "/pet-care-ma-advisor": "Sell Your Dog Daycare or Pet Care Business",
+    "/preschool-childcare-ma-advisor": "Sell Your Preschool: Childcare M&A Advisor",
 }
 
 # Three destinations per guide. Sector guides lead with their sell-side page,
@@ -187,13 +188,25 @@ RELATED = {
         "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
         "strategic-buyer-vs-private-equity-buyer"],
 
-    # Sector: early childhood education
+    # Sector: early childhood education. The readiness guide is wired the way the
+    # MSP and pet care checklists above are: the two guides an owner is already
+    # reading carry it as a fourth destination rather than displacing one, and its
+    # own list runs to what its body only describes. The body already names the
+    # valuation guide, the advisor comparison and the sell-side page, so Keep
+    # Reading goes to the diligence request its three-to-six month section
+    # prepares for, and to the earnout and escrow guide, which is where an
+    # unsupported add-back or a late licensing approval ends up in the terms.
     "childcare-daycare-valuation-multiples": [
         "ma-advisor-early-childhood-education", "ebitda-and-business-valuation-basics",
-        "what-buyers-look-for-in-an-acquisition-target"],
+        "what-buyers-look-for-in-an-acquisition-target",
+        "prepare-preschool-childcare-business-for-sale"],
     "ma-advisor-early-childhood-education": [
         "childcare-daycare-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "lower-middle-market-ma-process"],
+        "lower-middle-market-ma-process",
+        "prepare-preschool-childcare-business-for-sale"],
+    "prepare-preschool-childcare-business-for-sale": [
+        "/preschool-childcare-ma-advisor", "due-diligence-checklist-selling-a-business",
+        "earnouts-escrow-holdbacks"],
 
     # Sector: manufacturing
     "manufacturing-valuation-multiples": [
