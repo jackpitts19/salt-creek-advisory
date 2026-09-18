@@ -76,23 +76,101 @@ if (navEl) {
 }
 
 // FAQ accordion
+function closeFaqItem(item) {
+  item.classList.remove('open');
+  item.querySelector('.faq-a').style.maxHeight = null;
+  item.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+}
+
+/**
+ * Opens one answer and closes the others. Shared by the click handler and the
+ * deep-link handler below, so an answer reached from a #hash ends up in exactly
+ * the same state as one opened by hand.
+ * @param {Element} item the .faq-item to open
+ */
+function openFaqItem(item) {
+  document.querySelectorAll('.faq-item.open').forEach(other => {
+    if (other !== item) closeFaqItem(other);
+  });
+  const answer = item.querySelector('.faq-a');
+  item.classList.add('open');
+  item.querySelector('.faq-q').setAttribute('aria-expanded', 'true');
+  answer.style.maxHeight = answer.scrollHeight + 'px';
+}
+
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq-item');
-    const answer = item.querySelector('.faq-a');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(other => {
-      if (other !== item) {
-        other.classList.remove('open');
-        other.querySelector('.faq-a').style.maxHeight = null;
-        other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
-      }
-    });
-    item.classList.toggle('open', !isOpen);
-    btn.setAttribute('aria-expanded', String(!isOpen));
-    answer.style.maxHeight = !isOpen ? answer.scrollHeight + 'px' : null;
+    if (item.classList.contains('open')) closeFaqItem(item);
+    else openFaqItem(item);
   });
 });
+
+/**
+ * Opens the answer named in the URL, so faq#what-does-it-cost lands on that
+ * answer instead of on thirteen collapsed questions.
+ *
+ * The answers on this page are the firm's objection handling, and they were
+ * reachable only by scrolling and guessing: every item was anchorless, so no
+ * page could send a reader to the specific fear it had just raised.
+ */
+function openFaqFromHash() {
+  const raw = window.location.hash.slice(1);
+  if (!raw) return;
+  // decodeURIComponent throws URIError on a malformed escape, and "#50%" is an
+  // ordinary thing to find on the end of a shared or campaign URL. This runs at
+  // top level in a non-deferred script, so an uncaught throw here would abort the
+  // rest of this file on every page: the articles tabs and the reading progress
+  // bar would silently stop existing. An id is usable un-decoded, so fall back.
+  let hash;
+  try {
+    hash = decodeURIComponent(raw);
+  } catch (err) {
+    hash = raw;
+  }
+  const item = document.getElementById(hash);
+  if (!item || !item.classList.contains('faq-item')) return;
+
+  // Open immediately so the answer is never briefly visible as a collapsed row.
+  openFaqItem(item);
+
+  // Everything that touches focus, scroll position or measurement waits for load.
+  //
+  // Focus has to wait because the browser does its OWN fragment handling after
+  // this script has run, and the target here is a <div>, which is not focusable,
+  // so the browser resets focus to <body> and silently undoes an earlier focus()
+  // call. Measured: focusing during parse left activeElement as BODY on a cold
+  // load. Measurement has to wait because scrollHeight taken before the webfonts
+  // settle leaves the answer clipped at the wrong height.
+  //
+  // Checking readyState first matters: a listener added after load has fired never
+  // runs, so { once: true } would never remove it either, and every hashchange on
+  // an already-loaded page would leave a dead listener holding its closure. Same
+  // shape as the articles tabs below.
+  const settle = () => {
+    const answer = item.querySelector('.faq-a');
+    if (!item.classList.contains('open')) return;
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    // Focus the question, not the panel, so the next Tab continues into the answer.
+    // preventScroll because scrollIntoView below owns the final position.
+    const question = item.querySelector('.faq-q');
+    question.focus({ preventScroll: true });
+    // A programmatic focus generally does NOT match :focus-visible when the visitor
+    // arrived by clicking a link on another page, so the global ring would not paint
+    // and a sighted keyboard user would not see where focus went. Paint it for this
+    // one case, and drop it the moment they take over.
+    item.classList.add('faq-item--deeplinked');
+    const dropRing = () => item.classList.remove('faq-item--deeplinked');
+    document.addEventListener('click', dropRing, { once: true });
+    document.addEventListener('keydown', dropRing, { once: true });
+    item.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+  if (document.readyState === 'complete') settle();
+  else window.addEventListener('load', settle, { once: true });
+}
+
+openFaqFromHash();
+window.addEventListener('hashchange', openFaqFromHash);
 
 // Articles index category tabs. Shows one category at a time so the page lands
 // as a single screen instead of a 29-card scroll. Enhancement only: the markup

@@ -40,7 +40,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="styles.css?v=dc04e47f" />
+  <link rel="stylesheet" href="styles.css?v=1a74a82b" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
@@ -97,6 +97,48 @@
       <p class="contact-sub">
         The best relationships in this business start years before any deal. Whether you are thinking about a sale in six months or six years, want to talk about an acquisition, or just want an honest read on where things stand, reach out. No pitch. No pressure.
       </p>
+      <form id="contactForm" class="contact-form" action="https://formspree.io/f/xzdqavol" method="POST">
+        <h2 class="contact-form-title">Ask us anything</h2>
+        <p class="contact-form-sub">A question, a situation you are weighing, or just an introduction. It reaches both of us, and it is confidential. All fields are required unless marked optional.</p>
+        <div class="val-grid2">
+          <div class="val-field">
+            <label class="val-label" for="cName">Your Name</label>
+            <input id="cName" name="name" class="val-input" type="text" placeholder="First and last name" autocomplete="name" maxlength="120" required>
+          </div>
+          <div class="val-field">
+            <label class="val-label" for="cEmail">Email</label>
+            <input id="cEmail" name="email" class="val-input" type="email" placeholder="you@company.com" autocomplete="email" maxlength="200" required>
+          </div>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="cPhone">Phone <span class="val-label-hint">(optional)</span></label>
+          <input id="cPhone" name="phone" class="val-input" type="tel" placeholder="(555) 555-5555" autocomplete="tel" maxlength="40">
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="cMessage">Message</label>
+          <textarea id="cMessage" name="message" class="val-input contact-textarea" rows="5" placeholder="Tell us as much or as little as you want." maxlength="4000" required></textarea>
+        </div>
+        <p class="contact-form-trust">Jack and Connor read every message personally. We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
+        <p class="contact-status" id="contactStatus" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div class="contact-form-actions">
+          <button type="submit" class="btn-primary" id="contactSubmit">Send Message</button>
+        </div>
+        <p class="contact-fallback" id="contactFallback" hidden>
+          <a id="contactFallbackLink" href="mailto:jack@saltcreekadvisory.com">Email us this message instead &#8599;</a>
+        </p>
+        <p class="contact-honeypot" aria-hidden="true">
+          <label for="cCompanyUrl">Leave this field empty</label>
+          <input id="cCompanyUrl" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </p>
+      </form>
+
+      <div class="contact-done" id="contactDone" tabindex="-1" aria-labelledby="contactDoneTitle" hidden>
+        <h2 class="contact-form-title" id="contactDoneTitle">Thank you. Your message reached us.</h2>
+        <p class="contact-form-sub">Jack or Connor will reply personally, usually the same day. If it is urgent, call the calendar link below and take the first open slot.</p>
+      </div>
+
+      <p class="contact-or">Or, if you would rather talk:</p>
+
       <div class="contact-actions">
         <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="btn-primary">Schedule a Call</a>
         <a href="https://www.linkedin.com/company/salt-creek-advisory/" target="_blank" rel="noopener" class="btn-ghost">
@@ -111,14 +153,18 @@
           <span class="contact-person-name">Jack Pitts</span>
           <span class="contact-person-role">Co-Founder &amp; Principal</span>
           <a href="mailto:jack@saltcreekadvisory.com" class="contact-email-addr">jack@saltcreekadvisory.com</a>
+          <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="contact-person-book">Book time with Jack &#8599;</a>
         </div>
         <div class="contact-person-divider" aria-hidden="true"></div>
         <div class="contact-person">
           <span class="contact-person-name">Connor Pitts</span>
           <span class="contact-person-role">Co-Founder &amp; Principal</span>
           <a href="mailto:connor@saltcreekadvisory.com" class="contact-email-addr">connor@saltcreekadvisory.com</a>
+          <a href="https://helmiq.net/book/connor-pitts" target="_blank" rel="noopener" class="contact-person-book">Book time with Connor &#8599;</a>
         </div>
       </div>
+
+      <p class="contact-onward">Not ready to reach out? Read <a href="process">how we run an engagement</a>, see <a href="team">who you would be working with</a>, start with <a href="faq">the questions owners actually ask</a>, or get <a href="valuation">a ballpark range in two minutes</a>.</p>
     </div>
   </div>
 </section>
@@ -156,6 +202,7 @@
     </div>
     <div class="footer-col">
       <span class="footer-col-title">Contact</span>
+      <a href="contact">Contact</a>
       <a href="mailto:jack@saltcreekadvisory.com">jack@saltcreekadvisory.com</a>
       <a href="mailto:connor@saltcreekadvisory.com">connor@saltcreekadvisory.com</a>
       <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener">Schedule a Call</a>
@@ -174,7 +221,8 @@
   </div>
 </footer>
 
-<script src="main.js?v=d0603e2d"></script>
+<script src="main.js?v=b6ea1432"></script>
+<script src="contact.js?v=907b54b4" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

@@ -7,13 +7,18 @@ const ALLOWED_METHODS = ["GET", "HEAD", "OPTIONS"];
 // markup: an entry missing here shows up as a console CSP violation, not a
 // silent degradation.
 //   googletagmanager / google-analytics -> GA4 (analytics.js)
-//   formspree.io                        -> valuation.js lead capture POST
+//   formspree.io                        -> valuation.js lead capture POST,
+//                                          contact.js enquiry POST + form fallback
 // No font host is listed on purpose: Cormorant Garamond and Inter are served
 // from this origin under /fonts (see docs/fonts.md), so 'self' covers them.
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "base-uri 'self'",
-  "form-action 'none'",
+  // formspree.io is the contact form's no-JavaScript fallback target. It was
+  // 'none' while the site had no <form> element; the valuation tool posts with
+  // fetch, which is governed by connect-src. Narrowed to the one origin that
+  // already appears in connect-src, so nothing else on the site can post anywhere.
+  "form-action https://formspree.io",
   "frame-ancestors 'none'",
   "frame-src 'none'",
   "object-src 'none'",
