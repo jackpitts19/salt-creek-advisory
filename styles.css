@@ -1546,6 +1546,170 @@
       background: rgba(244,240,235,0.08);
     }
 
+    /* ---- Contact enquiry form -------------------------------------------
+       /contact takes more in-body inbound links than any page on the site and
+       until now could not accept a message: the only actions were a principal's
+       calendar or a mail client. The form is left-aligned inside a centred
+       column because a centred label above a full-width input is harder to scan
+       than a left edge the eye can run down. Field chrome is inherited from the
+       .val-* classes so the site has one form language, not two. */
+    .contact-form {
+      max-width: 580px;
+      margin: 0 auto 3.5rem;
+      text-align: left;
+    }
+
+    .contact-form-title {
+      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 300;
+      color: var(--cream);
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-form-sub {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .contact-textarea {
+      resize: vertical;
+      min-height: 7.5rem;
+      line-height: 1.7;
+    }
+
+    .contact-form-trust {
+      margin-top: 1.4rem;
+      font-size: 0.74rem;
+      color: var(--muted2);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .contact-form-trust a { color: var(--copper2); }
+
+    .contact-form-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.75rem;
+    }
+
+    /* Empty by default and given its message by contact.js. role="alert" plus
+       aria-live carries it to a screen reader; tabindex="-1" lets the failure
+       path move focus here, which is the only way the delivery failure is
+       noticed by someone not watching this part of the screen. */
+    .contact-status {
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+      min-height: 0;
+    }
+
+    .contact-status:empty { margin-top: 0; }
+
+    .contact-status--error { color: #e8a184; }
+
+    .contact-fallback { margin-top: 1rem; font-size: 0.85rem; }
+
+    /* Off-screen rather than display:none, because a bot that reads the
+       stylesheet skips hidden inputs; aria-hidden and tabindex keep it away
+       from assistive technology and the keyboard. */
+    .contact-honeypot {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .contact-done {
+      max-width: 580px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .contact-done:focus-visible { outline: 2px solid var(--copper-accent); outline-offset: 6px; }
+
+    /* Painted by main.js when an answer is opened from a #hash, because a
+       programmatic focus does not reliably match :focus-visible. Removed on the
+       visitor's next click or keypress. */
+    .faq-item--deeplinked .faq-q { outline: 2px solid var(--copper-accent); outline-offset: -2px; }
+
+    .contact-or {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-person-book {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--muted2);
+      margin-top: 0.35rem;
+      transition: color 0.2s;
+    }
+
+    .contact-person-book:hover { color: var(--copper3); }
+
+    /* The most-linked page on the site returned zero in-body links, so a visitor
+       who was not ready to book or email had nowhere to go but back. */
+    .contact-onward {
+      max-width: 620px;
+      margin: 3.5rem auto 0;
+      font-size: 0.86rem;
+      font-weight: 300;
+      color: var(--muted2);
+      line-height: 1.9;
+    }
+
+    .contact-onward a {
+      color: var(--copper2);
+      transition: color 0.2s;
+    }
+
+    .contact-onward a:hover { color: var(--copper3); }
+
+    /* A question link sitting under the step that raises the question. Quiet by
+       design: it is an escape hatch for a worry, not a call to action. */
+    .process-step-faq {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .process-step-faq a,
+    .team-faq-link a {
+      color: var(--copper2);
+      transition: color 0.2s;
+    }
+
+    .process-step-faq a:hover,
+    .team-faq-link a:hover { color: var(--copper3); }
+
+    .team-faq-link {
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .contact-form-title { font-size: 1.45rem; }
+      .contact-form { margin-bottom: 2.5rem; }
+    }
+
     /* ============================================================
        FOOTER
        ============================================================ */
@@ -2646,9 +2810,19 @@
       color: rgba(244,240,235,0.62);
     }
 
-    .val-input, .val-select { width:100%; background: rgba(7,17,26,0.6); border:1px solid rgba(244,240,235,0.12); color:var(--cream); font-family:'Inter','Inter Fallback',Arial,sans-serif; font-size:1rem; font-weight:300; padding:.85rem 1rem; border-radius:2px; transition: border-color .25s, box-shadow .25s; }
-    .val-input::placeholder { color: rgba(244,240,235,0.3); }
+    .val-input, .val-select { width:100%; background: rgba(7,17,26,0.6); border:1px solid rgba(244,240,235,0.38); color:var(--cream); font-family:'Inter','Inter Fallback',Arial,sans-serif; font-size:1rem; font-weight:300; padding:.85rem 1rem; border-radius:2px; transition: border-color .25s, box-shadow .25s; }
+    .val-input::placeholder { color: rgba(244,240,235,0.5); }
     .val-input:focus, .val-select:focus { outline:none; border-color: var(--copper2); box-shadow: 0 0 0 3px rgba(184,115,51,0.12); }
+    /* The resting border is now 3.28:1 against the ground, which is what the
+       non-text floor wants, but it left the focused border only 1.69:1 away from
+       the resting one. Focus needs its own mark, not a recolour of the same 1px
+       line. --copper-accent is 4.71:1 on --navy3, the ground both the contact
+       form and the valuation card paint. :focus-visible so a mouse click does not
+       draw a ring. Matches the global a/button rule near the top of this file. */
+    .val-input:focus-visible, .val-select:focus-visible { outline: 2px solid var(--copper-accent); outline-offset: 2px; }
+    /* aria-invalid was being set faithfully and shown to nobody: a rejected field
+       looked identical to a clean one. #e8a184 is 8.10:1 on --navy3. */
+    .val-input[aria-invalid="true"] { border-color: #e8a184; }
     .val-select option { background: var(--navy3); color: var(--cream); }
     .val-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
     .val-help { font-size:.74rem; color:var(--muted2); margin-top:.45rem; font-weight:300; line-height:1.6; }
@@ -3170,6 +3344,12 @@
        inline into 40 <a> tags across five pages, which is why style-src still
        carries 'unsafe-inline'. One rule, one place to change it. */
     .text-link { color: var(--copper-ink); border-bottom: 1px solid rgba(146,93,46,0.4); }
+    /* Inline prose link on a DARK ground. --copper-ink is tuned for cream and only
+       reaches 3.24:1 on navy, so .text-link must not be used there. --copper2 is
+       5.54:1 on --navy3 and 6.11:1 on --navy. The underline carries the link for
+       anyone who cannot use the colour cue. */
+    .text-link-dark { color: var(--copper2); border-bottom: 1px solid rgba(196,132,74,0.4); }
+    .text-link-dark:hover { color: var(--copper3); border-bottom-color: var(--copper3); }
     .text-link:hover { color: var(--navy); border-bottom-color: var(--navy); }
 
     .article-body a { color: var(--copper-ink); border-bottom: 1px solid rgba(146,93,46,0.4); }
@@ -3554,6 +3734,7 @@
     @media (max-width: 1100px), (pointer: coarse) {
       .contact-email-addr,
       .contact-phone,
+      .contact-person-book,
       .team-social-link,
       .footer-col a,
       .footer-legal-links a {
