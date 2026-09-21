@@ -324,18 +324,33 @@ RELATED = {
     # bids needs next, which are who the bidders are and what their terms mean.
     "m-and-a-auction-process-explained": [
         "lower-middle-market-ma-process", "strategic-buyer-vs-private-equity-buyer",
-        "ma-deal-structure", "due-diligence-checklist-selling-a-business"],
+        "ma-deal-structure", "due-diligence-checklist-selling-a-business",
+        "evaluate-unsolicited-offer-buy-business"],
+    # The inbound-approach guide. An owner who has just received an offer is
+    # deciding whether to answer it, test the market, or run a process, so its
+    # own four are the Salt Creek guides its body already links for those paths:
+    # the auction explainer, the buyer types, the deal terms and the advisor fee.
+    # It is carried by the three pages whose readers are closest to that moment:
+    # the auction guide (one buyer against many, fifth), the family-business
+    # guide (its argument about unsolicited offers is this reader, fourth) and
+    # the outlook guide (which says one offer cannot show the broader market,
+    # fifth). when-to-start-exit-planning also mentions unsolicited offers but
+    # already carries six destinations, so it does not get a seventh.
+    "evaluate-unsolicited-offer-buy-business": [
+        "m-and-a-auction-process-explained", "strategic-buyer-vs-private-equity-buyer",
+        "ma-deal-structure", "ma-advisor-fees"],
     # The branch of the succession question where no family member or employee
     # is ready. It reads as the next page after the general succession guide, so
     # that guide carries it second, and the family-business essay (whose reader
     # is this owner) and the transition-scoped advisor comparison carry it last.
-    # Its own three: the general guide it cites for timing, the buyer-type guide
+    # Its first three: the general guide it cites for timing, the buyer-type guide
     # it cites twice, and the auction explainer for the competitive process its
     # whole argument about unsolicited offers rests on, which the body never
-    # links, so the Keep Reading block is the only path there.
+    # links, so the Keep Reading block is the only path there. The fourth is the
+    # guide for the owner who has already had that approach.
     "family-business-succession-planning": [
         "when-to-start-exit-planning", "strategic-buyer-vs-private-equity-buyer",
-        "m-and-a-auction-process-explained"],
+        "m-and-a-auction-process-explained", "evaluate-unsolicited-offer-buy-business"],
     "when-to-start-exit-planning": [
         "best-exit-planning-advisors-consultants", "family-business-succession-planning",
         "lower-middle-market-ma-process",
@@ -358,7 +373,8 @@ RELATED = {
     "lower-middle-market-ma-outlook": [
         "when-to-start-exit-planning", "ma-deal-structure",
         "roll-up-buy-and-build-acquisition-advisory",
-        "best-exit-planning-advisors-consultants"],
+        "best-exit-planning-advisors-consultants",
+        "evaluate-unsolicited-offer-buy-business"],
 
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [
