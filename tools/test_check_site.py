@@ -149,6 +149,82 @@ class CheckSiteTestCase(unittest.TestCase):
         self.write("about.html", page("/about", body='<img src="/logo.png">'))
         self.assertFails("without alt")
 
+    # --- links the guard used to skip ----------------------------------------
+
+    def test_single_quoted_broken_link_is_caught(self):
+        self.write("about.html", page("/about", body="<a href='/does-not-exist'>Gone</a>"))
+        self.assertFails("does-not-exist")
+
+    def test_single_quoted_valid_link_passes(self):
+        self.write("index.html", page("/", body="<a href='/about'>About</a>"))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a single-quoted link to a real page should pass:\n" + output)
+
+    def test_absolute_link_to_our_own_site_is_validated(self):
+        self.write("about.html", page("/about", body=(
+            '<a href="{}/does-not-exist">Gone</a>'.format(SITE))))
+        self.assertFails("does-not-exist")
+
+    def test_absolute_www_link_is_validated(self):
+        self.write("about.html", page("/about", body=(
+            '<a href="https://www.saltcreekadvisory.com/missing-page">Gone</a>')))
+        self.assertFails("missing-page")
+
+    def test_absolute_link_to_a_real_page_passes(self):
+        self.write("index.html", page("/", body=(
+            '<a href="https://www.saltcreekadvisory.com/about?utm_source=x#team">About</a>')))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "an absolute link to a real page should pass:\n" + output)
+
+    def test_absolute_self_link_counts_toward_orphans(self):
+        """An absolute link from another page is a real inbound link."""
+        self.write("index.html", page("/", body=(
+            '<a href="/about">About</a><a href="{}/reachable">Go</a>'.format(SITE))))
+        self.write("reachable.html", page("/reachable"))
+        self.write_sitemap(["/", "/about", "/reachable"])
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "an absolute inbound link should count:\n" + output)
+
+    def test_other_hosts_are_not_resolved_locally(self):
+        self.write("about.html", page("/about", body=(
+            '<a href="https://example.com/does-not-exist">Out</a>'
+            '<a href="//cdn.example.com/x.js">Cdn</a>'
+            '<a href="https://saltcreekadvisory.com.evil.example/x">Lookalike</a>')))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "external links are not local files:\n" + output)
+
+    # --- image dimensions ----------------------------------------------------
+
+    def test_image_with_numeric_dimensions_passes(self):
+        self.write("logo.png", "")
+        self.write("about.html", page("/about", body=(
+            '<img src="/logo.png" alt="Logo" width="120" height=\'40\'>'
+            '<img src="/logo.png" alt="" width=16 height=16 />')))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "sized images should pass:\n" + output)
+
+    def test_image_without_width_is_caught(self):
+        self.write("logo.png", "")
+        self.write("about.html", page("/about", body='<img src="/logo.png" alt="Logo" height="40">'))
+        self.assertFails("without numeric width and height")
+
+    def test_image_without_height_is_caught(self):
+        self.write("logo.png", "")
+        self.write("about.html", page("/about", body='<img src="/logo.png" alt="Logo" width="40">'))
+        self.assertFails("without numeric width and height")
+
+    def test_non_numeric_dimensions_are_caught(self):
+        self.write("logo.png", "")
+        self.write("about.html", page("/about", body=(
+            '<img src="/logo.png" alt="Logo" width="100%" height="auto">')))
+        self.assertFails("without numeric width and height")
+
+    def test_data_width_does_not_count_as_width(self):
+        self.write("logo.png", "")
+        self.write("about.html", page("/about", body=(
+            '<img src="/logo.png" alt="Logo" data-width="40" data-height="40">')))
+        self.assertFails("without numeric width and height")
+
     def test_orphan_page_missing_from_sitemap_is_caught(self):
         self.write("orphan.html", page("/orphan"))
         self.assertFails("/orphan is indexable but unlisted")

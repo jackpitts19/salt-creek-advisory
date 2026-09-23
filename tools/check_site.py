@@ -32,14 +32,24 @@ from html import unescape
 from urllib.parse import urljoin, urlparse
 
 SITE = "https://saltcreekadvisory.com"
+# Hosts whose links this repo resolves itself. An absolute link to our own site
+# is still our link: the www form is 301'd by the Worker onto the same path.
+OWN_HOSTS = {"saltcreekadvisory.com", "www.saltcreekadvisory.com"}
 
 JSON_LD = re.compile(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', re.DOTALL)
 NOINDEX = re.compile(r'<meta name="robots"[^>]*noindex', re.IGNORECASE)
 TITLE = re.compile(r"<title>(.*?)</title>", re.DOTALL | re.IGNORECASE)
 DESCRIPTION = re.compile(r'<meta name="description" content="(.*?)"', re.DOTALL | re.IGNORECASE)
 CANONICAL = re.compile(r'<link rel="canonical" href="(.*?)"', re.IGNORECASE)
-LINK_ATTR = re.compile(r'(?:href|src)="([^"]*)"', re.IGNORECASE)
+# Either quote style. A single-quoted href was invisible to this guard, so a
+# broken link written that way passed every check.
+LINK_ATTR = re.compile(r"""(?:href|src)=(?:"([^"]*)"|'([^']*)')""", re.IGNORECASE)
 IMG_TAG = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
+# A bare integer, quoted or not. "100%" or "auto" reserves no space before the
+# image loads, which is the layout shift the attributes exist to prevent. The
+# lookbehind keeps data-width and max-width from counting.
+IMG_WIDTH = re.compile(r"""(?<![\w-])width\s*=\s*["']?\d+["']?(?=[\s/>])""", re.IGNORECASE)
+IMG_HEIGHT = re.compile(r"""(?<![\w-])height\s*=\s*["']?\d+["']?(?=[\s/>])""", re.IGNORECASE)
 SITEMAP_LOC = re.compile(r"<loc>(.*?)</loc>", re.DOTALL)
 
 # Mirrors tools/build_feed.py deliberately rather than importing it: the point of
@@ -86,16 +96,30 @@ def file_for(route):
     return relative + ".html"
 
 
+def link_targets(html):
+    """Every href and src value on a page, whichever quote style wraps it."""
+    return [double or single for double, single in LINK_ATTR.findall(html)]
+
+
 def is_internal(href):
-    """True for links this repo is responsible for resolving."""
+    """True for links this repo is responsible for resolving.
+
+    Relative and root-absolute links, plus absolute links to our own host. A
+    protocol-relative link to another host is external, not a local path.
+    """
     if not href or href.startswith(("#", "mailto:", "tel:", "data:", "javascript:")):
         return False
-    return not urlparse(href).scheme
+    parsed = urlparse(href)
+    if parsed.scheme and parsed.scheme not in ("http", "https"):
+        return False
+    if parsed.netloc:
+        return parsed.netloc.lower() in OWN_HOSTS
+    return not parsed.scheme
 
 
 def check_internal_links(path, html, errors, _warnings):
     base = urljoin(SITE, route_for(path))
-    for href in LINK_ATTR.findall(html):
+    for href in link_targets(html):
         if not is_internal(href):
             continue
         route = urlparse(urljoin(base, href)).path
@@ -161,6 +185,11 @@ def check_images(path, html, errors, _warnings):
     for tag in IMG_TAG.findall(html):
         if "alt=" not in tag.lower():
             errors.append("{}: <img> without alt: {}".format(path, tag[:80]))
+        # Without both, the browser cannot reserve the box before the file
+        # arrives, and everything below the image jumps when it does (CLS).
+        if not IMG_WIDTH.search(tag) or not IMG_HEIGHT.search(tag):
+            errors.append("{}: <img> without numeric width and height: {}".format(
+                path, tag[:80]))
 
 
 # Fields Google requires before it will treat a node as eligible for a rich
@@ -369,7 +398,7 @@ def check_orphans(errors, _warnings):
     for path in page_paths():
         base = urljoin(SITE, route_for(path))
         own_route = route_for(path)
-        for href in LINK_ATTR.findall(read(path)):
+        for href in link_targets(read(path)):
             if not is_internal(href):
                 continue
             route = urlparse(urljoin(base, href)).path

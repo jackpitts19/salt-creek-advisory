@@ -255,6 +255,12 @@ class ProbeBuildingTestCase(unittest.TestCase):
         self.assertIn(BARE, urls)
         self.assertIn(GUIDE, urls)
 
+    def test_a_guide_gets_a_trailing_index_probe(self):
+        """The assets layer 307s this unless the Worker collapses it first."""
+        root = self.build_site(["articles/msp-valuation-multiples-2026.html"])
+        probes = check_canonical.build_probes(root, ORIGIN)
+        self.assertIn(("trailing /index", GUIDE + "/index", GUIDE), probes)
+
     def test_every_probe_expects_the_year_stamped_url(self):
         root = self.build_site(["articles/msp-valuation-multiples-2026.html"])
         probes = check_canonical.build_probes(root, ORIGIN)
