@@ -80,7 +80,7 @@ RELATED = {
     "ma-deal-structure": [
         "earnouts-escrow-holdbacks", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
-        "best-ma-advisors-plumbing-companies"],
+        "best-ma-advisors-plumbing-companies", "asset-sale-vs-stock-sale"],
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
@@ -93,7 +93,21 @@ RELATED = {
     # the wire clears.
     "seller-risk-protection-deal-structuring": [
         "earnouts-escrow-holdbacks", "ma-deal-structure",
-        "working-capital-peg-ma"],
+        "working-capital-peg-ma", "asset-sale-vs-stock-sale"],
+
+    # The structure question that sits underneath every offer: which legal form
+    # the sale takes and what that moves between buyer and seller. Its own four
+    # are the three Salt Creek guides its body already links (deal structure,
+    # the peg, the diligence checklist) plus the seller-protection guide, which
+    # covers the indemnity, escrow and insurance terms its closing section
+    # describes. It is carried by the three pages whose readers are closest to
+    # that choice: deal structure (the offer's shape, fifth), seller protection
+    # (the same risk-allocation terms, fourth) and diligence (whose contract and
+    # employee sections split on asset against equity, fourth).
+    "asset-sale-vs-stock-sale": [
+        "ma-deal-structure", "working-capital-peg-ma",
+        "due-diligence-checklist-selling-a-business",
+        "seller-risk-protection-deal-structuring"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
@@ -365,7 +379,7 @@ RELATED = {
     # step earlier, before there is an LOI to diligence.
     "due-diligence-checklist-selling-a-business": [
         "quality-of-earnings-report", "working-capital-peg-ma",
-        "what-buyers-look-for-in-an-acquisition-target"],
+        "what-buyers-look-for-in-an-acquisition-target", "asset-sale-vs-stock-sale"],
 
     # Market conditions. Grouped with timing rather than valuation because the
     # question it answers is sell now or wait. Its multiples are context for that

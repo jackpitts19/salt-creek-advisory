@@ -103,6 +103,7 @@ function getOriginalScheme(request, url) {
 const CURRENT_GUIDE_YEAR = "2026";
 
 const YEAR_STAMPED_GUIDES = new Set([
+  "asset-sale-vs-stock-sale",
   "best-boutique-ma-firms",
   "best-business-valuation-firms-lower-middle-market",
   "best-exit-planning-advisors-consultants",
