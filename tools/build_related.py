@@ -96,6 +96,15 @@ RELATED = {
         "earnouts-escrow-holdbacks", "ma-deal-structure",
         "working-capital-peg-ma", "asset-sale-vs-stock-sale"],
 
+    # The letter of intent: the moment leverage peaks. Its targets are the
+    # guides its body sends readers to next (the unsolicited offer it follows,
+    # the process it sits inside, what the price turns into, and the diligence
+    # that starts once it is signed). It is carried by those same neighbours.
+    "letter-of-intent-selling-a-business": [
+        "evaluate-unsolicited-offer-buy-business", "lower-middle-market-ma-process",
+        "what-you-keep-after-selling-a-business",
+        "due-diligence-checklist-selling-a-business"],
+
     # The net-proceeds hub: where the headline price goes between the letter of
     # intent and the owner's bank account. Its targets are the guides its body
     # leans on most (the unsolicited-offer walk it reuses, deal structure, the
@@ -103,7 +112,8 @@ RELATED = {
     # by the three pages whose readers ask "so what do I keep?" next.
     "what-you-keep-after-selling-a-business": [
         "evaluate-unsolicited-offer-buy-business", "ma-deal-structure",
-        "asset-sale-vs-stock-sale", "earnouts-escrow-holdbacks"],
+        "asset-sale-vs-stock-sale", "earnouts-escrow-holdbacks",
+        "letter-of-intent-selling-a-business"],
 
     # The structure question that sits underneath every offer: which legal form
     # the sale takes and what that moves between buyer and seller. Its own four
@@ -339,7 +349,8 @@ RELATED = {
     # timeline is the reader deciding between a multi-buyer process and one buyer.
     "lower-middle-market-ma-process": [
         "how-long-does-it-take-to-sell-a-business", "when-to-start-exit-planning",
-        "m-and-a-auction-process-explained", "due-diligence-checklist-selling-a-business"],
+        "m-and-a-auction-process-explained", "due-diligence-checklist-selling-a-business",
+        "letter-of-intent-selling-a-business"],
     "how-long-does-it-take-to-sell-a-business": [
         "lower-middle-market-ma-process", "when-to-start-exit-planning",
         "m-and-a-auction-process-explained"],
@@ -362,7 +373,8 @@ RELATED = {
     # already carries six destinations, so it does not get a seventh.
     "evaluate-unsolicited-offer-buy-business": [
         "m-and-a-auction-process-explained", "strategic-buyer-vs-private-equity-buyer",
-        "ma-deal-structure", "ma-advisor-fees", "what-you-keep-after-selling-a-business"],
+        "ma-deal-structure", "ma-advisor-fees", "what-you-keep-after-selling-a-business",
+        "letter-of-intent-selling-a-business"],
     # The branch of the succession question where no family member or employee
     # is ready. It reads as the next page after the general succession guide, so
     # that guide carries it second, and the family-business essay (whose reader
