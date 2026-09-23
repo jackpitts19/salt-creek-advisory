@@ -228,8 +228,10 @@ def variants(slug: str, origin: str) -> List[Tuple[str, str]]:
 
     These are the shapes an inbound link actually arrives in: a bare slug from
     before the year stamp, a stale year, the legacy .html form, a trailing
-    slash, the www host, and plain http. The last case stacks three corrections
-    at once, which is the one most likely to grow a chain.
+    slash, a trailing /index, the www host, and plain http. The last case
+    stacks three corrections at once, which is the one most likely to grow a
+    chain. A trailing /index is here because the assets layer answers it with
+    its own 307 unless the Worker collapses it first, which is a chain.
     """
     base = YEAR_RE.sub("", slug)
     canonical_path = "/articles/{}".format(slug)
@@ -238,6 +240,7 @@ def variants(slug: str, origin: str) -> List[Tuple[str, str]]:
         ("stale year", "{}/articles/{}-2025".format(origin, base)),
         ("legacy .html", "{}{}.html".format(origin, canonical_path)),
         ("trailing slash", "{}{}/".format(origin, canonical_path)),
+        ("trailing /index", "{}{}/index".format(origin, canonical_path)),
         ("www host", "https://{}{}".format(WWW_HOST, canonical_path)),
         ("http + www + .html", "http://{}{}.html".format(WWW_HOST, canonical_path)),
     ]

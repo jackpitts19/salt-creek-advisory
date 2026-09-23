@@ -187,19 +187,26 @@ function resolveGuideYear(pathname) {
   return `/articles/${current}-${CURRENT_GUIDE_YEAR}`;
 }
 
+// A trailing "index" segment, with or without ".html". Anchored on a whole
+// segment so a slug that merely ends in "index" is never touched. The root
+// index.html is the only page on the site with that name, so no real URL can
+// be redirected away by this.
+const INDEX_SEGMENT = /\/index(?:\.html)?$/;
+
+/**
+ * Maps every spelling of a page onto its clean URL. Repeated slashes collapse
+ * and a trailing "/index" is read like "/index.html" here, because left alone
+ * the assets binding answers both with its own 307 and the Worker's 301
+ * follows, a two-hop chain on a URL that should cost one.
+ */
 function normalizePathname(pathname) {
-  if (pathname === "/index.html") return "/";
-  if (pathname.endsWith("/index.html")) {
-    const trimmed = pathname.slice(0, -"index.html".length).replace(/\/+$/, "");
-    return trimmed === "" ? "/" : trimmed;
-  }
-  if (pathname.endsWith(".html")) {
-    pathname = pathname.slice(0, -".html".length);
-  }
-  if (pathname.length > 1 && pathname.endsWith("/")) {
-    pathname = pathname.replace(/\/+$/, "");
-  }
-  return pathname === "" ? "/" : pathname;
+  const collapsed = pathname.replace(/\/{2,}/g, "/").replace(/(.)\/+$/, "$1");
+  const withoutIndex = collapsed.replace(INDEX_SEGMENT, "/");
+  const withoutHtml = withoutIndex.endsWith(".html")
+    ? withoutIndex.slice(0, -".html".length)
+    : withoutIndex;
+  const trimmed = withoutHtml.replace(/\/+$/, "");
+  return trimmed === "" ? "/" : trimmed;
 }
 
 function cacheControlFor(pathname) {

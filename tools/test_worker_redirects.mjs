@@ -171,3 +171,57 @@ test("redirects still carry the security headers", async () => {
   assert.match(response.headers.get("strict-transport-security") ?? "", /max-age=/);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
 });
+
+test("a trailing /index collapses onto the clean URL in one hop", async () => {
+  // Left to the assets binding these each drew a 307 before the Worker's 301.
+  for (const [path, expected] of [
+    ["/index", "/"],
+    ["/index.html", "/"],
+    ["/about/index", "/about"],
+    ["/about/index.html", "/about"],
+    ["/articles/index", "/articles"],
+  ]) {
+    const { chain, final } = await followAll(SITE + path);
+    assert.equal(chain.length, 1, `${path} should take exactly one hop`);
+    assert.equal(chain[0].status, 301, `${path} should be a permanent redirect`);
+    assert.equal(final, SITE + expected);
+  }
+});
+
+test("repeated slashes collapse in one hop", async () => {
+  for (const [path, expected] of [
+    ["//about", "/about"],
+    ["/articles//msp-valuation-multiples-2026", "/articles/msp-valuation-multiples-2026"],
+    ["//about//", "/about"],
+    ["/index/", "/"],
+    ["/about.html/", "/about"],
+    ["/about/index.html/", "/about"],
+  ]) {
+    const { chain, final } = await followAll(SITE + path);
+    assert.equal(chain.length, 1, `${path} should take exactly one hop`);
+    assert.equal(chain[0].status, 301);
+    assert.equal(final, SITE + expected);
+  }
+});
+
+test("http, www, doubled slashes and /index still cost one hop together", async () => {
+  const { chain, final } = await followAll("http://www.saltcreekadvisory.com//about/index");
+  assert.equal(chain.length, 1, "every correction must leave in the same 301");
+  assert.equal(chain[0].status, 301);
+  assert.equal(final, `${SITE}/about`);
+});
+
+test("a stale-year guide with a trailing /index lands on the current year in one hop", async () => {
+  const { chain, final } = await followAll(`${SITE}/articles/msp-sale-readiness-checklist-2024/index`);
+  assert.equal(chain.length, 1, "index, year and slug must resolve together");
+  assert.equal(final, `${SITE}/articles/msp-sale-readiness-checklist-2026`);
+});
+
+test("a slug that merely ends in index is not treated as an index page", async () => {
+  // Only a whole "/index" segment is special. The stub answers 200, so the
+  // assertion is that no redirect fired.
+  for (const path of ["/articles/price-index", "/reindex"]) {
+    const response = await get(SITE + path);
+    assert.equal(response.status, 200, `${path} should not redirect`);
+  }
+});

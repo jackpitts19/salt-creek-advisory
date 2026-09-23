@@ -198,7 +198,11 @@
     form.hidden = true;
     doneEl.hidden = false;
     doneEl.focus();
+    // Kept for continuity with earlier reports, which split this one event by
+    // outcome. The distinct event mirrors valuation_lead_delivered so a
+    // delivered enquiry can be counted as a conversion on its own.
     track('contact_form_submit', { outcome: 'delivered' });
+    track('contact_form_delivered');
   }
 
   /**
@@ -215,6 +219,7 @@
     fallbackEl.hidden = false;
     fallbackLink.focus();
     track('contact_form_submit', { outcome: 'failed' });
+    track('contact_form_delivery_failed');
   }
 
   /**
