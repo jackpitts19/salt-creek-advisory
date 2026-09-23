@@ -149,6 +149,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "strategic-buyer-vs-private-equity-buyer",
   "top-lower-middle-market-investment-banks",
   "what-buyers-look-for-in-an-acquisition-target",
+  "what-you-keep-after-selling-a-business",
   "when-to-start-exit-planning",
   "working-capital-peg-ma",
 ]);

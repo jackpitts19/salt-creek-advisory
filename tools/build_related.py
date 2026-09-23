@@ -80,7 +80,8 @@ RELATED = {
     "ma-deal-structure": [
         "earnouts-escrow-holdbacks", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
-        "best-ma-advisors-plumbing-companies", "asset-sale-vs-stock-sale"],
+        "best-ma-advisors-plumbing-companies", "asset-sale-vs-stock-sale",
+        "what-you-keep-after-selling-a-business"],
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
@@ -95,6 +96,15 @@ RELATED = {
         "earnouts-escrow-holdbacks", "ma-deal-structure",
         "working-capital-peg-ma", "asset-sale-vs-stock-sale"],
 
+    # The net-proceeds hub: where the headline price goes between the letter of
+    # intent and the owner's bank account. Its targets are the guides its body
+    # leans on most (the unsolicited-offer walk it reuses, deal structure, the
+    # asset-or-stock question that drives the tax, and earnouts). It is carried
+    # by the three pages whose readers ask "so what do I keep?" next.
+    "what-you-keep-after-selling-a-business": [
+        "evaluate-unsolicited-offer-buy-business", "ma-deal-structure",
+        "asset-sale-vs-stock-sale", "earnouts-escrow-holdbacks"],
+
     # The structure question that sits underneath every offer: which legal form
     # the sale takes and what that moves between buyer and seller. Its own four
     # are the three Salt Creek guides its body already links (deal structure,
@@ -107,7 +117,7 @@ RELATED = {
     "asset-sale-vs-stock-sale": [
         "ma-deal-structure", "working-capital-peg-ma",
         "due-diligence-checklist-selling-a-business",
-        "seller-risk-protection-deal-structuring"],
+        "seller-risk-protection-deal-structuring", "what-you-keep-after-selling-a-business"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
@@ -352,7 +362,7 @@ RELATED = {
     # already carries six destinations, so it does not get a seventh.
     "evaluate-unsolicited-offer-buy-business": [
         "m-and-a-auction-process-explained", "strategic-buyer-vs-private-equity-buyer",
-        "ma-deal-structure", "ma-advisor-fees"],
+        "ma-deal-structure", "ma-advisor-fees", "what-you-keep-after-selling-a-business"],
     # The branch of the succession question where no family member or employee
     # is ready. It reads as the next page after the general succession guide, so
     # that guide carries it second, and the family-business essay (whose reader
