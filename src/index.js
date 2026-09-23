@@ -127,6 +127,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "family-business-succession-planning",
   "how-long-does-it-take-to-sell-a-business",
   "how-to-choose-an-ma-advisor",
+  "letter-of-intent-selling-a-business",
   "lower-middle-market-ma-outlook",
   "lower-middle-market-ma-process",
   "m-and-a-auction-process-explained",
