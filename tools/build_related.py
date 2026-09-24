@@ -386,7 +386,8 @@ RELATED = {
     # guide for the owner who has already had that approach.
     "family-business-succession-planning": [
         "when-to-start-exit-planning", "strategic-buyer-vs-private-equity-buyer",
-        "m-and-a-auction-process-explained", "evaluate-unsolicited-offer-buy-business"],
+        "m-and-a-auction-process-explained", "evaluate-unsolicited-offer-buy-business",
+        "reduce-owner-dependence-before-selling"],
     "when-to-start-exit-planning": [
         "best-exit-planning-advisors-consultants", "family-business-succession-planning",
         "lower-middle-market-ma-process",
@@ -412,10 +413,22 @@ RELATED = {
         "best-exit-planning-advisors-consultants",
         "evaluate-unsolicited-offer-buy-business"],
 
+    # Owner dependence: the fix for the weakness what-buyers-look-for names as
+    # costing a seller with every buyer type. Its targets are the guides its body
+    # sends readers to next (that diagnosis, the timeline, the replacement-salary
+    # math in the QoE guide, and the earnout terms dependence turns into). It is
+    # carried by the diagnosis page and by the succession guide, whose reader is
+    # the owner with no ready successor. The exit-planning guide already carries
+    # six destinations, so it does not get a seventh.
+    "reduce-owner-dependence-before-selling": [
+        "what-buyers-look-for-in-an-acquisition-target", "when-to-start-exit-planning",
+        "quality-of-earnings-report", "earnouts-escrow-holdbacks"],
+
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [
         "strategic-buyer-vs-private-equity-buyer", "quality-of-earnings-report",
-        "ebitda-and-business-valuation-basics"],
+        "ebitda-and-business-valuation-basics",
+        "reduce-owner-dependence-before-selling"],
     # This is the one page whose whole subject is who the buyer is, so it is the
     # reader closest to wanting the buy-side view. Deal structure yields the slot
     # rather than outlook: ma-deal-structure already links back here, so the pair
