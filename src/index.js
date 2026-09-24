@@ -143,6 +143,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "prepare-dog-daycare-business-for-sale",
   "prepare-preschool-childcare-business-for-sale",
   "quality-of-earnings-report",
+  "reduce-owner-dependence-before-selling",
   "roll-up-buy-and-build-acquisition-advisory",
   "roll-ups-legal-services-pet-care",
   "sell-side-advisor-vs-business-broker",
