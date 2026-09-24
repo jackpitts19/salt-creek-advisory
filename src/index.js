@@ -122,6 +122,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "dog-daycare-pet-care-valuation-multiples",
   "due-diligence-checklist-selling-a-business",
   "earnouts-escrow-holdbacks",
+  "ebitda-add-backs",
   "ebitda-and-business-valuation-basics",
   "evaluate-unsolicited-offer-buy-business",
   "family-business-succession-planning",
