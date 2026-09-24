@@ -62,10 +62,22 @@ RELATED = {
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
+    # EBITDA add-backs: the seller's working manual for the schedule the QoE
+    # guide tests. Its targets are the pages its body leans on: the QoE guide
+    # (what the buyer does with the schedule), the valuation basics (what the
+    # multiple does with it), the diligence checklist (where the proof goes),
+    # and owner dependence (the underpaid-owner adjustment). It is carried by the
+    # QoE guide and the diligence checklist, whose readers are building it next.
+    "ebitda-add-backs": [
+        "quality-of-earnings-report", "ebitda-and-business-valuation-basics",
+        "due-diligence-checklist-selling-a-business",
+        "reduce-owner-dependence-before-selling"],
+
     "quality-of-earnings-report": [
         "working-capital-peg-ma", "ebitda-and-business-valuation-basics",
         "best-business-valuation-firms-lower-middle-market",
-        "due-diligence-checklist-selling-a-business"],
+        "due-diligence-checklist-selling-a-business",
+        "ebitda-add-backs"],
     "working-capital-peg-ma": [
         "quality-of-earnings-report", "ma-deal-structure",
         "earnouts-escrow-holdbacks",
@@ -402,7 +414,8 @@ RELATED = {
     # step earlier, before there is an LOI to diligence.
     "due-diligence-checklist-selling-a-business": [
         "quality-of-earnings-report", "working-capital-peg-ma",
-        "what-buyers-look-for-in-an-acquisition-target", "asset-sale-vs-stock-sale"],
+        "what-buyers-look-for-in-an-acquisition-target", "asset-sale-vs-stock-sale",
+        "ebitda-add-backs"],
 
     # Market conditions. Grouped with timing rather than valuation because the
     # question it answers is sell now or wait. Its multiples are context for that
