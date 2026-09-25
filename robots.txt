@@ -5,6 +5,7 @@
 # that look for their own token, and to record the one exclusion we make.
 #
 # Machine-readable summary of the firm for LLMs: /llms.txt
+# Full version with a detailed summary of every guide: /llms-full.txt
 # Article feed: /feed.xml
 
 User-agent: *

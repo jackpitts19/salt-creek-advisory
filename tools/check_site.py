@@ -535,7 +535,10 @@ def check_llms_txt_coverage(errors, _warnings):
 
     # Every self URL, not just articles. llms.txt lists 14 root pages too, and a stale
     # entry for any of them teaches an assistant to cite a 404 just as effectively.
-    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/[a-z0-9/-]*", listed))):
+    # The optional extension lets a link to a real file (llms-full.txt) resolve to
+    # that file instead of being read as a page called "llms-full". A sentence-final
+    # period is not captured, because an extension needs a character after the dot.
+    for url in sorted(set(re.findall(r"https://saltcreekadvisory\.com/[a-z0-9/-]*(?:\.[a-z0-9]+)?", listed))):
         route = url[len(SITE):] or "/"
         if route == "/":
             continue

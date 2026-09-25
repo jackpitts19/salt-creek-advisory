@@ -672,6 +672,21 @@ class PublishChecklistTestCase(unittest.TestCase):
         self.write_llms(["guide-one-2026", "an-essay", "guide-that-was-deleted-2026"])
         self.assertFails("which no longer exists")
 
+    def test_llms_txt_may_link_a_real_companion_file(self):
+        """llms.txt points at llms-full.txt; that file exists, so it is not a 404."""
+        self.write("llms-full.txt", "# Site (full)\n")
+        self.write_llms(["guide-one-2026", "an-essay"])
+        with open(os.path.join(self._tmp.name, "llms.txt"), "a", encoding="utf-8") as handle:
+            handle.write("See [llms-full.txt]({}/llms-full.txt).\n".format(SITE))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "a link to an existing .txt file should pass:\n" + output)
+
+    def test_llms_txt_linking_a_missing_companion_file_fails(self):
+        self.write_llms(["guide-one-2026", "an-essay"])
+        with open(os.path.join(self._tmp.name, "llms.txt"), "a", encoding="utf-8") as handle:
+            handle.write("See [llms-full.txt]({}/llms-full.txt).\n".format(SITE))
+        self.assertFails("llms-full.txt, which no longer exists")
+
     def test_a_missing_llms_txt_is_skipped_not_failed(self):
         os.remove(os.path.join(self._tmp.name, "llms.txt"))
         code, output = self.run_checker()
