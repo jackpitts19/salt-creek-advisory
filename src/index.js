@@ -149,6 +149,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "roll-ups-legal-services-pet-care",
   "sell-side-advisor-vs-business-broker",
   "seller-risk-protection-deal-structuring",
+  "selling-to-search-fund-independent-sponsor",
   "strategic-buyer-vs-private-equity-buyer",
   "top-lower-middle-market-investment-banks",
   "what-buyers-look-for-in-an-acquisition-target",
