@@ -115,7 +115,8 @@ RELATED = {
     "letter-of-intent-selling-a-business": [
         "evaluate-unsolicited-offer-buy-business", "lower-middle-market-ma-process",
         "what-you-keep-after-selling-a-business",
-        "due-diligence-checklist-selling-a-business"],
+        "due-diligence-checklist-selling-a-business",
+        "selling-to-search-fund-independent-sponsor"],
 
     # The net-proceeds hub: where the headline price goes between the letter of
     # intent and the owner's bank account. Its targets are the guides its body
@@ -399,7 +400,8 @@ RELATED = {
     "family-business-succession-planning": [
         "when-to-start-exit-planning", "strategic-buyer-vs-private-equity-buyer",
         "m-and-a-auction-process-explained", "evaluate-unsolicited-offer-buy-business",
-        "reduce-owner-dependence-before-selling"],
+        "reduce-owner-dependence-before-selling",
+        "selling-to-search-fund-independent-sponsor"],
     "when-to-start-exit-planning": [
         "best-exit-planning-advisors-consultants", "family-business-succession-planning",
         "lower-middle-market-ma-process",
@@ -451,7 +453,20 @@ RELATED = {
     "strategic-buyer-vs-private-equity-buyer": [
         "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms",
-        "best-ma-advisors-dental-practices"],
+        "best-ma-advisors-dental-practices",
+        "selling-to-search-fund-independent-sponsor"],
+
+    # Search funds and independent sponsors: the owner-side deep dive on the
+    # buyers the strategic-vs-PE guide only names as "individual buyers". Its
+    # targets are the pages its body sends readers to next (the buyer-type
+    # overview, the letter of intent where exclusivity is set, earnouts, and
+    # the unsolicited-offer walk for an inbound searcher). It is carried by the
+    # buyer-type guide, the letter of intent guide (whose financing and
+    # exclusivity sections are this reader's problem), and the family-business
+    # succession guide, which already discusses search funds as buyers.
+    "selling-to-search-fund-independent-sponsor": [
+        "strategic-buyer-vs-private-equity-buyer", "letter-of-intent-selling-a-business",
+        "earnouts-escrow-holdbacks", "evaluate-unsolicited-offer-buy-business"],
 
     # Essays. Kept with each other: a sell-side guide under a family piece reads
     # as mechanical, which is the one thing this block must not do.
