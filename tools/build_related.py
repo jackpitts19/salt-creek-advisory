@@ -115,7 +115,8 @@ RELATED = {
     "letter-of-intent-selling-a-business": [
         "evaluate-unsolicited-offer-buy-business", "lower-middle-market-ma-process",
         "what-you-keep-after-selling-a-business",
-        "due-diligence-checklist-selling-a-business"],
+        "due-diligence-checklist-selling-a-business",
+        "telling-employees-about-selling-business"],
 
     # The net-proceeds hub: where the headline price goes between the letter of
     # intent and the owner's bank account. Its targets are the guides its body
@@ -139,7 +140,8 @@ RELATED = {
     "asset-sale-vs-stock-sale": [
         "ma-deal-structure", "working-capital-peg-ma",
         "due-diligence-checklist-selling-a-business",
-        "seller-risk-protection-deal-structuring", "what-you-keep-after-selling-a-business"],
+        "seller-risk-protection-deal-structuring", "what-you-keep-after-selling-a-business",
+        "telling-employees-about-selling-business"],
 
     # Sector: IT managed services. Same shape as pet care below, for the same
     # reason: a reader on multiples is closer to picking a firm than to another
@@ -435,7 +437,22 @@ RELATED = {
     # six destinations, so it does not get a seventh.
     "reduce-owner-dependence-before-selling": [
         "what-buyers-look-for-in-an-acquisition-target", "when-to-start-exit-planning",
-        "quality-of-earnings-report", "earnouts-escrow-holdbacks"],
+        "quality-of-earnings-report", "earnouts-escrow-holdbacks",
+        "telling-employees-about-selling-business"],
+
+    # Telling employees: the people side of a sale, from the first confidential
+    # conversation to day one. Its targets are the pages its body leans on: the
+    # asset-vs-stock guide (whether employment ends at closing), owner dependence
+    # (why the key managers matter to price), the LOI (where buyer contact with
+    # staff and bonus costs get settled) and the diligence checklist (the work the
+    # first people told will do). It is carried by those three whose readers reach
+    # the "who do I tell, and when" question next: owner dependence (the managers
+    # a buyer will want to keep), the LOI (buyer access to employees) and the
+    # asset-vs-stock guide (what changes for staff at closing).
+    "telling-employees-about-selling-business": [
+        "asset-sale-vs-stock-sale", "reduce-owner-dependence-before-selling",
+        "letter-of-intent-selling-a-business",
+        "due-diligence-checklist-selling-a-business"],
 
     # Buyers
     "what-buyers-look-for-in-an-acquisition-target": [

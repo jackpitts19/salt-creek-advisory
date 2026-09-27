@@ -150,6 +150,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "sell-side-advisor-vs-business-broker",
   "seller-risk-protection-deal-structuring",
   "strategic-buyer-vs-private-equity-buyer",
+  "telling-employees-about-selling-business",
   "top-lower-middle-market-investment-banks",
   "what-buyers-look-for-in-an-acquisition-target",
   "what-you-keep-after-selling-a-business",
