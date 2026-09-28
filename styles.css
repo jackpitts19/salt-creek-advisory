@@ -1095,6 +1095,7 @@
        reuse the principal card. The note says plainly that they are
        independent advisors, not employees. */
     .team--advisors { padding-top: 0; }
+    .team-advisors-note.team-advisors-join { margin: 2.5rem 0 0; }
     /* Advisor portraits arrive as square LinkedIn crops with the head
        near the top edge; the principals' 15% anchor clips the hairline.
        Gary's is tighter still, so he sits a little lower to keep his smile. */
@@ -4135,6 +4136,15 @@
       color: var(--copper-ink);
       margin-bottom: 0.75rem;
     }
+    .home-advisors-join {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.65);
+      line-height: 1.7;
+    }
+    .home-advisors-join a { color: var(--copper-ink); font-weight: 500; white-space: nowrap; }
+    .home-advisors-join a:hover { color: var(--navy); }
     .home-advisor-bio {
       font-size: 0.92rem;
       font-weight: 300;
