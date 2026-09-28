@@ -1093,10 +1093,12 @@
 
     /* Senior advisors sit in their own section under the principals and
        reuse the principal card. The note says plainly that they are
-       independent, not employees, and do not represent the firm. */
+       independent advisors, not employees. */
     .team--advisors { padding-top: 0; }
-    /* Gary's portrait is a tight square; anchoring near the top keeps
-       both his hair and his smile inside the wide desktop crop. */
+    /* Advisor portraits arrive as square LinkedIn crops with the head
+       near the top edge; the principals' 15% anchor clips the hairline.
+       Gary's is tighter still, so he sits a little lower to keep his smile. */
+    .team--advisors .team-img-area img { object-position: center top; }
     #gary-dennis .team-img-area img { object-position: center 12%; }
     .team-advisors-note {
       max-width: 44rem;
