@@ -4072,6 +4072,77 @@
       line-height: 1.7;
     }
 
+    /* Senior advisors: a text roster under the principals, the way larger
+       banks list theirs. No photos, so the principals stay the lead; each
+       name deep-links to its card on /team. */
+    .home-advisors {
+      margin-top: 3.5rem;
+      padding-top: 2.25rem;
+      border-top: 1px solid rgba(7,17,26,0.12);
+    }
+    .home-advisors-head {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 2rem;
+    }
+    .home-advisors-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.64);
+      padding-top: 0.35rem;
+    }
+    .home-advisors-intro {
+      padding-left: 2rem;
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.72);
+      line-height: 1.75;
+      max-width: 540px;
+    }
+    .home-advisors-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 1px solid rgba(7,17,26,0.12);
+      margin-bottom: 2rem;
+    }
+    .home-advisors-list li { min-width: 0; border-bottom: 1px solid rgba(7,17,26,0.12); }
+    .home-advisors-list li + li { border-left: 1px solid rgba(7,17,26,0.12); }
+    .home-advisors-list a {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 1.6rem 2rem 1.75rem 0;
+      color: var(--navy);
+    }
+    .home-advisors-list li + li a { padding-left: 2rem; }
+    .home-advisor-name {
+      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      transition: color 0.2s;
+    }
+    .home-advisors-list a:hover .home-advisor-name { color: var(--copper-ink); }
+    .home-advisor-focus {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper-ink);
+      margin-bottom: 0.75rem;
+    }
+    .home-advisor-bio {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: rgba(7,17,26,0.68);
+      line-height: 1.7;
+      max-width: 460px;
+    }
+
     .home-quote {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-style: italic;
@@ -4106,6 +4177,12 @@
       .home-sectors-list li { border-right: 0; padding-right: 0; margin-right: 0; font-size: 1.3rem; }
       .home-people { grid-template-columns: 1fr; gap: 2.5rem; }
       .home-quote { margin-top: 3rem; }
+      .home-advisors-head { grid-template-columns: 1fr; gap: 0.75rem; }
+      .home-advisors-intro { padding-left: 0; }
+      .home-advisors-list { grid-template-columns: 1fr; }
+      .home-advisors-list li + li { border-left: 0; }
+      .home-advisors-list a,
+      .home-advisors-list li + li a { padding: 1.4rem 0 1.5rem; }
     }
 
     /* ============================================================
