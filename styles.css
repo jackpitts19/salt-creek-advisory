@@ -1090,6 +1090,22 @@
     }
 
     .team-card { min-width: 0; }
+
+    /* Senior advisors sit in their own section under the principals and
+       reuse the principal card. The note says plainly that they are
+       independent, not employees, and do not represent the firm. */
+    .team--advisors { padding-top: 0; }
+    /* Gary's portrait is a tight square; anchoring near the top keeps
+       both his hair and his smile inside the wide desktop crop. */
+    #gary-dennis .team-img-area img { object-position: center 12%; }
+    .team-advisors-note {
+      max-width: 44rem;
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.82;
+      margin-bottom: 2.5rem;
+    }
     .team-img-area img { max-width: 100%; }
 
     .team-card {
