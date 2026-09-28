@@ -24,31 +24,31 @@
   <meta name="twitter:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ContactPage",
+    "@id": "https://saltcreekadvisory.com/contact#webpage",
     "name": "Contact Salt Creek Advisory",
     "url": "https://saltcreekadvisory.com/contact",
-    "mainEntity": {
-      "@type": "Organization",
-      "@id": "https://saltcreekadvisory.com/#organization",
-      "name": "Salt Creek Advisory",
-      "email": "jack@saltcreekadvisory.com",
-      "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" }
-    }
+    "inLanguage": "en-US",
+    "isPartOf": { "@id": "https://saltcreekadvisory.com/#website" },
+    "about": { "@id": "https://saltcreekadvisory.com/#organization" },
+    "mainEntity": { "@id": "https://saltcreekadvisory.com/#organization" },
+    "publisher": { "@id": "https://saltcreekadvisory.com/#organization" }
   }
   </script>
-  <link rel="stylesheet" href="styles.css?v=715e8794" />
+  <link rel="stylesheet" href="styles.css?v=4d15aac3" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<nav id="nav">
+<nav id="nav" aria-label="Primary">
   <a href="/" class="nav-logo" aria-label="Salt Creek Advisory">
     <img src="logo-mark.png" alt="" aria-hidden="true" class="nav-logo-img" width="400" height="210" decoding="async">
     <span class="nav-logo-text">Salt Creek <span class="nav-logo-text-sub">Advisory</span></span>
@@ -59,26 +59,26 @@
     <li><a href="process">Process</a></li>
     <li><a href="team">Team</a></li>
     <li><a href="articles">Insights</a></li>
-    <li><a href="contact">Contact</a></li>
+    <li><a href="contact" aria-current="page">Contact</a></li>
   </ul>
   <a href="valuation" class="nav-cta nav-cta--val">Value My Business</a>
   <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
     <span></span><span></span><span></span>
   </button>
 </nav>
-<div class="nav-mobile-drawer" id="mobileDrawer">
+<nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
   <a href="team">Team</a>
   <a href="articles">Insights</a>
-  <a href="contact">Contact</a>
+  <a href="contact" aria-current="page">Contact</a>
   <a href="investors">Investors</a>
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
   <a href="valuation">Value My Business</a>
-</div>
+</nav>
 
 <main id="main" tabindex="-1">
 
@@ -135,7 +135,7 @@
 
       <div class="contact-done" id="contactDone" tabindex="-1" aria-labelledby="contactDoneTitle" hidden>
         <h2 class="contact-form-title" id="contactDoneTitle">Thank you. Your message reached us.</h2>
-        <p class="contact-form-sub">Jack or Connor will reply personally, usually the same day. If it is urgent, call the calendar link below and take the first open slot.</p>
+        <p class="contact-form-sub">Jack or Connor will reply personally, usually the same day. If it is urgent, use the calendar link below and take the first open slot.</p>
       </div>
 
       <p class="contact-or">Or, if you would rather talk:</p>
@@ -213,17 +213,17 @@
     <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
-      <div class="footer-legal-links" aria-label="Legal">
+      <nav class="footer-legal-links" aria-label="Legal">
         <a href="privacy">Privacy Policy</a>
         <a href="terms">Terms of Use</a>
         <a href="accessibility">Accessibility</a>
-      </div>
+      </nav>
     </div>
   </div>
 </footer>
 
 <script src="main.js?v=b6ea1432"></script>
-<script src="contact.js?v=1871b3e4" defer></script>
+<script src="contact.js?v=51bb1c78" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

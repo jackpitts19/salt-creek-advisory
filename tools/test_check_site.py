@@ -585,6 +585,111 @@ class FooterDisclosureTestCase(unittest.TestCase):
         self.assertIn("about.html", output)
 
 
+
+def header(current=None, value="page", drawer_tag="nav", prefix=""):
+    """The site header: desktop nav plus mobile drawer, marking `current` if given."""
+    def link(route, label):
+        mark = ' aria-current="{}"'.format(value) if route == current else ""
+        return '<a href="{}{}"{}>{}</a>'.format(prefix, route, mark, label)
+    links = [("about", "About"), ("sectors", "Sectors"), ("contact", "Contact")]
+    desktop = "".join("<li>{}</li>".format(link(r, t)) for r, t in links)
+    drawer = "".join(link(r, t) for r, t in links + [("faq", "FAQ")])
+    return ('<nav id="nav" aria-label="Primary"><a href="{0}" class="nav-logo">Home</a>'
+            '<ul class="nav-links">{1}</ul>{2}</nav>'
+            '<{3} class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">{4}</{3}>'
+            ).format(prefix or "/", desktop, link("valuation", "Value My Business"),
+                     drawer_tag, drawer)
+
+
+class NavCurrentTestCase(unittest.TestCase):
+    """Each root page marks its own header link, in both the desktop nav and drawer.
+
+    Six root pages used to set class="active", thirteen set nothing, and the
+    drawer never marked anything, so the check pins one mapping for all of them.
+    Article pages are skipped: they mark Insights as their section instead.
+    """
+
+    def setUp(self):
+        self._origin = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        os.chdir(self._tmp.name)
+
+    def tearDown(self):
+        os.chdir(self._origin)
+        self._tmp.cleanup()
+
+    def errors_for(self, path, body):
+        errors = []
+        check_site.check_nav_current(path, page("/x", body=body), errors, [])
+        return errors
+
+    def test_page_marking_its_own_link_in_both_places_passes(self):
+        self.assertEqual(self.errors_for("about.html", header("about")), [])
+
+    def test_missing_aria_current_on_the_desktop_link_fails(self):
+        body = header("about").replace(
+            '<li><a href="about" aria-current="page">', '<li><a href="about">')
+        errors = self.errors_for("about.html", body)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("desktop nav", errors[0])
+
+    def test_missing_aria_current_in_the_drawer_fails(self):
+        body = header("about").replace(
+            '<a href="about" aria-current="page">About</a><a href="sectors"',
+            '<a href="about">About</a><a href="sectors"')
+        errors = self.errors_for("about.html", body)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("mobile drawer", errors[0])
+
+    def test_drawer_still_written_as_a_div_is_checked(self):
+        errors = self.errors_for("about.html", header(None, drawer_tag="div"))
+        self.assertEqual(len(errors), 2, errors)
+
+    def test_wrong_link_marked_current_fails(self):
+        errors = self.errors_for("about.html", header("contact"))
+        self.assertTrue(any("needs aria-current" in e for e in errors), errors)
+        self.assertTrue(any("carries aria-current" in e for e in errors), errors)
+
+    def test_home_page_marking_any_link_fails(self):
+        self.assertEqual(self.errors_for("index.html", header(None)), [])
+        self.assertTrue(self.errors_for("index.html", header("about")))
+
+    def test_sector_page_marks_sectors_as_its_section(self):
+        self.assertEqual(
+            self.errors_for("msp-ma-advisor.html", header("sectors", value="true")), [])
+        errors = self.errors_for("msp-ma-advisor.html", header("sectors", value="page"))
+        self.assertTrue(errors)
+        self.assertIn('aria-current="true"', errors[0])
+
+    def test_valuation_marks_the_header_cta(self):
+        self.assertEqual(self.errors_for("valuation.html", header("valuation")), [])
+        self.assertTrue(self.errors_for("valuation.html", header(None)))
+
+    def test_root_absolute_hrefs_resolve_to_the_same_route(self):
+        self.assertEqual(self.errors_for("about.html", header("about", prefix="/")), [])
+
+    def test_article_pages_are_skipped(self):
+        body = header("about", prefix="../").replace("aria-current", "data-x")
+        body = body.replace('href="../contact"', 'href="../contact" aria-current="page"')
+        self.assertEqual(self.errors_for("articles/some-guide-2026.html", body), [])
+
+    def test_page_without_a_header_is_skipped(self):
+        self.assertEqual(self.errors_for("about.html", "<p>no header</p>"), [])
+
+    def test_checker_reports_it_end_to_end(self):
+        with open("index.html", "w", encoding="utf-8") as handle:
+            handle.write(page("/", body=header(None) + '<a href="/about">About</a>'))
+        with open("about.html", "w", encoding="utf-8") as handle:
+            handle.write(page("/about", body=header(None)))
+        with open("sitemap.xml", "w", encoding="utf-8") as handle:
+            handle.write(sitemap(["/", "/about"]))
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_site.main([])
+        output = out.getvalue() + err.getvalue()
+        self.assertEqual(code, 1, output)
+        self.assertIn('about.html: desktop nav link about needs aria-current="page"', output)
+
 class PublishChecklistTestCase(unittest.TestCase):
     """The two publish-checklist steps that drift silently: llms.txt and RELATED.
 

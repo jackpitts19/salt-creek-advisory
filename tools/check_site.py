@@ -344,6 +344,74 @@ def check_font_files(errors, _warnings):
             errors.append("{}: @font-face names {} but there is no file at {}".format(STYLESHEET, url, target))
 
 
+# Which header link each root page marks as current. aria-current="page" when
+# the link IS the page; "true" when the page sits under that section (a sector
+# page under Sectors). A page not listed here (home, 404, the legal pages)
+# marks nothing in the header. Article pages are skipped: they flag Insights
+# with class="active" as their section and are generated from a shared shell.
+NAV_CURRENT = {
+    "about.html": ("about", "page"),
+    "articles.html": ("articles", "page"),
+    "capabilities.html": ("capabilities", "page"),
+    "contact.html": ("contact", "page"),
+    "faq.html": ("faq", "page"),
+    "investors.html": ("investors", "page"),
+    "podcast.html": ("podcast", "page"),
+    "process.html": ("process", "page"),
+    "sectors.html": ("sectors", "page"),
+    "team.html": ("team", "page"),
+    "valuation.html": ("valuation", "page"),
+    "msp-ma-advisor.html": ("sectors", "true"),
+    "pet-care-ma-advisor.html": ("sectors", "true"),
+    "preschool-childcare-ma-advisor.html": ("sectors", "true"),
+}
+NAV_BLOCKS = (
+    ("desktop nav", re.compile(r'<nav\b[^>]*\bid="nav"[^>]*>(.*?)</nav>', re.S | re.I)),
+    ("mobile drawer", re.compile(
+        r'<(?:nav|div)\b[^>]*\bid="mobileDrawer"[^>]*>(.*?)</(?:nav|div)>', re.S | re.I)),
+)
+ANCHOR_TAG = re.compile(r"<a\b[^>]*>", re.I)
+ANCHOR_HREF = re.compile(r'\bhref="([^"]*)"', re.I)
+ARIA_CURRENT = re.compile(r'\baria-current="([^"]*)"', re.I)
+
+
+def nav_route(href):
+    """The bare route a header href names: '/about', 'about' and '../about' agree."""
+    route = href.split("#", 1)[0].split("?", 1)[0]
+    while route.startswith(("../", "./")):
+        route = route[3:] if route.startswith("../") else route[2:]
+    return route.strip("/")
+
+
+def check_nav_current(path, html, errors, _warnings):
+    """The header says where the reader is, the same way on every root page.
+
+    Before this, six root pages set class="active" on their own link, the other
+    thirteen set nothing, the mobile drawer never marked anything, and no page
+    told a screen reader which link was the current one. It is hand-maintained
+    markup on every root page, so it drifts unless something checks it.
+    """
+    if "/" in path or os.sep in path:
+        return
+    target, value = NAV_CURRENT.get(path, (None, None))
+    for label, pattern in NAV_BLOCKS:
+        match = pattern.search(html)
+        if not match:
+            continue
+        for tag in ANCHOR_TAG.findall(match.group(1)):
+            href = ANCHOR_HREF.search(tag)
+            shown = href.group(1) if href else tag[:60]
+            route = nav_route(href.group(1)) if href else None
+            current = ARIA_CURRENT.search(tag)
+            if target and route == target:
+                if not current or current.group(1) != value:
+                    errors.append('{}: {} link {} needs aria-current="{}"'.format(
+                        path, label, shown, value))
+            elif current:
+                errors.append('{}: {} link {} carries aria-current="{}", but it is '
+                              "not this page's link".format(path, label, shown, current.group(1)))
+
+
 PAGE_CHECKS = (
     check_internal_links,
     check_footer_disclosure,
@@ -354,6 +422,7 @@ PAGE_CHECKS = (
     check_schema_required_fields,
     check_images,
     check_fonts,
+    check_nav_current,
 )
 
 

@@ -25,16 +25,17 @@
   <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <meta name="robots" content="noindex, follow" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=715e8794" />
+  <link rel="stylesheet" href="styles.css?v=4d15aac3" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<nav id="nav">
+<nav id="nav" aria-label="Primary">
   <a href="/" class="nav-logo" aria-label="Salt Creek Advisory">
     <img src="logo-mark.png" alt="" aria-hidden="true" class="nav-logo-img" width="400" height="210" decoding="async">
     <span class="nav-logo-text">Salt Creek <span class="nav-logo-text-sub">Advisory</span></span>
@@ -52,7 +53,7 @@
     <span></span><span></span><span></span>
   </button>
 </nav>
-<div class="nav-mobile-drawer" id="mobileDrawer">
+<nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
@@ -64,7 +65,7 @@
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
   <a href="valuation">Value My Business</a>
-</div>
+</nav>
 
 <main id="main" tabindex="-1">
 <section class="page-hero">
@@ -147,11 +148,11 @@
     <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
-      <div class="footer-legal-links" aria-label="Legal">
+      <nav class="footer-legal-links" aria-label="Legal">
         <a href="privacy">Privacy Policy</a>
         <a href="terms">Terms of Use</a>
-        <a href="accessibility">Accessibility</a>
-      </div>
+        <a href="accessibility" aria-current="page">Accessibility</a>
+      </nav>
     </div>
   </div>
 </footer>

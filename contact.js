@@ -88,9 +88,9 @@
   /**
    * Announces a problem and moves focus to the field that caused it.
    *
-   * The valuation tool writes its three validation messages silently, with no
-   * role, no aria-live and no focus move, so a screen reader user learns nothing
-   * when it rejects them. This form does not repeat that.
+   * The valuation tool's err() in valuation.js follows the same pattern: an
+   * announced message, aria-invalid and aria-describedby on the failing field,
+   * and focus moved to it. Keep the two in step when either changes.
    * @param {string} message what went wrong, in plain language
    * @param {string} fieldId the field to mark invalid and focus
    */

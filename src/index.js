@@ -199,6 +199,46 @@ function resolveGuideYear(pathname) {
 // be redirected away by this.
 const INDEX_SEGMENT = /\/index(?:\.html)?$/;
 
+// The last path segment carries a file extension other than ".html". Such a
+// path names a file on disk (a PDF, an image, the IndexNow key), and file
+// names are case-sensitive, so it is never case-folded.
+const NON_PAGE_EXTENSION = /\.(?!html$)[a-z0-9]+$/i;
+
+/**
+ * Case-folds a page path, so /About and /Articles/MSP-Valuation-Multiples land
+ * on the lowercase URL every page on the site is published under. Done inside
+ * normalizePathname, so the fold shares the one 301 with every other
+ * correction. Files with a real extension are left exactly as asked for:
+ * assets/Salt-Creek-2026-MSP-MA-Valuation-Guide.pdf is a real mixed-case name.
+ */
+function lowercasePagePath(pathname) {
+  const lastSegment = pathname.slice(pathname.lastIndexOf("/") + 1);
+  return NON_PAGE_EXTENSION.test(lastSegment) ? pathname : pathname.toLowerCase();
+}
+
+// Short URLs people type or guess, and retired asset paths, mapped onto the
+// page that answers them. Keys are compared after normalization, so /Services/
+// and /services.html arrive here as /services and still cost one hop.
+//
+// The one-pager was republished under a -2026 name so that no cache (browser,
+// Cloudflare, or a prospect's download folder) can go on serving the retired
+// version under the same URL. Old links keep working through this map.
+const PATH_ALIASES = new Map([
+  ["/services", "/capabilities"],
+  ["/blog", "/articles"],
+  ["/home", "/"],
+  ["/assets/salt-creek-advisory-one-pager.pdf", "/assets/salt-creek-advisory-one-pager-2026.pdf"],
+  ["/assets/salt-creek-advisory-one-pager.png", "/assets/salt-creek-advisory-one-pager-2026.png"],
+]);
+
+function resolveAlias(pathname) {
+  return PATH_ALIASES.get(pathname) ?? pathname;
+}
+
+// The not-found page itself. Served with a 404 status when asked for directly,
+// so /404 and /404.html are never indexed as a live page answering 200.
+const NOT_FOUND_PATH = "/404";
+
 /**
  * Maps every spelling of a page onto its clean URL. Repeated slashes collapse
  * and a trailing "/index" is read like "/index.html" here, because left alone
@@ -206,7 +246,9 @@ const INDEX_SEGMENT = /\/index(?:\.html)?$/;
  * follows, a two-hop chain on a URL that should cost one.
  */
 function normalizePathname(pathname) {
-  const collapsed = pathname.replace(/\/{2,}/g, "/").replace(/(.)\/+$/, "$1");
+  const collapsed = lowercasePagePath(
+    pathname.replace(/\/{2,}/g, "/").replace(/(.)\/+$/, "$1"),
+  );
   const withoutIndex = collapsed.replace(INDEX_SEGMENT, "/");
   const withoutHtml = withoutIndex.endsWith(".html")
     ? withoutIndex.slice(0, -".html".length)
@@ -271,7 +313,11 @@ export default {
     const targetHost = url.hostname === WWW_HOST ? APEX_HOST : url.hostname;
     // Year resolution runs after normalization so that ".html" and trailing
     // slashes are already gone, and both corrections leave in one 301.
-    const targetPathname = resolveGuideYear(normalizePathname(url.pathname));
+    const normalizedPathname = normalizePathname(url.pathname);
+    if (normalizedPathname === NOT_FOUND_PATH) {
+      return serveNotFound(env, url);
+    }
+    const targetPathname = resolveGuideYear(resolveAlias(normalizedPathname));
 
     const needsRedirect =
       originalScheme !== "https" ||

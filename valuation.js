@@ -412,10 +412,50 @@
       '<option value="_other">Other / Not Listed</option>';
   });
 
+  /**
+   * The element focus should land on when step n appears: the step title for the
+   * three question steps, and whichever result heading is actually showing on the
+   * result step (range, closer look, or below manager pay).
+   * @param {Element} step the .val-step just shown
+   * @param {number} n its step number
+   * @returns {Element|null}
+   */
+  function stepFocusTarget(step, n) {
+    if (n !== 4) return step.querySelector('.val-step-title');
+    const shown = Array.from(step.querySelectorAll('.val-result-eyebrow'))
+      .find((node) => node.offsetParent !== null);
+    return shown || null;
+  }
+
+  /**
+   * Shows step n, then moves focus and the viewport to it.
+   *
+   * Without this, the step the visitor just left collapses under them: on a phone
+   * the page stayed scrolled past the new, shorter step, and focus fell back to
+   * BODY because the button that had it was hidden. A screen reader user heard
+   * nothing about the new step at all.
+   * @param {number} n the step to show, 1 to 4
+   */
   function showStep(n) {
     steps.forEach(s => s.classList.toggle('active', s.dataset.step == n));
     dots.forEach((d, i) => d.classList.toggle('on', i < n));
     if (n === 4) $('valResult').classList.add('shown');
+
+    const step = document.querySelector('.val-step[data-step="' + n + '"]');
+    if (!step) return;
+    const target = stepFocusTarget(step, n);
+    // preventScroll, because the scroll below decides where the step sits.
+    if (target) target.focus({ preventScroll: true });
+
+    // Only scroll when the top of the step is hidden behind the fixed nav or sits
+    // low enough that the visitor would have to hunt for it. On a desktop where the
+    // card is already in view this leaves the page still.
+    const nav = $('nav');
+    const navBottom = nav ? Math.max(0, nav.getBoundingClientRect().bottom) : 0;
+    const top = step.getBoundingClientRect().top;
+    if (top < navBottom || top > window.innerHeight / 2) {
+      step.scrollIntoView({ block: 'start', behavior: rm ? 'auto' : 'smooth' });
+    }
   }
 
   function parseMoney(v) {
@@ -432,25 +472,56 @@
     });
   });
 
-  function err(id, msg) {
+  // The fields each step's error message can be about. err() clears the invalid
+  // state from all of them, so fixing one field and failing on another never
+  // leaves a stale aria-invalid behind.
+  const STEP_FIELDS = {
+    err1: ['vIndustry', 'vSubsector', 'vState', 'vRevenue', 'vProfit', 'vProfitBasis', 'vWebsite'],
+    err2: ['vOwner', 'vGrowth', 'vConc', 'vRec'],
+    err3: ['vName', 'vEmail', 'vPhone']
+  };
+
+  /**
+   * Shows or clears a step's validation message. The message elements carry
+   * role="alert", so setting the text is announced. With a fieldId, that field is
+   * marked invalid, pointed at the message, and focused, the same pattern as
+   * fail() in contact.js. An empty msg clears the message and every invalid mark.
+   * @param {string} id the step's error element id (err1, err2 or err3)
+   * @param {string} msg what went wrong, in plain language, or '' to clear
+   * @param {string} [fieldId] the field to mark invalid and focus
+   */
+  function err(id, msg, fieldId) {
     const el = $(id);
     el.textContent = msg || '';
     el.style.display = msg ? 'block' : 'none';
+    (STEP_FIELDS[id] || []).forEach((fid) => {
+      const node = $(fid);
+      if (!node) return;
+      if (msg && fid === fieldId) {
+        node.setAttribute('aria-invalid', 'true');
+        node.setAttribute('aria-describedby', id);
+      } else {
+        node.removeAttribute('aria-invalid');
+        node.removeAttribute('aria-describedby');
+      }
+    });
+    const target = msg && fieldId ? $(fieldId) : null;
+    if (target) target.focus();
   }
 
   $('toStep2').addEventListener('click', () => {
     const ind = $('vIndustry').value;
     const rev = parseMoney($('vRevenue').value);
     const prof = parseMoney($('vProfit').value);
-    if (!ind) return err('err1', 'Please select your industry.');
-    if (SUBSECTORS[ind] && !$('vSubsector').value) return err('err1', 'Please select your subsector.');
-    if (!$('vState').value) return err('err1', 'Please select your state.');
-    if (!rev && !prof) return err('err1', 'Give us revenue or profit. A rough number is fine.');
-    if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.');
+    if (!ind) return err('err1', 'Please select your industry.', 'vIndustry');
+    if (SUBSECTORS[ind] && !$('vSubsector').value) return err('err1', 'Please select your subsector.', 'vSubsector');
+    if (!$('vState').value) return err('err1', 'Please select your state.', 'vState');
+    if (!rev && !prof) return err('err1', 'Give us revenue or profit. A rough number is fine.', 'vRevenue');
+    if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.', 'vProfit');
     // Only binding when a profit figure was actually given: a blank profit is
     // estimated from industry margins, which are already net of a manager's pay.
     if (prof && !$('vProfitBasis').value) {
-      return err('err1', 'Tell us whether your own pay is still inside that profit number.');
+      return err('err1', 'Tell us whether your own pay is still inside that profit number.', 'vProfitBasis');
     }
     err('err1', '');
     trackStep(1);
@@ -458,10 +529,10 @@
   });
 
   $('toStep3').addEventListener('click', () => {
-    if (!$('vOwner').value) return err('err2', 'Tell us how involved you are day to day.');
-    if (!$('vGrowth').value) return err('err2', 'Tell us how revenue has trended.');
-    if (!$('vConc').value) return err('err2', 'Tell us about your largest customer.');
-    if (!$('vRec').value) return err('err2', 'Tell us what kind of revenue you have.');
+    if (!$('vOwner').value) return err('err2', 'Tell us how involved you are day to day.', 'vOwner');
+    if (!$('vGrowth').value) return err('err2', 'Tell us how revenue has trended.', 'vGrowth');
+    if (!$('vConc').value) return err('err2', 'Tell us about your largest customer.', 'vConc');
+    if (!$('vRec').value) return err('err2', 'Tell us what kind of revenue you have.', 'vRec');
     err('err2', '');
     trackStep(2);
     showStep(3);
@@ -507,8 +578,8 @@
   $('calcBtn').addEventListener('click', () => {
     const name = $('vName').value.trim();
     const email = $('vEmail').value.trim();
-    if (!name) return err('err3', 'Please enter your name.');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('err3', 'Please enter a valid email address.');
+    if (!name) return err('err3', 'Please enter your name.', 'vName');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('err3', 'Please enter a valid email address.', 'vEmail');
     err('err3', '');
 
     const ind = $('vIndustry').value;

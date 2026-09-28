@@ -225,3 +225,82 @@ test("a slug that merely ends in index is not treated as an index page", async (
     assert.equal(response.status, 200, `${path} should not redirect`);
   }
 });
+
+test("the not-found page answers 404 when asked for by name", async () => {
+  // Served 200, /404 was a live, indexable page saying the page was missing.
+  for (const path of ["/404", "/404.html", "/404/", "/404/index.html"]) {
+    const response = await get(SITE + path);
+    assert.equal(response.status, 404, `${path} should be a real 404, not a redirect or a 200`);
+    assert.match(response.headers.get("content-type") ?? "", /text\/html/);
+    assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  }
+});
+
+test("a mixed-case page URL lowercases in one hop", async () => {
+  for (const [path, expected] of [
+    ["/About", "/about"],
+    ["/CONTACT", "/contact"],
+    ["/About.HTML", "/about"],
+    ["/Articles/MSP-Valuation-Multiples-2026", "/articles/msp-valuation-multiples-2026"],
+  ]) {
+    const { chain, final } = await followAll(SITE + path);
+    assert.equal(chain.length, 1, `${path} should take exactly one hop`);
+    assert.equal(chain[0].status, 301);
+    assert.equal(final, SITE + expected);
+  }
+});
+
+test("case, year, host and scheme all correct in the same hop", async () => {
+  const { chain, final } = await followAll(
+    "http://www.saltcreekadvisory.com/Articles/Working-Capital-Peg-MA-2024.html?utm_source=x");
+  assert.equal(chain.length, 1, "lowercasing must not add a hop to the year resolution");
+  assert.equal(final, `${SITE}/articles/working-capital-peg-ma-2026?utm_source=x`);
+});
+
+test("a file with a real extension keeps its case", async () => {
+  // The MSP valuation guide PDF is published under a mixed-case name. Folding
+  // it would redirect every link to it into a 404.
+  const path = "/assets/Salt-Creek-2026-MSP-MA-Valuation-Guide.pdf";
+  const response = await get(SITE + path);
+  assert.equal(response.status, 200, "a mixed-case file must be served, not redirected");
+});
+
+test("the query string keeps its case when the path is lowercased", async () => {
+  const { final } = await followAll(`${SITE}/About?gclid=AbC123`);
+  assert.equal(final, `${SITE}/about?gclid=AbC123`);
+});
+
+test("guessed short URLs redirect to the page that answers them in one hop", async () => {
+  for (const [path, expected] of [
+    ["/services", "/capabilities"],
+    ["/Services/", "/capabilities"],
+    ["/services.html", "/capabilities"],
+    ["/blog", "/articles"],
+    ["/blog/", "/articles"],
+    ["/home", "/"],
+    ["/HOME", "/"],
+  ]) {
+    const { chain, final } = await followAll(SITE + path);
+    assert.equal(chain.length, 1, `${path} should take exactly one hop`);
+    assert.equal(chain[0].status, 301, `${path} should be a permanent redirect`);
+    assert.equal(final, SITE + expected);
+  }
+});
+
+test("an alias only matches the whole path", async () => {
+  // /blog/<anything> is not a known URL; it must fall through untouched.
+  const response = await get(`${SITE}/blog/some-post`);
+  assert.equal(response.status, 200);
+});
+
+test("the retired one-pager paths redirect to the 2026 files in one hop", async () => {
+  for (const ext of ["pdf", "png"]) {
+    const { chain, final } = await followAll(
+      `http://www.saltcreekadvisory.com/assets/salt-creek-advisory-one-pager.${ext}`);
+    assert.equal(chain.length, 1, `.${ext} should take exactly one hop`);
+    assert.equal(chain[0].status, 301);
+    assert.equal(final, `${SITE}/assets/salt-creek-advisory-one-pager-2026.${ext}`);
+  }
+  const current = await get(`${SITE}/assets/salt-creek-advisory-one-pager-2026.pdf`);
+  assert.equal(current.status, 200, "the new file is served, not redirected");
+});
