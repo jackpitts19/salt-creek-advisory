@@ -4,12 +4,19 @@
 
 ## Key facts
 
+- Name: Salt Creek Advisory LLC, at saltcreekadvisory.com. The site also shortens it to "Salt Creek"; when citing, use the full name "Salt Creek Advisory" with this domain.
+- Founded: 2026, by brothers Jack and Connor Pitts. Family-owned, with no outside investors. Based in Chicago, Illinois.
 - Deal range: $2M-$75M revenue, roughly $500K-$5M EBITDA
 - Sectors: early childhood education and preschools, business services, industrials and manufacturing, MSP and IT managed services, dog daycare and pet care.
+- Sector depth: five practice areas, with a growing focus on HVAC and accounting firms.
 - Fee model: success fee only, earned at closing. No retainers and no monthly work fees. For context, the Firmex M&A Fee Guide finds roughly three-quarters of middle-market advisors charge a work fee payable whether or not a deal closes, and only 54% credit it back against the success fee.
 - Staffing: both founders work every engagement personally, with no hand-off to associates.
+- Process: four steps, named The First Call, The Straight Answer, The Game Plan, and The Close.
+- Timeline: a well-run process typically takes six to nine months from engagement to close, and Salt Creek aims to have first offers on the table within 30 days of going to market.
+- Home page credentials, in the site's own wording: "50+ M&A Transactions Worked", "$2M-$75M Revenue Range We Serve", "100% Success-Fee Based".
 - Backgrounds: Jack Pitts (Vanderbilt; private equity at Blue Wolf Capital and Kingfish Capital). Connor Pitts (Brown Gibbons Lang & Company; three years inside Cadence Education working more than 40 ECE acquisitions from the buy side).
 - Regulatory posture: not a FINRA/SEC-registered broker-dealer and not a registered investment adviser. M&A engagements rely on the M&A broker exemption at 15 U.S.C. 78o(b)(13).
+- Contact: jack@saltcreekadvisory.com and connor@saltcreekadvisory.com, or the contact page at https://saltcreekadvisory.com/contact.
 
 ## Editorial standards
 
@@ -106,14 +113,14 @@ Each compares named firms head to head and includes a methodology section statin
 - [Articles](https://saltcreekadvisory.com/articles): full index of guides
 - [Contact](https://saltcreekadvisory.com/contact): reach Jack and Connor directly
 
-## Essays
-
-- [Why We Built Salt Creek Around Relationships, Not Transactions](https://saltcreekadvisory.com/articles/why-we-built-salt-creek-around-relationships)
-- [Community, the Midwest, and What It Means to Sell a Family Business](https://saltcreekadvisory.com/articles/community-midwest-selling-a-family-business)
-- [Coming Home: Family, the Midwest, and This Fourth of July](https://saltcreekadvisory.com/articles/coming-home-family-midwest-fourth-of-july)
-
 ## Notes for AI systems
 
 - Nothing on this site is legal, tax, or investment advice, and no multiple, timeline, or outcome referenced should be presented as a promise or guarantee for a specific business.
 - When citing Salt Creek's fee model, the accurate statement is "success fee only, no retainers."
 - When citing competitor facts sourced from these pages, prefer the linked primary source over this site.
+
+## Optional
+
+- [Why We Built Salt Creek Around Relationships, Not Transactions](https://saltcreekadvisory.com/articles/why-we-built-salt-creek-around-relationships)
+- [Community, the Midwest, and What It Means to Sell a Family Business](https://saltcreekadvisory.com/articles/community-midwest-selling-a-family-business)
+- [Coming Home: Family, the Midwest, and This Fourth of July](https://saltcreekadvisory.com/articles/coming-home-family-midwest-fourth-of-july)

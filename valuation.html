@@ -24,13 +24,20 @@
   <meta name="twitter:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=715e8794" />
+  <link rel="stylesheet" href="styles.css?v=4d15aac3" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "@id": "https://saltcreekadvisory.com/valuation#webpage",
+  "url": "https://saltcreekadvisory.com/valuation",
+  "name": "Business Valuation Tool",
+  "isPartOf": { "@id": "https://saltcreekadvisory.com/#website" },
+  "about": { "@id": "https://saltcreekadvisory.com/valuation#tool" },
+  "publisher": { "@id": "https://saltcreekadvisory.com/#organization" },
   "mainEntity": [
     {
       "@type": "Question",
@@ -67,13 +74,30 @@
   ]
 }
   </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://saltcreekadvisory.com/valuation#tool",
+  "name": "Salt Creek Advisory Business Valuation Tool",
+  "url": "https://saltcreekadvisory.com/valuation",
+  "description": "A ballpark value range built from published industry transaction multiple ranges, plus the buyers active in your industry. A directional estimate, not a formal valuation or an offer.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@id": "https://saltcreekadvisory.com/#organization" },
+  "mainEntityOfPage": { "@id": "https://saltcreekadvisory.com/valuation#webpage" }
+}
+  </script>
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<nav id="nav">
+<nav id="nav" aria-label="Primary">
   <a href="/" class="nav-logo" aria-label="Salt Creek Advisory">
     <img src="logo-mark.png" alt="" aria-hidden="true" class="nav-logo-img" width="400" height="210" decoding="async">
     <span class="nav-logo-text">Salt Creek <span class="nav-logo-text-sub">Advisory</span></span>
@@ -86,12 +110,12 @@
     <li><a href="articles">Insights</a></li>
     <li><a href="contact">Contact</a></li>
   </ul>
-  <a href="valuation" class="nav-cta nav-cta--val">Value My Business</a>
+  <a href="valuation" class="nav-cta nav-cta--val" aria-current="page">Value My Business</a>
   <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
     <span></span><span></span><span></span>
   </button>
 </nav>
-<div class="nav-mobile-drawer" id="mobileDrawer">
+<nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
@@ -102,8 +126,8 @@
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
-  <a href="valuation">Value My Business</a>
-</div>
+  <a href="valuation" aria-current="page">Value My Business</a>
+</nav>
 
 <main id="main" tabindex="-1">
 <section class="page-hero">
@@ -122,7 +146,7 @@
 
     <div class="val-step active" data-step="1">
       <span class="val-step-kicker">Step 1 of 4</span>
-      <h3 class="val-step-title">The basics</h3>
+      <h3 class="val-step-title" tabindex="-1">The basics</h3>
       <div class="val-grid2">
         <div class="val-field">
           <label class="val-label" for="vIndustry">Industry</label>
@@ -185,7 +209,7 @@
         <label class="val-label" for="vWebsite">Company Website <span class="val-label-hint">(optional, helps us give you a sharper read)</span></label>
         <input id="vWebsite" class="val-input" type="text" placeholder="yourcompany.com" autocomplete="off">
       </div>
-      <p class="val-error-msg" id="err1"></p>
+      <p class="val-error-msg" id="err1" role="alert"></p>
       <div class="val-actions">
         <span></span>
         <button class="btn-primary" id="toStep2" type="button">Continue &#8594;</button>
@@ -194,7 +218,7 @@
 
     <div class="val-step" data-step="2">
       <span class="val-step-kicker">Step 2 of 4</span>
-      <h3 class="val-step-title">A few quick details</h3>
+      <h3 class="val-step-title" tabindex="-1">A few quick details</h3>
       <p class="val-help" style="margin:-1rem 0 1.75rem;">These move your multiple up or down. Honest answers get honest numbers.</p>
       <div class="val-grid2">
         <div class="val-field">
@@ -249,7 +273,7 @@
           </select>
         </div>
       </div>
-      <p class="val-error-msg" id="err2"></p>
+      <p class="val-error-msg" id="err2" role="alert"></p>
       <div class="val-actions">
         <button class="btn-ghost val-back" id="back1" type="button">&#8592; Back</button>
         <button class="btn-primary" id="toStep3" type="button">Continue &#8594;</button>
@@ -258,7 +282,7 @@
 
     <div class="val-step" data-step="3">
       <span class="val-step-kicker">Step 3 of 4</span>
-      <h3 class="val-step-title">Where should we send the full breakdown?</h3>
+      <h3 class="val-step-title" tabindex="-1">Where should we send the full breakdown?</h3>
       <div class="val-grid2">
         <div class="val-field">
           <label class="val-label" for="vName">Your Name</label>
@@ -281,7 +305,7 @@
           <span>Optional. I agree that Salt Creek Advisory may call and text me at the number I provided about my estimate and its services, including by automated dialing or prerecorded message. I do not have to agree to this to get my estimate. Message and data rates may apply. Reply STOP to stop texts.</span>
         </label>
       </div>
-      <p class="val-error-msg" id="err3"></p>
+      <p class="val-error-msg" id="err3" role="alert"></p>
       <div class="val-actions">
         <button class="btn-ghost val-back" id="back2" type="button">&#8592; Back</button>
         <button class="btn-primary" id="calcBtn" type="button">Show My Range</button>
@@ -290,18 +314,18 @@
 
     <div class="val-step val-result" data-step="4" id="valResult">
       <div id="valNumbers">
-        <span class="val-result-eyebrow">Estimated Value Range</span>
+        <span class="val-result-eyebrow" tabindex="-1">Estimated Value Range</span>
         <div class="val-range"><span id="valLow">$0</span><span class="val-range-dash">&ndash;</span><span id="valHigh">$0</span></div>
         <div class="val-bar"><div class="val-bar-fill"></div></div>
         <div class="val-bar-labels"><span>Conservative</span><span>With a competitive process</span></div>
         <p class="val-note" id="valNote"></p>
       </div>
       <div id="valBigLook" style="display:none;">
-        <span class="val-result-eyebrow">This One Deserves a Closer Look</span>
+        <span class="val-result-eyebrow" tabindex="-1">This One Deserves a Closer Look</span>
         <p class="val-biglook-msg">Honestly? At your size, a calculator range isn&rsquo;t worth your time. Businesses like yours trade on things a tool can&rsquo;t see: buyer appetite, sector momentum, deal structure, and how the story gets told. Rather than hand you a number that could be off by tens of millions in either direction, we&rsquo;d like to take a real look. That conversation is free, confidential, and worth it at your scale.</p>
       </div>
       <div id="valSmallLook" style="display:none;">
-        <span class="val-result-eyebrow">Let&rsquo;s Talk Before We Put a Number On It</span>
+        <span class="val-result-eyebrow" tabindex="-1">Let&rsquo;s Talk Before We Put a Number On It</span>
         <p class="val-biglook-msg" id="valSmallLookMsg"></p>
       </div>
 
@@ -327,7 +351,7 @@
   <div class="wrap">
     <div class="article-answer">
       <span class="article-answer-label">Direct Answer</span>
-      <p>Most lower middle market businesses are valued as a multiple of EBITDA (earnings before interest, taxes, depreciation, and amortization), adjusted for owner add-backs. The tool above applies an industry-specific margin assumption to your revenue to estimate EBITDA, then adjusts that up or down based on owner dependency, growth trajectory, customer concentration, and revenue recurrence, the same factors buyers underwrite in real diligence. The resulting range reflects publicly known transaction multiples for your industry, not a guess.</p>
+      <p>Most lower middle market businesses are valued as a multiple of EBITDA (earnings before interest, taxes, depreciation, and amortization), adjusted for <a href="articles/ebitda-add-backs-2026">owner add-backs</a>. The tool above applies an industry-specific margin assumption to your revenue to estimate EBITDA, then adjusts that up or down based on owner dependency, growth trajectory, customer concentration, and revenue recurrence, the same factors buyers underwrite in real diligence. The resulting range reflects publicly known transaction multiples for your industry, not a guess.</p>
     </div>
 
     <div class="article-body">
@@ -345,19 +369,19 @@
       <h2>Valuation Tool FAQ</h2>
       <div class="faq-list faq-list-light">
         <div class="faq-item">
-          <button class="faq-q" aria-expanded="false">How accurate is this estimate?<span class="faq-q-icon" aria-hidden="true"></span></button>
+          <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">How accurate is this estimate?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
           <div class="faq-a"><div class="faq-a-inner">It is a directional starting point, not a formal valuation. A calculator can weigh eight inputs; a real buyer evaluates a hundred. Use this range to get oriented, then talk to us for a number grounded in your actual financials and buyer landscape.</div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" aria-expanded="false">What multiple is my industry trading at?<span class="faq-q-icon" aria-hidden="true"></span></button>
+          <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">What multiple is my industry trading at?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
           <div class="faq-a"><div class="faq-a-inner">Multiples vary by industry, size, growth, and buyer competition, roughly 3x to 7x EBITDA for most lower middle market businesses in our $2 million to $75 million revenue range, with recurring-revenue and technology-enabled businesses often trading higher. The tool above applies the specific multiple range for your selected industry.</div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" aria-expanded="false">Is this a real valuation I can use with a buyer?<span class="faq-q-icon" aria-hidden="true"></span></button>
+          <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">Is this a real valuation I can use with a buyer?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
           <div class="faq-a"><div class="faq-a-inner">No. This is a directional estimate for planning purposes, not a formal valuation, fairness opinion, or offer. A real valuation requires a review of your actual financial statements and a conversation about your business. That conversation is free.</div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" aria-expanded="false">Is my information kept confidential?<span class="faq-q-icon" aria-hidden="true"></span></button>
+          <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">Is my information kept confidential?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
           <div class="faq-a"><div class="faq-a-inner">Yes. Jack and Connor personally review every submission. We do not sell your information, and we never disclose it to buyers, lenders, or other market participants without your permission. Like any business, we use a small number of vendors to operate the site, including our form provider Formspree, which delivers and stores your submission for us. Our <a href="privacy">Privacy Policy</a> names each of them.</div></div>
         </div>
       </div>
@@ -409,17 +433,17 @@
     <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
-      <div class="footer-legal-links" aria-label="Legal">
+      <nav class="footer-legal-links" aria-label="Legal">
         <a href="privacy">Privacy Policy</a>
         <a href="terms">Terms of Use</a>
         <a href="accessibility">Accessibility</a>
-      </div>
+      </nav>
     </div>
   </div>
 </footer>
 
 <script src="main.js?v=b6ea1432"></script>
-<script src="valuation.js?v=4f8919b0" defer></script>
+<script src="valuation.js?v=f6a1d3ca" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

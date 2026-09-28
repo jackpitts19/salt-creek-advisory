@@ -7,8 +7,9 @@ Run from the repository root after adding or editing an article:
 
 Source of truth is each article's existing Article JSON-LD block, so the feed,
 the sitemap and the structured data can never disagree with each other. Pages
-that are not articles take their lastmod from the last git commit that touched
-them. Stdlib only, no build step, no dependencies.
+that are not articles take their lastmod from the last git commit that changed
+them for a reason other than a ?v= cache stamp. Stdlib only, no build step,
+no dependencies.
 """
 import glob
 import json
@@ -17,6 +18,10 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from xml.sax.saxutils import escape
+
+# Shared with the stamper so "a stamp-only change" means exactly what it writes.
+# Run as `python3 tools/build_feed.py`, tools/ is already first on sys.path.
+from stamp_assets import ASSETS, reference_pattern
 
 SITE = "https://saltcreekadvisory.com"
 # Matches the <link rel="alternate"> title in the markup exactly. The two drifted
@@ -80,13 +85,70 @@ def to_rfc822(iso_date):
     return parsed.strftime("%a, %d %b %Y %H:%M:%S +0000")
 
 
-def git_last_modified(path):
+def _without_stamps(line):
+    """A diff line with every ?v= cache stamp removed, using stamp_assets' own regex."""
+    for asset in ASSETS:
+        line = reference_pattern(asset).sub(
+            lambda m, a=asset: m.group(1) + m.group(2) + a + m.group(3), line
+        )
+    return line
+
+
+def _changed_lines(commit, path, cwd=None):
+    """The removed and added lines one commit made to `path`, headers excluded.
+
+    Merges are diffed against their first parent, which is what the branch the
+    sitemap is built from actually received.
+    """
     result = subprocess.run(
-        ["git", "log", "-1", "--format=%cs", "--", path],
-        capture_output=True, text=True, check=False,
+        ["git", "show", "--format=", "--no-color", "--no-ext-diff", "-U0",
+         "--diff-merges=first-parent", commit, "--", path],
+        capture_output=True, text=True, check=False, cwd=cwd,
     )
-    stamp = result.stdout.strip()
-    return stamp or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    removed, added = [], []
+    in_hunk = False
+    for line in result.stdout.splitlines():
+        if line.startswith("@@"):
+            in_hunk = True
+        elif not in_hunk:
+            continue  # "diff --git", "index", "---" and "+++" headers
+        elif line.startswith("-"):
+            removed.append(line[1:])
+        elif line.startswith("+"):
+            added.append(line[1:])
+    return removed, added
+
+
+def is_stamp_only_change(commit, path, cwd=None):
+    """True when a commit changed nothing in `path` but ?v= asset stamps.
+
+    tools/stamp_assets.py rewrites the stamp in every page whenever styles.css
+    or a script changes, so without this every page's sitemap lastmod would
+    reset on each CSS tweak, telling crawlers that pages changed when their
+    content did not. An empty diff (a mode change, say) is counted as a real
+    change rather than guessed at.
+    """
+    removed, added = _changed_lines(commit, path, cwd)
+    if not removed and not added:
+        return False
+    return sorted(map(_without_stamps, removed)) == sorted(map(_without_stamps, added))
+
+
+def git_last_modified(path, cwd=None):
+    """Date of the last commit that changed `path` for a reason other than a stamp."""
+    result = subprocess.run(
+        ["git", "log", "--format=%H %cs", "--", path],
+        capture_output=True, text=True, check=False, cwd=cwd,
+    )
+    history = [line.split(" ", 1) for line in result.stdout.splitlines() if line.strip()]
+    for commit, date in history:
+        if not is_stamp_only_change(commit, path, cwd):
+            return date
+    if history:
+        # Every commit was stamp-only, which cannot happen for a file git ever
+        # added; fall back to the newest one rather than inventing a date.
+        return history[0][1]
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
 def build_feed(articles):

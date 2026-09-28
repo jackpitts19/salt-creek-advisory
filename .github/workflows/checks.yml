@@ -44,6 +44,7 @@ jobs:
         run: |
           python3 tools/test_check_site.py
           python3 tools/test_stamp_assets.py
+          python3 tools/test_build_feed.py
           python3 tools/test_submit_indexnow.py
           python3 tools/test_check_links.py
           # The offline half of the canonical check. The probe itself needs
