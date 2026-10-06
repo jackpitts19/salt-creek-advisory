@@ -245,13 +245,20 @@ RELATED = {
     # Reading goes to the diligence request its three-to-six month section
     # prepares for, and to the earnout and escrow guide, which is where an
     # unsupported add-back or a late licensing approval ends up in the terms.
+    #
+    # The valuation guide and the advisor comparison lead with the sell-side page,
+    # as their MSP and pet care counterparts do. Both were wired before that page
+    # existed, which left the flagship sector page with one Keep Reading link
+    # against three and four for the other two. It goes in as a fifth destination
+    # rather than displacing one.
     "childcare-daycare-valuation-multiples": [
-        "ma-advisor-early-childhood-education", "ebitda-and-business-valuation-basics",
+        "/preschool-childcare-ma-advisor", "ma-advisor-early-childhood-education",
+        "ebitda-and-business-valuation-basics",
         "what-buyers-look-for-in-an-acquisition-target",
         "prepare-preschool-childcare-business-for-sale"],
     "ma-advisor-early-childhood-education": [
-        "childcare-daycare-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "lower-middle-market-ma-process",
+        "/preschool-childcare-ma-advisor", "childcare-daycare-valuation-multiples",
+        "how-to-choose-an-ma-advisor", "lower-middle-market-ma-process",
         "prepare-preschool-childcare-business-for-sale"],
     "prepare-preschool-childcare-business-for-sale": [
         "/preschool-childcare-ma-advisor", "due-diligence-checklist-selling-a-business",
