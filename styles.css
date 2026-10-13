@@ -64,6 +64,12 @@
     /* Selection */
     ::selection { background: rgba(184,115,51,0.22); color: #07111a; }
 
+    /* The palette is designed, not left to the browser. Chrome's and Samsung
+       Internet's forced dark mode recoloured it anyway: cream panels went
+       brown and the hamburger faded to near-invisible on the navy bar.
+       "only light" is the standard opt-out from that recolouring. */
+    :root { color-scheme: only light; }
+
     :root {
       --ink:     #07111a;
       --navy:    #07111a;
@@ -4380,8 +4386,10 @@
        between 8.6px and 11px: guide bylines and dates, topic tags, the
        TL;DR and Direct Answer labels, table headers, footer headings,
        valuation field labels. Uppercase with wide tracking reads smaller
-       still. 12px is the floor on phones; desktop keeps its sizes. */
-    @media (max-width: 640px) {
+       still. 12px is the floor on phones and on any touchscreen, since an
+       unfolded Galaxy Fold or an iPad gets desktop widths but is held at
+       phone distance. Desktops with a mouse keep their sizes. */
+    @media (max-width: 640px), (pointer: coarse) {
       .article-hero-date, .article-hero-tag, .article-tldr-label,
       .article-answer-label, .article-card-label, .article-body th,
       .article-body h4, .table-best-badge,
@@ -4392,7 +4400,7 @@
       .capability-onepager-note, .podcast-link, .podcast-card-eyebrow,
       .podcast-ep-tag, .podcast-ep-label, .podcast-ep-listen,
       .value-card-label, .podcast-card-cta, .contact-or, .val-step-kicker, .contact-person-role,
-      .about-glance dt, .comp-table thead th { font-size: 0.75rem; }
+      .eyebrow, .nav-cta, .home-sectors-label, .about-glance dt, .comp-table thead th { font-size: 0.75rem; }
 
       /* Tracking relaxes as the headers grow so three columns still fit,
          and hyphens let a long guide header break instead of widening the
