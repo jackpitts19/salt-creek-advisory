@@ -232,7 +232,7 @@ RELATED = {
     # distinction the comparison itself turns on once a buyer-paid firm is in
     # the field.
     "best-ma-advisors-hvac-companies": [
-        "ma-advisor-business-services", "sell-side-advisor-vs-business-broker",
+        "hvac-plumbing-valuation-multiples", "ma-advisor-business-services", "sell-side-advisor-vs-business-broker",
         "how-to-choose-an-ma-advisor", "best-ma-advisors-plumbing-companies"],
 
     # Sector: plumbing. Leads with HVAC, which is the nearest trade and shares
@@ -243,7 +243,7 @@ RELATED = {
     # from HVAC and from ma-deal-structure, both of which had three and can carry
     # a fourth, the way the accounting guide was wired in.
     "best-ma-advisors-plumbing-companies": [
-        "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
+        "hvac-plumbing-valuation-multiples", "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
         "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: early childhood education. The readiness guide is wired the way the
@@ -284,7 +284,17 @@ RELATED = {
     # Sector: business services
     "business-services-valuation-multiples": [
         "ma-advisor-business-services", "msp-valuation-multiples",
-        "ebitda-and-business-valuation-basics"],
+        "ebitda-and-business-valuation-basics", "hvac-plumbing-valuation-multiples"],
+
+    # Sector: HVAC and plumbing valuation. The two trade advisor guides lead,
+    # since a reader pricing the company asks next who should sell it; then the
+    # add-backs guide (the worked example's adjustments), the unsolicited-offer
+    # guide (most of these owners are holding a PE letter) and earnouts (the
+    # cash-at-closing bridge).
+    "hvac-plumbing-valuation-multiples": [
+        "best-ma-advisors-hvac-companies", "best-ma-advisors-plumbing-companies",
+        "ebitda-add-backs", "evaluate-unsolicited-offer-buy-business",
+        "earnouts-escrow-holdbacks"],
     "ma-advisor-business-services": [
         "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
         "best-ma-advisors-msp-managed-service-providers",
