@@ -124,6 +124,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "earnouts-escrow-holdbacks",
   "ebitda-add-backs",
   "ebitda-and-business-valuation-basics",
+  "evaluate-pet-care-acquisition-offer",
   "evaluate-unsolicited-offer-buy-business",
   "family-business-succession-planning",
   "how-to-value-accounting-cpa-firm-before-sale",

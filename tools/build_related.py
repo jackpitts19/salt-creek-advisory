@@ -168,14 +168,16 @@ RELATED = {
     # is closer to picking a firm than to reading another sector explainer.
     "dog-daycare-pet-care-valuation-multiples": [
         "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
-        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale"],
+        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale",
+        "evaluate-pet-care-acquisition-offer"],
     "roll-ups-legal-services-pet-care": [
         "/pet-care-ma-advisor", "best-ma-advisors-pet-care-dog-daycare-businesses",
         "dog-daycare-pet-care-valuation-multiples",
         "roll-up-buy-and-build-acquisition-advisory"],
     "best-ma-advisors-pet-care-dog-daycare-businesses": [
         "/pet-care-ma-advisor", "dog-daycare-pet-care-valuation-multiples",
-        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale"],
+        "roll-ups-legal-services-pet-care", "prepare-dog-daycare-business-for-sale",
+        "evaluate-pet-care-acquisition-offer"],
     # The pet care readiness guide is the counterpart to the MSP checklist above
     # and is wired the same way: the two sector guides a reader would already be
     # on carry it as a fourth destination rather than displacing one. Its body
@@ -185,7 +187,19 @@ RELATED = {
     # an unresolved add-back or license question ends up in the terms.
     "prepare-dog-daycare-business-for-sale": [
         "/pet-care-ma-advisor", "due-diligence-checklist-selling-a-business",
-        "earnouts-escrow-holdbacks"],
+        "earnouts-escrow-holdbacks", "evaluate-pet-care-acquisition-offer"],
+    # The pet care offer guide: the sector version of the unsolicited-offer walk,
+    # for an owner already holding a letter. Its body links the valuation guide,
+    # the general offer guide, deal structure, the readiness guide and the advisor
+    # comparison by name, so its own list runs to what the body only describes:
+    # the earnout and escrow terms it tells the reader to separate from the
+    # price, the working capital adjustment behind the shortfall line in its
+    # table, and the letter of intent, where the exclusivity it warns about is
+    # granted. Carried by the three pet care guides a reader would already be on,
+    # as a fourth or fifth destination rather than displacing one.
+    "evaluate-pet-care-acquisition-offer": [
+        "/pet-care-ma-advisor", "earnouts-escrow-holdbacks",
+        "working-capital-peg-ma", "letter-of-intent-selling-a-business"],
 
     # Sector: accounting and CPA firms. No accounting multiples guide exists, so
     # this one leads with the buyer-type guide: the article's spine is a PE
