@@ -126,6 +126,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "ebitda-and-business-valuation-basics",
   "evaluate-unsolicited-offer-buy-business",
   "family-business-succession-planning",
+  "how-to-value-accounting-cpa-firm-before-sale",
   "how-long-does-it-take-to-sell-a-business",
   "how-to-choose-an-ma-advisor",
   "letter-of-intent-selling-a-business",
