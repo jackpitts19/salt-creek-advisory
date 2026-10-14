@@ -58,7 +58,7 @@ RELATED = {
     "ebitda-and-business-valuation-basics": [
         "quality-of-earnings-report", "best-business-valuation-firms-lower-middle-market",
         "ma-glossary-lower-middle-market", "best-ma-advisors-dental-practices",
-        "dental-practice-valuation-multiples"],
+        "dental-practice-valuation-multiples", "how-to-value-accounting-cpa-firm-before-sale"],
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
@@ -194,8 +194,17 @@ RELATED = {
     # comparison itself spans a listing marketplace and a targeted process, and
     # the EBITDA explainer closes it for the normalized-earnings arithmetic.
     "best-ma-advisors-accounting-cpa-firms": [
+        "how-to-value-accounting-cpa-firm-before-sale",
         "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
         "ebitda-and-business-valuation-basics", "best-ma-advisors-dental-practices"],
+
+    # Sector: valuing an accounting or CPA firm. The advisor comparison leads, as
+    # the companion piece on who runs the sale; then the EBITDA explainer and the
+    # working capital guide, which the worked value bridge leans on, and the
+    # buyer-type guide for the internal, regional and PE comparison.
+    "how-to-value-accounting-cpa-firm-before-sale": [
+        "best-ma-advisors-accounting-cpa-firms", "ebitda-and-business-valuation-basics",
+        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: dental and orthodontics. The dental multiples guide leads: it is
     # the long form of the SDE-versus-EBITDA distinction the whole comparison
@@ -478,7 +487,8 @@ RELATED = {
         "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms",
         "best-ma-advisors-dental-practices",
-        "selling-to-search-fund-independent-sponsor"],
+        "selling-to-search-fund-independent-sponsor",
+        "how-to-value-accounting-cpa-firm-before-sale"],
 
     # Search funds and independent sponsors: the owner-side deep dive on the
     # buyers the strategic-vs-PE guide only names as "individual buyers". Its
