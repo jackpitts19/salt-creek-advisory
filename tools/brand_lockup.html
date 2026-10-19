@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  Source for logo-full.png, logo-full-sm.webp and og-image.jpg.
+  Rebuild all three with: python3 tools/build_brand_images.py
+
+  One layout, drawn on a fixed 738 x 593 design canvas (the size of
+  logo-full.png) and scaled to whatever window Chrome opens. The share image
+  asks for "#og", which sits the same lockup smaller inside its wider canvas.
+
+  The dachshund is tools/brand_dachshund.png, cut from the original logo with
+  only its ink kept, so it sits on this page's paper without a visible edge.
+  The ink colour is sampled from that artwork.
+-->
+<title>Salt Creek Advisory</title>
+<style>
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 300 700;
+    src: url('../fonts/cormorant-garamond-var.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    src: url('../fonts/inter-var.woff2') format('woff2');
+  }
+  :root {
+    --paper: #fffbfa;
+    --ink: #122232;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  body { display: flex; align-items: center; justify-content: center; }
+  .lockup {
+    flex: none;
+    width: 738px;
+    height: 593px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    transform-origin: center;
+  }
+  .dog { display: block; width: 455px; height: 243px; }
+  /* Letter-spacing trails the last letter too, which pulls a centred line to
+     the left by half of it. The matching left padding puts it back. */
+  .name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: 116px;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    padding-left: 0.2em;
+    margin-top: 44px;
+  }
+  /* Sized against PITTS, not against the longer word this line once held:
+     with five glyphs the old 33px / 0.46em read as scattered letters at a
+     third of the name's width. */
+  .sub {
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 50px;
+    line-height: 1;
+    letter-spacing: 0.34em;
+    padding-left: 0.34em;
+    margin-top: 26px;
+  }
+</style>
+</head>
+<body>
+  <div class="lockup">
+    <img class="dog" src="brand_dachshund.png" alt="">
+    <div class="name">PITTS</div>
+    <div class="sub">&amp; CO.</div>
+  </div>
+<script>
+  var DESIGN_WIDTH = 738;
+  var DESIGN_HEIGHT = 593;
+  // How much of the share image's height the lockup may fill.
+  var OG_FILL = 0.82;
+  var fit = Math.min(window.innerWidth / DESIGN_WIDTH, window.innerHeight / DESIGN_HEIGHT);
+  var scale = fit * (window.location.hash === '#og' ? OG_FILL : 1);
+  document.querySelector('.lockup').style.transform = 'scale(' + scale + ')';
+</script>
+</body>
+</html>

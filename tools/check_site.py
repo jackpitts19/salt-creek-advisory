@@ -199,6 +199,9 @@ def check_images(path, html, errors, _warnings):
 # a new @type appears in the markup.
 REQUIRED_SCHEMA_FIELDS = {
     "Dataset": ("name", "description"),
+    "Article": ("headline", "image", "datePublished", "dateModified", "author", "publisher"),
+    "FAQPage": ("mainEntity",),
+    "BreadcrumbList": ("itemListElement",),
 }
 
 
@@ -213,23 +216,208 @@ def iter_nodes(node):
             yield from iter_nodes(value)
 
 
-def check_schema_required_fields(path, html, errors, _warnings):
-    """A node missing a required field is invalid, not merely incomplete."""
+def json_ld_nodes(html):
+    """Every dict in every JSON-LD block on a page that parses.
+
+    Blocks that do not parse are skipped here; check_json_ld reports them.
+    """
     for raw in JSON_LD.findall(html):
         try:
             document = json.loads(raw)
         except json.JSONDecodeError:
-            continue  # check_json_ld already reported this
-        for node in iter_nodes(document):
-            required = REQUIRED_SCHEMA_FIELDS.get(node.get("@type"))
-            if not required:
+            continue
+        yield from iter_nodes(document)
+
+
+def check_schema_required_fields(path, html, errors, _warnings):
+    """A node missing a required field is invalid, not merely incomplete."""
+    for node in json_ld_nodes(html):
+        required = REQUIRED_SCHEMA_FIELDS.get(node.get("@type"))
+        if not required:
+            continue
+        missing = [field for field in required if not node.get(field)]
+        if missing:
+            errors.append("{}: {} node '{}' is missing {}, so Google reports it "
+                          "as invalid".format(path, node["@type"],
+                                              node.get("name", "unnamed")[:60],
+                                              ", ".join(missing)))
+
+
+def node_url(value):
+    """A URL field as JSON-LD writes it: a string, or a node holding @id."""
+    if isinstance(value, dict):
+        return value.get("@id")
+    return value if isinstance(value, str) else None
+
+
+def same_page(url, canonical):
+    return url is not None and url.rstrip("/") == canonical.rstrip("/")
+
+
+def self_urls(node):
+    """Every field of a node that must name the page it sits on: (label, url).
+
+    Only fields that are present are yielded. Google lists an Article's url
+    and mainEntityOfPage, a FAQPage's url and the last crumb's item as
+    optional, so a node without one is valid; the rule catches a URL that
+    names another page, not a missing field.
+    """
+    kind = node.get("@type")
+    if kind == "Article":
+        if "url" in node:
+            yield "Article url", node_url(node["url"])
+        if "mainEntityOfPage" in node:
+            yield "Article mainEntityOfPage", node_url(node["mainEntityOfPage"])
+    elif kind == "FAQPage" and "url" in node:
+        yield "FAQPage url", node_url(node["url"])
+    elif kind == "BreadcrumbList" and isinstance(node.get("itemListElement"), list) \
+            and node["itemListElement"]:
+        last = node["itemListElement"][-1]
+        if isinstance(last, dict) and "item" in last:
+            yield "the last breadcrumb item", node_url(last["item"])
+
+
+def check_schema_self_urls(path, html, errors, _warnings):
+    """The markup's own URLs name this page, the one the canonical names.
+
+    An Article whose url is another page's, a FAQPage pointing elsewhere, or a
+    breadcrumb trail that ends somewhere else, all parse and all tell a
+    crawler the content belongs to a different URL. Each guide was cloned
+    from another, so each has had the chance to inherit the wrong one.
+    Pages with no canonical (noindex, 404) have nothing to compare against.
+    """
+    found = CANONICAL.search(html)
+    if not found:
+        return
+    canonical = found.group(1).strip()
+    for node in json_ld_nodes(html):
+        for label, url in self_urls(node):
+            if not same_page(url, canonical):
+                errors.append("{}: {} '{}' is not the page canonical '{}'".format(
+                    path, label, url, canonical))
+
+
+# What two copies of one node, on two pages, have to say the same way. The url
+# is compared without its fragment: the team page anchors each principal, and
+# a guide byline may point at the page as a whole.
+SHARED_NODE_FIELDS = ("name", "jobTitle", "url")
+
+
+def is_pointer(node):
+    """A node that only names another: {"@id": ...} and nothing else."""
+    return set(node) == {"@id"}
+
+
+def strip_fragment(url):
+    return url.split("#", 1)[0] if isinstance(url, str) else url
+
+
+def same_as_links(node):
+    links = node.get("sameAs") or []
+    return [links] if isinstance(links, str) else list(links)
+
+
+def check_shared_nodes_agree(errors, _warnings):
+    """One @id, one set of facts, wherever on the site it is written out.
+
+    The principals and the firm are described on the team and home pages and
+    again, in part, in every guide's author and publisher. A crawler merges
+    those by @id, so two copies that disagree on a name or a title leave it to
+    guess which one is true, and a sameAs link that only one copy carries is a
+    profile the entity may or may not own. Each copy may say less than the
+    fullest one; none may say something different.
+
+    The root pages are read first, so the copy a disagreement is measured
+    against is the one on the page that describes the entity, not the guide
+    that copied it.
+    """
+    copies = {}
+    for path in sorted(page_paths(), key=lambda page: ("/" in page, page)):
+        for node in json_ld_nodes(read(path)):
+            node_id = node.get("@id")
+            if isinstance(node_id, str) and node_id.startswith(SITE) and not is_pointer(node):
+                copies.setdefault(node_id, []).append((path, node))
+
+    for node_id, seen in copies.items():
+        for field in SHARED_NODE_FIELDS:
+            stated = [(path, node[field]) for path, node in seen if isinstance(node.get(field), str)]
+            if not stated:
                 continue
-            missing = [field for field in required if not node.get(field)]
-            if missing:
-                errors.append("{}: {} node '{}' is missing {}, so Google reports it "
-                              "as invalid".format(path, node["@type"],
-                                                  node.get("name", "unnamed")[:60],
-                                                  ", ".join(missing)))
+            first_path, first = stated[0]
+            for path, value in stated[1:]:
+                if field == "url" and strip_fragment(value) == strip_fragment(first):
+                    continue
+                if value != first:
+                    errors.append("{}: {} has {} '{}' but {} has '{}'".format(
+                        path, node_id, field, value, first_path, first))
+        fullest_path, fullest = max(seen, key=lambda copy: len(same_as_links(copy[1])))
+        known = set(same_as_links(fullest))
+        for path, node in seen:
+            for link in same_as_links(node):
+                if link not in known:
+                    errors.append("{}: {} lists sameAs {}, which the fullest copy on {} does "
+                                  "not".format(path, node_id, link, fullest_path))
+
+
+# The firm's own node. Every page cites it as publisher, and a JSON-LD
+# reference is resolved within the page it sits on, never across the site.
+ORGANIZATION_ID = SITE + "/#organization"
+HOME_PAGE = "index.html"
+# The legal pages wait for counsel: their structured data is left as it is
+# until counsel has cleared them. A bare pointer on one of them is reported,
+# not failed, so the gap stays in view without blocking the build. Take a
+# page off this list when its edit lands.
+HELD_LEGAL_PAGES = ("privacy.html", "terms.html")
+
+
+def organization_nodes(html):
+    """The nodes on a page carrying the firm's @id: (pointers, definitions)."""
+    nodes = [node for node in json_ld_nodes(html) if node.get("@id") == ORGANIZATION_ID]
+    return ([node for node in nodes if is_pointer(node)],
+            [node for node in nodes if not is_pointer(node)])
+
+
+def check_organization_defined(errors, warnings):
+    """A page that points at the firm's node must also define it, the same way.
+
+    Fifteen root pages carried `"publisher": {"@id": ".../#organization"}` and
+    nothing else. The full node lives on the home page, but a crawler reads
+    one page at a time, so on each of those fifteen it saw a publisher with no
+    name: a missing field to Search Console, and nothing at all to an answer
+    engine deciding who wrote the page. The copy has to say what the home
+    page says, or the firm has two names. A legal page that still only points
+    is a warning until counsel clears the edit; a wrong node is an error anywhere.
+    """
+    home = organization_nodes(read(HOME_PAGE))[1] if os.path.isfile(HOME_PAGE) else []
+    home_missing_reported = False
+    for path in page_paths():
+        pointers, definitions = organization_nodes(read(path))
+        if not pointers:
+            continue
+        if not definitions:
+            message = (
+                "{}: JSON-LD points at {} but no node on this page defines it, so a "
+                "crawler reads a publisher with no name. Copy the home page's node "
+                "in".format(path, ORGANIZATION_ID))
+            if path in HELD_LEGAL_PAGES:
+                warnings.append(message + " once the page is cleared (held for counsel)")
+            else:
+                errors.append(message)
+            continue
+        if not home:
+            if not home_missing_reported:
+                errors.append(
+                    "{}: defines no node with @id {}, so no other page's copy can be "
+                    "checked against it".format(HOME_PAGE, ORGANIZATION_ID))
+                home_missing_reported = True
+            continue
+        for node in definitions:
+            if node.get("name") != home[0].get("name"):
+                errors.append("{}: {} is named '{}' here but '{}' on {}".format(
+                    path, ORGANIZATION_ID, node.get("name"), home[0].get("name"), HOME_PAGE))
+            if node.get("url") != home[0].get("url"):
+                errors.append("{}: {} has url '{}' here but '{}' on {}".format(
+                    path, ORGANIZATION_ID, node.get("url"), home[0].get("url"), HOME_PAGE))
 
 
 ANCHOR_OPEN = re.compile(r"<a[\s>]", re.IGNORECASE)
@@ -259,6 +447,34 @@ def check_anchor_balance(path, html, errors, _warnings):
     errors.append(
         "{}: {} <a> opening tags but {} </a> closing tags, so an anchor is "
         "malformed and its markup renders as visible text".format(path, opened, closed))
+
+
+HEADING = re.compile(r"<(h[1-6])\b[^>]*>(.*?)</\1\s*>", re.DOTALL | re.IGNORECASE)
+LINE_BREAK = re.compile(r"<br\b[^>]*>", re.IGNORECASE)
+ANY_TAG = re.compile(r"<[^>]*>")
+
+
+def check_heading_breaks(path, html, errors, _warnings):
+    """A <br> inside a heading must not sit between two words with no space.
+
+    A browser breaks the line either way, so the page looks right. Everything
+    that reads the heading as text does not: a crawler, a feed reader, an
+    answer engine quoting the title, all see the two words run together.
+    Fifty-nine h1s shipped that way, and in one guide the joined word was the
+    firm's name.
+    """
+    for tag, inner in HEADING.findall(html):
+        parts = LINE_BREAK.split(inner)
+        for left_part, right_part in zip(parts, parts[1:]):
+            left = unescape(ANY_TAG.sub("", left_part))
+            right = unescape(ANY_TAG.sub("", right_part))
+            if not left or not right or left[-1].isspace() or right[0].isspace():
+                continue
+            before, after = left.split()[-1], right.split()[0]
+            errors.append(
+                "{}: <{}> breaks the line between '{}' and '{}' with no space, so as text "
+                "it reads '{}'. Put a space before the <br>".format(
+                    path, tag.lower(), before, after, before + after))
 
 
 FOOTER_LEGAL = re.compile(r'class="footer-legal"', re.IGNORECASE)
@@ -364,6 +580,8 @@ NAV_CURRENT = {
     "msp-ma-advisor.html": ("sectors", "true"),
     "pet-care-ma-advisor.html": ("sectors", "true"),
     "preschool-childcare-ma-advisor.html": ("sectors", "true"),
+    "industrials-ma-advisor.html": ("sectors", "true"),
+    "business-services-ma-advisor.html": ("sectors", "true"),
 }
 NAV_BLOCKS = (
     ("desktop nav", re.compile(r'<nav\b[^>]*\bid="nav"[^>]*>(.*?)</nav>', re.S | re.I)),
@@ -416,10 +634,12 @@ PAGE_CHECKS = (
     check_internal_links,
     check_footer_disclosure,
     check_anchor_balance,
+    check_heading_breaks,
     check_head_tags,
     check_canonical,
     check_json_ld,
     check_schema_required_fields,
+    check_schema_self_urls,
     check_images,
     check_fonts,
     check_nav_current,
@@ -487,7 +707,9 @@ WORKER_YEAR = re.compile(r'const CURRENT_GUIDE_YEAR = "(\d{4})"')
 WORKER_GUIDE_SET = re.compile(r"const YEAR_STAMPED_GUIDES = new Set\(\[(.*?)\]\)", re.DOTALL)
 WORKER_SLUG = re.compile(r'"([a-z0-9-]+)"')
 
-LLMS_PATH = "llms.txt"
+# The short index and the one with the summaries written out. Answer engines
+# read either, so both must list every guide and nothing that is gone.
+LLMS_PATHS = ("llms.txt", "llms-full.txt")
 RELATED_PATH = os.path.join("tools", "build_related.py")
 RELATED_MAP = re.compile(r"RELATED\s*=\s*\{(.*?)\n\}", re.DOTALL)
 RELATED_ENTRY = re.compile(r'"([a-z0-9\-/]+)":\s*\[(.*?)\]', re.DOTALL)
@@ -572,8 +794,39 @@ def check_worker_slugs(errors, _warnings):
             "in {}, so its pre-rename URL is dead".format(base, suffix, base, WORKER_PATH))
 
 
+# Cloudflare's list of what to leave out of a deploy, one entry a line. The
+# assets directory is the repository root, so everything not named here is
+# uploaded and served.
+ASSETS_IGNORE = ".assetsignore"
+
+
+def held_back_names():
+    """The bare names .assetsignore lists, without comments, slashes or spacing."""
+    if not os.path.isfile(ASSETS_IGNORE):
+        return set()
+    lines = (line.strip() for line in read(ASSETS_IGNORE).splitlines())
+    return {line.strip("/") for line in lines if line and not line.startswith("#")}
+
+
+def check_hidden_entries_held_back(errors, _warnings):
+    """Every hidden top-level entry must be listed in .assetsignore.
+
+    A dot-folder at the root is a working folder: .git, .github, .claude, the
+    editor's, the agent's. None of it is the site, and all of it is uploaded
+    and served unless .assetsignore says otherwise, so a session that leaves
+    a folder behind publishes it to anyone who guesses the path. Pure stdlib
+    and no git, so it sees exactly what a deploy would see on disk.
+    """
+    listed = held_back_names()
+    for name in sorted(os.listdir(".")):
+        if name.startswith(".") and name not in listed:
+            errors.append(
+                "{} is a hidden top-level entry that {} does not list, so a deploy would "
+                "publish it. Add a line naming it".format(name, ASSETS_IGNORE))
+
+
 def check_llms_txt_coverage(errors, _warnings):
-    """Every article has to appear in llms.txt, in both directions.
+    """Every article has to appear in llms.txt and llms-full.txt, in both directions.
 
     llms.txt is how an answer engine learns what this site actually covers, so a
     guide missing from it is invisible to exactly the surface the firm is trying
@@ -586,12 +839,18 @@ def check_llms_txt_coverage(errors, _warnings):
     The reverse direction matters too: an entry describing a page that no longer
     exists teaches an assistant to cite a 404.
 
-    Skipped when llms.txt is absent, so the checker still runs against a plain
-    directory of HTML.
+    llms-full.txt is the same index with the summaries written out, read by the
+    same engines, and it drifted the same way while only llms.txt was checked.
+    Each file is held to the same two rules under its own name. One that is
+    absent is skipped, so the checker still runs against a plain directory of
+    HTML.
     """
-    if not os.path.exists(LLMS_PATH):
-        return
-    listed = read(LLMS_PATH)
+    for listing in LLMS_PATHS:
+        if os.path.exists(listing):
+            check_one_llms_file(listing, read(listing), errors)
+
+
+def check_one_llms_file(listing, listed, errors):
     for path in sorted(glob.glob("articles/*.html")):
         route = route_for(path)
         # Anchored so a slug that is a prefix of a longer one cannot pass on the
@@ -600,7 +859,7 @@ def check_llms_txt_coverage(errors, _warnings):
         if not re.search(re.escape("{}{}".format(SITE, route)) + r"(?![0-9a-z-])", listed):
             errors.append(
                 "{} is not listed in {}, so answer engines have no summary of it "
-                "(publish checklist step 6)".format(path, LLMS_PATH))
+                "(publish checklist step 6)".format(path, listing))
 
     # Every self URL, not just articles. llms.txt lists 14 root pages too, and a stale
     # entry for any of them teaches an assistant to cite a 404 just as effectively.
@@ -614,7 +873,7 @@ def check_llms_txt_coverage(errors, _warnings):
         if not os.path.exists(file_for(route)):
             errors.append(
                 "{}: lists {}, which no longer exists, so an assistant citing it "
-                "would send a reader to a 404".format(LLMS_PATH, url))
+                "would send a reader to a 404".format(listing, url))
 
 
 def check_related_symmetry(errors, _warnings):
@@ -706,7 +965,10 @@ def main(argv=None):
             check(path, html, errors, warnings)
     check_sitemap(errors, warnings)
     check_orphans(errors, warnings)
+    check_organization_defined(errors, warnings)
+    check_shared_nodes_agree(errors, warnings)
     check_worker_slugs(errors, warnings)
+    check_hidden_entries_held_back(errors, warnings)
     check_llms_txt_coverage(errors, warnings)
     check_related_symmetry(errors, warnings)
     check_font_files(errors, warnings)

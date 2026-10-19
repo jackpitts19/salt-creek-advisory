@@ -43,7 +43,17 @@
           "@id": "https://saltcreekadvisory.com/#website"
         },
         "publisher": {
-          "@id": "https://saltcreekadvisory.com/#organization"
+          "@type": "Organization",
+          "@id": "https://saltcreekadvisory.com/#organization",
+          "name": "Salt Creek Advisory",
+          "url": "https://saltcreekadvisory.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://saltcreekadvisory.com/logo-full.png"
+          },
+          "sameAs": [
+            "https://www.linkedin.com/company/salt-creek-advisory/"
+          ]
         },
         "mainEntity": {
           "@id": "https://saltcreekadvisory.com/articles#guides"
@@ -132,7 +142,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="styles.css?v=f53589e4" />
+  <link rel="stylesheet" href="styles.css?v=e47b699b" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
@@ -158,6 +168,7 @@
   </button>
 </nav>
 <nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
+  <a href="valuation" class="nav-drawer-cta">Value My Business</a>
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
@@ -168,7 +179,6 @@
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
-  <a href="valuation">Value My Business</a>
 </nav>
 
 <main id="main" tabindex="-1">
@@ -177,6 +187,7 @@
     <span class="eyebrow">Owner Resources</span>
     <h1 class="page-hero-h1">Guides for owners <br><em>thinking about a sale.</em></h1>
     <p class="page-hero-sub">Direct, practical answers to the questions we hear most from founders and business owners on advisors, process, valuation, and buyers in the lower middle market.</p>
+    <p class="articles-rss"><a href="feed.xml" class="text-link-dark">Subscribe by RSS</a></p>
   </div>
 </section>
 
@@ -192,6 +203,7 @@
       <a href="#for-acquirers">For Acquirers</a>
       <a href="#choosing-an-advisor">Choosing an Advisor</a>
       <a href="#from-the-founders">From the Founders</a>
+      <a href="#downloads">Downloads</a>
     </div>
 
     <div class="articles-group" id="start-here">
@@ -202,6 +214,7 @@
         <a href="articles/lower-middle-market-ma-process-2026" class="article-card reveal">
           <span class="article-card-label">Sale Process &middot; Updated September 8, 2026</span>
           <h3>Sell-Side M&amp;A Process: A Guide for Lower Middle Market Business Owners</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>A 14-step walkthrough of how a sell-side process actually runs, from preparation through closing and the post-closing transition.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -209,6 +222,7 @@
         <a href="articles/ebitda-and-business-valuation-basics-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">The Basics &middot; Updated September 24, 2026</span>
           <h3>EBITDA and Business Valuation Basics: What Every Owner Should Know</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>What EBITDA actually measures, why buyers use multiples, and the common adjustments owners should understand.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -216,6 +230,7 @@
         <a href="articles/what-you-keep-after-selling-a-business-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Preparing to Sell &middot; September 23, 2026</span>
           <h3>What You Keep After Selling Your Business (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>A $20 million offer is not $20 million in your bank account. What comes out at closing, what gets paid later, and what federal and state taxes take.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -223,6 +238,7 @@
         <a href="articles/how-to-choose-an-ma-advisor-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>How to Choose an M&amp;A Advisor for a Founder-Led Business</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>A practical framework for evaluating advisors when the business is your biggest asset and your life's work.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -238,6 +254,7 @@
         <a href="articles/lower-middle-market-ma-outlook-2026" class="article-card reveal">
           <span class="article-card-label">Preparing to Sell &middot; August 10, 2026</span>
           <h3>Lower Middle Market M&amp;A Outlook 2026</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Deal activity in this size range is up while global counts fall. Why the 13.4x multiple and the $1.1 trillion of dry powder everyone quotes describe a market several times larger than yours.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -245,6 +262,7 @@
         <a href="articles/when-to-start-exit-planning-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Preparing to Sell &middot; Updated September 8, 2026</span>
           <h3>Business Succession Planning: A Guide for Family-Owned and Founder-Owned Companies</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>How to separate leadership succession from ownership succession, a phased three-to-ten-year timeline, the governance that prevents family conflict, and how M&amp;A advisor fee models compare.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -252,6 +270,7 @@
         <a href="articles/what-buyers-look-for-in-an-acquisition-target-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Preparing to Sell &middot; Updated July 30, 2026</span>
           <h3>What Buyers Look for in an Acquisition Target</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>The operational, financial, and management factors that shape how buyers evaluate and price a business.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -259,6 +278,7 @@
         <a href="articles/reduce-owner-dependence-before-selling-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Preparing to Sell &middot; September 23, 2026</span>
           <h3>How to Make Your Business Less Dependent on You (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Buyers pay for a business that keeps working after you leave. The three-month test buyers use, seven steps to build a business that runs without you, and how long it takes.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -266,6 +286,7 @@
         <a href="articles/quality-of-earnings-report-2026" class="article-card reveal">
           <span class="article-card-label">Preparing to Sell &middot; Updated August 1, 2026</span>
           <h3>Quality of Earnings: What a QoE Actually Finds</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Most of the QoE statistics quoted at sellers cannot be traced to any primary source. What the report actually costs, and which of your add-backs it kills.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -273,6 +294,7 @@
         <a href="articles/ebitda-add-backs-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Preparing to Sell &middot; September 24, 2026</span>
           <h3>EBITDA Add-Backs: A Seller&rsquo;s Guide to What Holds Up (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Buyers pay a multiple of every dollar you add back. Which add-backs hold up, the proof each needs, the adjustments that lower your number, and a sample schedule.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -280,6 +302,7 @@
         <a href="articles/ma-deal-structure-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Preparing to Sell &middot; Updated September 8, 2026</span>
           <h3>Deal Structure: The Six Ways Buyers Build an Offer</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Two offers at the same valuation can pay very differently. Cash, earnouts, rollover, seller notes, working capital, and staged buyouts, and which way each one shifts the risk.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -287,6 +310,7 @@
         <a href="articles/working-capital-peg-ma-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Preparing to Sell &middot; Updated August 1, 2026</span>
           <h3>The Working Capital Peg: How Sellers Lose at Close</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>The least-read line in a purchase agreement. Six specific traps that move six figures after you have already agreed a price, and why buyers&rsquo; calculations are accepted in 7 of every 10 adjustments.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -294,6 +318,7 @@
         <a href="articles/earnouts-escrow-holdbacks-2026" class="article-card reveal">
           <span class="article-card-label">Preparing to Sell &middot; August 12, 2026</span>
           <h3>Earnouts, Escrows, and Holdbacks: What Is Actually Guaranteed</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>An earnout pays only if the business hits agreed targets after closing, and the buyer controls the books that decide it. Revenue against EBITDA, what escrow and holdback do differently, and what a seller can negotiate before signing.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -301,6 +326,7 @@
         <a href="articles/seller-risk-protection-deal-structuring-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Preparing to Sell &middot; September 2, 2026</span>
           <h3>How Sellers Protect Themselves After Closing</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>The median escrow is 10% of the deal without reps and warranties insurance and 0.5% with it. What caps, baskets, survival periods, and a policy each do to the money you keep.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -308,6 +334,7 @@
         <a href="articles/letter-of-intent-selling-a-business-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Preparing to Sell &middot; September 23, 2026</span>
           <h3>Letter of Intent: What to Negotiate Before You Sign (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>The letter of intent is the last point where buyers compete for your business. What binds when you sign, how long exclusivity should last, and the 12 terms to settle first.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -315,6 +342,7 @@
         <a href="articles/what-you-keep-after-selling-a-business-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Preparing to Sell &middot; September 23, 2026</span>
           <h3>What You Keep After Selling Your Business (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>A $20 million offer is not $20 million in your bank account. What comes out at closing, what gets paid later, and what federal and state taxes take.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -322,6 +350,7 @@
         <a href="articles/asset-sale-vs-stock-sale-2026" class="article-card reveal">
           <span class="article-card-label">Preparing to Sell &middot; September 22, 2026</span>
           <h3>Asset Sale vs. Stock Sale: What Business Owners Need to Know in 2026</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>What each structure actually transfers, which liabilities follow the business, and how contracts, employees, taxes, and the purchase agreement change what a seller keeps.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -329,6 +358,7 @@
         <a href="articles/family-business-succession-planning-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Preparing to Sell &middot; September 16, 2026</span>
           <h3>Family Business Succession Planning 2026: What to Do When There's No One to Take Over</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>When no family member or employee is ready to take over: five realistic paths compared on valuation, cash at closing, employee continuity, and your role after closing, and why one unsolicited offer is not a market price.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -336,6 +366,7 @@
         <a href="articles/msp-sale-readiness-checklist-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">MSP &amp; IT Services &middot; September 16, 2026</span>
           <h3>How to Prepare an MSP for Sale: A 24-Month Readiness Checklist (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>What to fix at 24, 12, and 6 months out: contracted recurring revenue and founder dependence first, then contract terms and customer concentration, then the PSA, RMM, and SLA records buyers test.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -343,6 +374,7 @@
         <a href="articles/prepare-dog-daycare-business-for-sale-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Pet Care &amp; Dog Daycare &middot; September 17, 2026</span>
           <h3>How to Prepare a Dog Daycare Business for Sale in 2026</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>A two-phase readiness timeline: what needs 12 to 24 months of operating history, and what you confirm in the last three to six. Adjusted EBITDA support, owner dependence, membership and deferred revenue, licensing and lease consent, and facility condition.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -350,6 +382,7 @@
         <a href="articles/prepare-preschool-childcare-business-for-sale-2026" class="article-card reveal">
           <span class="article-card-label">Preschool &amp; Childcare &middot; September 17, 2026</span>
           <h3>How to Prepare a Preschool or Childcare Business for Sale in 2026</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Enrollment that survives a buyer&rsquo;s test: licensed capacity against usable capacity by classroom, tuition and subsidy reconciled to cash, credential and licensing files, lease consent, and the state change-of-ownership approvals that set the closing date.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -365,6 +398,7 @@
         <a href="articles/lower-middle-market-ma-process-2026" class="article-card reveal">
           <span class="article-card-label">Sale Process &middot; Updated September 8, 2026</span>
           <h3>Sell-Side M&amp;A Process: A Guide for Lower Middle Market Business Owners</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>A 14-step walkthrough of how a sell-side process actually runs, from preparation through closing and the post-closing transition.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -372,6 +406,7 @@
         <a href="articles/how-long-does-it-take-to-sell-a-business-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Sale Process &middot; Updated July 30, 2026</span>
           <h3>How Long Does It Take to Sell a Business in the Lower Middle Market?</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Realistic timelines for each phase of a sale, and the factors that most often speed up or stall a deal.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -379,6 +414,7 @@
         <a href="articles/strategic-buyer-vs-private-equity-buyer-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Sale Process &middot; Updated July 30, 2026</span>
           <h3>Strategic Buyer vs. Private Equity Buyer: Which Is Better for Sellers?</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>How the two buyer types differ on price, terms, speed, and what happens to the business after close.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -386,6 +422,7 @@
         <a href="articles/m-and-a-auction-process-explained-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Sale Process &middot; August 18, 2026</span>
           <h3>What is an M&amp;A Auction Process?</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>How a multi-buyer auction runs stage by stage, and how it compares with negotiating quietly with one buyer.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -393,6 +430,7 @@
         <a href="articles/due-diligence-checklist-selling-a-business-2026" class="article-card reveal">
           <span class="article-card-label">Sale Process &middot; September 7, 2026</span>
           <h3>Due Diligence Checklist: What Buyers Request</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>What the buyer&rsquo;s accountants, lawyers, and lenders actually ask for after the LOI, and how to have it ready first.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -400,6 +438,7 @@
         <a href="articles/telling-employees-about-selling-business-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Sale Process &middot; September 25, 2026</span>
           <h3>When to Tell Employees You Are Selling Your Business (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Who to tell first, who hears at signing or closing, what to say, how stay bonuses work, what the WARN Act requires, and what changes for staff in an asset or stock sale.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -407,6 +446,7 @@
         <a href="articles/evaluate-unsolicited-offer-buy-business-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Sale Process &middot; September 20, 2026</span>
           <h3>Someone Wants to Buy My Business: How to Evaluate an Unsolicited Offer (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Verify the buyer, protect confidentiality, and see how the headline price differs from cash at closing before you choose among four responses.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -421,6 +461,7 @@
         <a href="articles/selling-to-search-fund-independent-sponsor-2026" class="article-card reveal">
           <span class="article-card-label">Sale Process &middot; September 25, 2026</span>
           <h3>Selling Your Business to a Search Fund or Independent Sponsor (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>How searchers and sponsors finance an offer, the SBA rules that shape your seller note and role, the terms they ask for, and how to vet one before you grant exclusivity.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -428,6 +469,7 @@
         <a href="articles/ma-glossary-lower-middle-market-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Reference &middot; Updated July 30, 2026</span>
           <h3>M&amp;A Glossary: Lower Middle Market Terms Explained</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Plain-language definitions of IOI, LOI, EBITDA, rollover equity, earnouts, and the other terms you'll hear during a sale.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -443,6 +485,7 @@
         <a href="articles/ebitda-and-business-valuation-basics-2026" class="article-card reveal">
           <span class="article-card-label">The Basics &middot; Updated September 24, 2026</span>
           <h3>EBITDA and Business Valuation Basics: What Every Owner Should Know</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>What EBITDA actually measures, why buyers use multiples, and the common adjustments owners should understand.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -450,6 +493,7 @@
         <a href="articles/business-services-valuation-multiples-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Business Services &middot; Updated August 1, 2026</span>
           <h3>Business Services Valuation Multiples</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>&ldquo;Business services&rdquo; is a filing cabinet, not a sector. A composite multiple covering both pest control and commodity staffing tells an owner nothing, and the reason is that contracted revenue and recurring revenue are not the same thing.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -457,6 +501,7 @@
         <a href="articles/childcare-daycare-valuation-multiples-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Childcare &amp; Daycare &middot; August 1, 2026</span>
           <h3>Childcare &amp; Daycare Valuation Multiples: What Centers Sell For</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Every published multiple ladder for this sector traces back to brokerage marketing rather than transaction data. What centers actually sell for by operator size, and why occupancy sets the ceiling on all of it.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -464,6 +509,7 @@
         <a href="articles/dental-practice-valuation-multiples-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Dental &amp; Orthodontics &middot; September 16, 2026</span>
           <h3>Dental Practice Valuation Multiples (2026): What DSOs and Private Buyers Actually Pay</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>SDE and adjusted EBITDA multiples cannot be compared until you check the earnings behind each. Reported ranges by practice size, why a DSO and an individual dentist price the same practice differently, and what 60% to 70% cash at closing leaves deferred.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -485,6 +531,7 @@
         <a href="articles/dog-daycare-pet-care-valuation-multiples-2026" class="article-card reveal">
           <span class="article-card-label">Dog Daycare &amp; Pet Care &middot; Updated September 24, 2026</span>
           <h3>Dog Daycare &amp; Pet Care Valuation Multiples</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Boarding, daycare, and grooming get underwritten as three separate businesses even when they share a building. The occupancy math behind the margin, and what veterinary consolidation says about where this is heading.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -492,6 +539,7 @@
         <a href="articles/manufacturing-valuation-multiples-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Manufacturing &amp; Industrials &middot; Updated August 1, 2026</span>
           <h3>Manufacturing Valuation Multiples: What Plants Sell For</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>EBITDA ignores the equipment a plant cannot avoid replacing. Subtract maintenance capex and the multiple changes shape, which is most of why private equity and strategic buyers quote such different numbers for the same business.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -499,6 +547,7 @@
         <a href="articles/msp-valuation-multiples-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">MSP &amp; IT Services &middot; July 30, 2026</span>
           <h3>MSP Valuation Multiples: What Managed IT Services Businesses Sell For</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Published EV/EBITDA multiples by deal size and segment, why MSPs trade below the broader IT services market, and what moves a shop up or down its range.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -508,12 +557,13 @@
 
     <div class="articles-group" id="by-sector">
       <h2 class="articles-group-h2 reveal">By <em>sector.</em></h2>
-      <p class="articles-group-intro reveal">The advisors, buyers, and consolidators active in the industries we work in. Pair each of these with the matching guide under Valuation. We advise directly in three of them: <a href="preschool-childcare-ma-advisor" class="text-link">preschool and childcare</a>, <a href="msp-ma-advisor" class="text-link">MSP and IT services</a>, and <a href="pet-care-ma-advisor" class="text-link">dog daycare and pet care</a>.</p>
+      <p class="articles-group-intro reveal">The advisors, buyers, and consolidators active in the industries we work in. Pair each of these with the matching guide under Valuation. We advise directly in five of them: <a href="preschool-childcare-ma-advisor" class="text-link">preschool and childcare</a>, <a href="business-services-ma-advisor" class="text-link">business services</a>, <a href="industrials-ma-advisor" class="text-link">industrials and manufacturing</a>, <a href="msp-ma-advisor" class="text-link">MSP and IT services</a>, and <a href="pet-care-ma-advisor" class="text-link">dog daycare and pet care</a>.</p>
       <div class="articles-grid">
 
         <a href="articles/ma-advisor-early-childhood-education-2026" class="article-card reveal">
           <span class="article-card-label">Early Childhood Education &middot; Updated July 30, 2026</span>
           <h3>Best M&amp;A Advisors for Early Childhood Education</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Six advisors compared including HINGE and SchoolWise, what preschools actually sell for, and the platforms buying right now.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -521,6 +571,7 @@
         <a href="articles/ma-advisor-business-services-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Business Services &middot; Updated July 30, 2026</span>
           <h3>Best M&amp;A Advisors for Business Services</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Six advisors compared by vertical, published fee benchmarks, and how many deals Alpine&rsquo;s platforms closed last year.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -528,6 +579,7 @@
         <a href="articles/ma-advisor-industrials-manufacturing-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Manufacturing &amp; Industrials &middot; Updated July 30, 2026</span>
           <h3>Best M&amp;A Advisors for Manufacturing &amp; Industrials</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Six advisors compared using Axial&rsquo;s 2026 industrials rankings, fee benchmarks, and why industrials is the busiest category in the market.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -535,6 +587,7 @@
         <a href="articles/best-ma-advisors-pet-care-dog-daycare-businesses-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Dog Daycare &amp; Pet Care &middot; August 5, 2026</span>
           <h3>Best M&amp;A Advisors for Pet Care &amp; Dog Daycare Businesses</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>PET|VET, Peakstone Group, Lincoln International, Capstone Partners, DanaShift, and Salt Creek compared for owners of dog daycares, boarding facilities, grooming operations, and pet resorts.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -542,6 +595,7 @@
         <a href="articles/best-ma-advisors-msp-managed-service-providers-2026" class="article-card reveal">
           <span class="article-card-label">MSP &amp; IT Services &middot; Updated September 10, 2026</span>
           <h3>Best M&amp;A Advisors for MSPs &amp; Managed Service Providers</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Not one of the six publishes an MSP deal count you can check against anything but its own website. What the FINRA records show instead, and why the firm ranking first for this search works for buyers.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -549,6 +603,7 @@
         <a href="articles/best-ma-advisors-accounting-cpa-firms-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Accounting &amp; CPA Firms &middot; August 24, 2026</span>
           <h3>Best M&amp;A Advisors for Accounting &amp; CPA Firms</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Four advisors compared for practice owners weighing a sale, an internal successor, or a PE platform, with what firms actually sell for on normalized EBITDA.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -556,6 +611,7 @@
         <a href="articles/best-ma-advisors-hvac-companies-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">HVAC &amp; Home Services &middot; August 24, 2026</span>
           <h3>Best M&amp;A Advisors for HVAC Companies</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Salt Creek, Good Hope, Align, Cetane, CT Acquisitions, and Schryver compared on deal-size fit, who the advisor actually represents, and which firms publish a fee model at all.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -563,6 +619,7 @@
         <a href="articles/best-ma-advisors-dental-practices-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Dental &amp; Orthodontics &middot; August 27, 2026</span>
           <h3>Best M&amp;A Advisors for Dental Practices</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Salt Creek, TUSK, McLerran, PTS, Large Practice Sales, ADS, and Henry Schein compared on practice-size fit, fee transparency, and whether a DSO or an individual dentist is the better buyer.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -570,6 +627,7 @@
         <a href="articles/best-ma-advisors-plumbing-companies-2026" class="article-card reveal">
           <span class="article-card-label">Plumbing &amp; Home Services &middot; August 28, 2026</span>
           <h3>Best M&amp;A Advisors for Plumbing Companies</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Salt Creek, Good Hope, SF&amp;P, The Advisory IB, Main Street Wealth, Ridgefield, and Three Sixty Seven compared on fee model, deal-size fit, and how much of the price a PE platform actually pays at closing.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -577,6 +635,7 @@
         <a href="articles/roll-ups-legal-services-pet-care-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Legal Services &amp; Pet Care &middot; Updated July 30, 2026</span>
           <h3>Why Roll-Ups Are Heating Up in Legal Services and Pet Care</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Why two fragmented, owner-heavy industries are attracting active roll-up interest, and what it means if you're in one.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -586,12 +645,13 @@
 
     <div class="articles-group" id="for-acquirers">
       <h2 class="articles-group-h2 reveal">For <em>acquirers.</em></h2>
-      <p class="articles-group-intro reveal">For private equity firms, family offices, and strategic acquirers: what a buy-side mandate involves and how roll-up and buy-and-build programs get sourced. How we work with acquirers is on our <a href="investors" class="text-link">For Investors</a> page.</p>
+      <p class="articles-group-intro reveal">Background reading for private equity firms, family offices, and strategic acquirers: what a buy-side mandate involves and how roll-up and buy-and-build programs get sourced. Salt Creek Advisory represents business owners only and does not take buy-side mandates. If you buy in our sectors, join our buyer list on the <a href="investors" class="text-link">For Investors</a> page so you see our clients&rsquo; businesses when they go to market.</p>
       <div class="articles-grid">
 
         <a href="articles/buy-side-ma-advisor-2026" class="article-card reveal">
           <span class="article-card-label">Buy-Side &middot; August 17, 2026</span>
           <h3>Buy-Side M&amp;A Advisor: What They Do and What They Cost</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Written for the buyer rather than the owner. What a buy-side mandate actually covers, why retainers show up more often on this side, and how a percentage-of-price fee cuts against the buyer paying it.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -599,6 +659,7 @@
         <a href="articles/roll-up-buy-and-build-acquisition-advisory-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Buy-Side &middot; September 9, 2026</span>
           <h3>Roll-Up and Buy-and-Build Acquisition Advisory: How M&amp;A Advisors Support Platform Building</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>For the buyer running a program rather than a deal. Platform criteria versus add-on criteria, how a pipeline gets sequenced against your financing and integration capacity, and why one valuation standard across every target is the whole game.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -614,6 +675,7 @@
         <a href="articles/how-to-choose-an-ma-advisor-2026" class="article-card reveal">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>How to Choose an M&amp;A Advisor for a Founder-Led Business</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>A practical framework for evaluating advisors when the business is your biggest asset and your life's work.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -621,6 +683,7 @@
         <a href="articles/sell-side-advisor-vs-business-broker-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>Sell-Side Advisor vs. Business Broker: What&rsquo;s the Difference?</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Where brokers and investment banks overlap, where they diverge, and which one fits your size and situation.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -628,6 +691,7 @@
         <a href="articles/best-ma-advisors-selling-20-million-company-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>Best M&amp;A Advisors for Selling a $20 Million Company in 2026</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Twelve firms compared, what survey data says a $20M success fee should actually cost, and the retainer question most owners forget to ask.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -635,6 +699,7 @@
         <a href="articles/top-lower-middle-market-investment-banks-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>Top Lower Middle Market Investment Banks in 2026</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Thirteen firms compared on their own strengths, what the league tables genuinely measure and where they stop, and real fee benchmarks.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -642,6 +707,7 @@
         <a href="articles/ma-advisor-fees-2026" class="article-card reveal">
           <span class="article-card-label">Choosing an Advisor &middot; August 7, 2026</span>
           <h3>M&amp;A Advisor Fees: What a Sale Actually Costs</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Retainers, Lehman formulas, and pure success fees compared, plus the four engagement-letter terms that move your total cost more than the headline percentage does.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -649,6 +715,7 @@
         <a href="articles/best-business-valuation-firms-lower-middle-market-2026" class="article-card reveal reveal-delay-1">
           <span class="article-card-label">Choosing an Advisor &middot; Updated July 30, 2026</span>
           <h3>Best Business Valuation Firms for a Lower Middle Market Sale</h3>
+          <span class="article-card-byline">By Connor Pitts</span>
           <p>Most &ldquo;best business valuation firm&rdquo; lists mix tax, litigation, and startup work into one ranking. This one is scoped to a single job: valuing a business ahead of a sale.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -656,6 +723,7 @@
         <a href="articles/best-ma-advisors-chicago-2026" class="article-card reveal reveal-delay-2">
           <span class="article-card-label">Choosing an Advisor &middot; August 17, 2026</span>
           <h3>Best M&amp;A Advisors and Investment Banks in Chicago for Lower Middle Market Deals (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Five firms compared on deal size, sector coverage, principal access and fees, including ours, with the disclosure that we wrote the list and why the order is not a ranking.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -663,6 +731,7 @@
         <a href="articles/best-boutique-ma-firms-2026" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Choosing an Advisor &middot; August 23, 2026</span>
           <h3>Best Boutique M&amp;A Firms for Founder-Led Lower Middle Market Companies (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Six boutique M&amp;A firms compared on deal size, fees, and principal involvement, including ours, with the disclosure that we wrote the list and why the order is not a ranking.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -670,6 +739,7 @@
         <a href="articles/best-exit-planning-advisors-consultants-2026" class="article-card reveal">
           <span class="article-card-label">Choosing an Advisor &middot; September 15, 2026</span>
           <h3>Best Exit Planning Advisors and Consultants for Business Owners (2026)</h3>
+          <span class="article-card-byline">By Jack Pitts</span>
           <p>Six firms and organizations compared on specialization, fee model, deal size and senior involvement, including ours, with the disclosure that we wrote the list and why it is a fit exercise rather than a ranking.</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
         </a>
@@ -706,8 +776,22 @@
         <a href="articles/how-ai-is-actually-changing-business" class="article-card reveal reveal-delay-3">
           <span class="article-card-label">Jack Pitts &middot; June 18, 2026</span>
           <h3>How AI Is Actually Changing Business (Not the Hype Version)</h3>
-          <p>A grounded look at where AI helps, where it falls short, and how we use it at Salt Creek.</p>
+          <p>A grounded look at where AI helps, where it falls short, and how we use it at Salt Creek Advisory</p>
           <span class="article-card-arrow">Read the Guide &#8594;</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="articles-group" id="downloads">
+      <h2 class="articles-group-h2 reveal">Firm <em>downloads.</em></h2>
+      <div class="articles-grid">
+
+        <a href="assets/salt-creek-advisory-one-pager-2026.pdf" download class="article-card reveal">
+          <span class="article-card-label">PDF &middot; 2026</span>
+          <h3>Capabilities One-Pager (2026)</h3>
+          <p>Sell-side M&amp;A advisory for owners of privately held companies with $2 million to $75 million in revenue. Two principals on every engagement, from the first conversation to closing.</p>
+          <span class="article-card-arrow">Download the PDF &#8595;</span>
         </a>
 
       </div>
@@ -734,7 +818,7 @@
       <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog" width="400" height="210" loading="lazy" decoding="async">
       <span class="footer-brand">Salt Creek Advisory LLC</span>
       <span class="footer-tagline">On Your Side</span>
-      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side M&amp;A advisory. We represent owners only. Midwestern roots, national reach.</p>
       <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
     </div>
     <div class="footer-col">
@@ -743,14 +827,16 @@
       <a href="sectors">Sector Expertise</a>
       <a href="preschool-childcare-ma-advisor">Preschool &amp; Childcare M&amp;A</a>
       <a href="msp-ma-advisor">MSP &amp; IT Services M&amp;A</a>
+      <a href="industrials-ma-advisor">Industrials &amp; Manufacturing M&amp;A</a>
+      <a href="business-services-ma-advisor">Business Services M&amp;A</a>
       <a href="pet-care-ma-advisor">Dog Daycare &amp; Pet Care M&amp;A</a>
       <a href="process">Our Process</a>
-      <a href="team">The Partners</a>
+      <a href="team">The Principals</a>
     </div>
     <div class="footer-col">
       <span class="footer-col-title">Connect</span>
       <a href="investors">For Investors</a>
-      <a href="podcast">The Making Of Hosted By Jack Pitts</a>
+      <a href="podcast">The Making Of Hosted by Jack Pitts</a>
       <a href="faq">Owner FAQ</a>
       <a href="articles">Insights</a>
       <a href="capabilities">Capabilities</a>
@@ -766,7 +852,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
+    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale of their companies. We represent sellers only: we do not take buy-side engagements, we do not represent buyers, and we do not accept fees or other compensation from buyers. We are not a chartered bank or depository institution, we do not accept deposits, and nothing we offer is FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the federal M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, added by the Consolidated Appropriations Act, 2023 and effective March 29, 2023. Under that provision, &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when it effects securities transactions solely in connection with the transfer of ownership of an &ldquo;eligible privately held company&rdquo; and reasonably believes the buyer will control the business and be active in its management afterward. An eligible privately held company is one with no class of securities registered with, or reporting to, the SEC that, in the fiscal year before the engagement, had EBITDA of less than $25,000,000 or gross revenues of less than $250,000,000 (amounts subject to periodic inflation adjustment). The exemption is not available to a broker that receives, holds, transmits, or has custody of the funds or securities being exchanged; acts for an issuer in a public offering; acts in a transaction involving a shell company; provides financing, or helps arrange third-party financing without complying with applicable law and disclosing its compensation in writing; represents both buyer and seller without clear written disclosure and the written consent of both; facilitates a transaction with a group of buyers it helped form; transfers ownership to a passive buyer; or binds a party to the transaction. Where a transaction would fall outside those conditions, we do not rely on the exemption, and any services that only a registered broker-dealer may perform would have to be provided by a registered broker-dealer, not by us. The federal exemption does not displace state law, and some states separately regulate business brokers and M&amp;A intermediaries. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Valuation ranges, multiples, and market figures on this site, including the valuation tool&rsquo;s estimates and any illustrative examples, are general information drawn from published sources or our own illustrations. They are not Salt Creek Advisory quotes, valuations, appraisals, or fairness opinions, and no figure here is a prediction or guarantee of any deal outcome. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
       <nav class="footer-legal-links" aria-label="Legal">
@@ -778,7 +864,7 @@
   </div>
 </footer>
 
-<script src="main.js?v=b6ea1432"></script>
+<script src="main.js?v=220786fb"></script>
 
 </body>
 </html>

@@ -1,0 +1,78 @@
+# Tells Bing, Yandex and the other IndexNow participants which pages a push
+# changed, once the deploy that carries them has landed.
+#
+# The ownership key has been hosted at the site root for a long time and
+# tools/submit_indexnow.py has existed for nearly as long, and between them
+# nothing was ever sent, because sending was a step someone had to remember
+# after every deploy. So it runs here, on every push to main, and submits only
+# what the sitemap says is new or changed since the previous commit. A push
+# that touched no page submits nothing and stays quiet.
+#
+# Two things it will not do. It will not announce before the deploy is live,
+# because the engines fetch what they are told about and would otherwise fetch
+# the old page: the first step polls the production sitemap.xml until it
+# matches the commit. And it will not announce a domain move: when the previous
+# sitemap lived on another host every URL looks new, and the tool skips with a
+# message. That announcement belongs to the engines' site-move tools and to a
+# deliberate `submit_indexnow.py --all` from a laptop.
+#
+# Kept out of checks.yml because it depends on production being up and on a
+# third party answering, which is not something a commit should wait on.
+name: indexnow
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  # One announcement at a time, in order. Cancelling an older run would lose
+  # the pages it was about to send.
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    # A branch's first push has no previous commit to diff against. There is
+    # nothing to announce on a push that only moved main to an existing commit either.
+    if: github.event.before != '0000000000000000000000000000000000000000'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # --since reads the previous commit's sitemap.xml with git show, and
+          # a multi-commit push can put that commit well behind HEAD.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Wait for the deploy to land
+        # main deploys to production about a minute after a push. The engines
+        # fetch what they are told about, so announcing before the deploy lands
+        # would have them index the previous version of every changed page.
+        # Compared on the sitemap's text, which the generated-files check in
+        # checks.yml keeps equal to the commit, so "matches" means "this
+        # commit is live".
+        run: |
+          for attempt in $(seq 1 20); do
+            if curl -fsS --max-time 20 -A "SaltCreekAdvisory-IndexNow/1.0" \
+                 -o /tmp/live-sitemap.xml https://saltcreekadvisory.com/sitemap.xml \
+               && cmp -s /tmp/live-sitemap.xml sitemap.xml; then
+              echo "Production sitemap.xml matches this commit (attempt $attempt)."
+              exit 0
+            fi
+            echo "Production sitemap.xml does not match yet (attempt $attempt of 20)."
+            sleep 30
+          done
+          echo "::error::Production sitemap.xml never matched this commit in ten minutes."
+          echo "Either the deploy did not land or sitemap.xml was committed stale."
+          echo "Nothing was announced. Once production is right, run:"
+          echo "  python3 tools/submit_indexnow.py --since ${{ github.event.before }}"
+          exit 1
+
+      - name: Announce what changed since the previous commit
+        run: python3 tools/submit_indexnow.py --since "${{ github.event.before }}"

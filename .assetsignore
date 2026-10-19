@@ -10,3 +10,6 @@ src
 docs
 tools
 .gstack
+.claude
+.superpowers
+node_modules

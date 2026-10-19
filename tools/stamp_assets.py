@@ -31,6 +31,8 @@ import sys
 # ship under the same .js rule as main.js and would go stale the same way.
 ASSETS = ("styles.css", "main.js", "analytics.js", "valuation.js", "contact.js")
 HASH_LENGTH = 8
+STYLESHEET = "styles.css"
+TRIMMED_STYLESHEET = "styles.min.css"
 
 
 def content_hash(filename):
@@ -64,6 +66,60 @@ def stamp(html, hashes):
     return html
 
 
+def _without_comments(css):
+    """`css` with every /* ... */ removed, quoted strings left exactly as written."""
+    out = []
+    i, length = 0, len(css)
+    quote = None
+    while i < length:
+        char = css[i]
+        if quote:
+            out.append(char)
+            if char == "\\" and i + 1 < length:
+                out.append(css[i + 1])
+                i += 1
+            elif char == quote:
+                quote = None
+            i += 1
+        elif char in "\"'":
+            quote = char
+            out.append(char)
+            i += 1
+        elif css.startswith("/*", i):
+            end = css.find("*/", i + 2)
+            if end == -1:
+                raise ValueError("unterminated /* comment at offset {}".format(i))
+            i = end + 2
+        else:
+            out.append(char)
+            i += 1
+    return "".join(out)
+
+
+def trim_css(css):
+    """The stylesheet as served: comments and blank lines gone, nothing else.
+
+    About a quarter of styles.css is notes for whoever edits it next, and they
+    roughly doubled its gzip size on the wire. Every rule, value and indent is
+    kept as written, so the trimmed copy is still readable in devtools.
+    """
+    lines = (line.rstrip() for line in _without_comments(css).splitlines())
+    return "".join(line + "\n" for line in lines if line)
+
+
+def write_trimmed_stylesheet():
+    """Writes styles.min.css from styles.css. src/index.js serves it as /styles.css.
+
+    The pages keep naming styles.css, and the ?v= stamp keeps hashing it, so
+    the trimmed copy can never sit under a stamp that names other bytes.
+    """
+    with io.open(STYLESHEET, encoding="utf-8") as handle:
+        trimmed = trim_css(handle.read())
+    with io.open(TRIMMED_STYLESHEET, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(trimmed)
+    return trimmed
+
+
 def main():
     missing = [asset for asset in ASSETS if not os.path.exists(asset)]
     if missing:
@@ -80,6 +136,12 @@ def main():
         print("No pages found. Run this from the repository root.", file=sys.stderr)
         return 1
 
+    try:
+        trimmed = write_trimmed_stylesheet()
+    except ValueError as error:
+        print("{}: {}".format(STYLESHEET, error), file=sys.stderr)
+        return 1
+
     hashes = {asset: content_hash(asset) for asset in ASSETS}
     changed = 0
     for page in pages:
@@ -93,6 +155,8 @@ def main():
 
     for asset, digest in sorted(hashes.items()):
         print("{:<14} {}".format(asset, digest))
+    print("{:<14} {} bytes (from {})".format(
+        TRIMMED_STYLESHEET, len(trimmed.encode("utf-8")), os.path.getsize(STYLESHEET)))
     print("{} of {} pages updated".format(changed, len(pages)))
     return 0
 

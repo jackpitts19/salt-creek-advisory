@@ -14,6 +14,7 @@ import contextlib
 import datetime
 import importlib.util
 import io
+import json
 import os
 import tempfile
 import unittest
@@ -57,18 +58,63 @@ def sitemap(routes):
     return '<?xml version="1.0" encoding="UTF-8"?><urlset>' + locs + "</urlset>"
 
 
-class CheckSiteTestCase(unittest.TestCase):
-    """Runs the checker against a synthetic site written to a temp directory."""
+def json_ld(document):
+    """One JSON-LD block, as every page carries them."""
+    return '<script type="application/ld+json">{}</script>'.format(json.dumps(document))
+
+
+ORGANIZATION_ID = SITE + "/#organization"
+
+
+def organization(name="Salt Creek Advisory", url=SITE + "/", **fields):
+    """The firm's node as the home page defines it, with any field overridden."""
+    node = {"@type": "Organization", "@id": ORGANIZATION_ID, "name": name, "url": url}
+    node.update(fields)
+    return node
+
+
+def pointer(node_id=ORGANIZATION_ID):
+    """A bare reference to a node defined elsewhere: only an @id."""
+    return {"@id": node_id}
+
+
+def article(route, **fields):
+    """An Article node carrying every field Google requires, for `route`."""
+    node = {
+        "@type": "Article", "headline": "A Guide", "image": SITE + "/og-image.jpg",
+        "datePublished": "2026-01-01", "dateModified": "2026-01-01",
+        "author": {"@type": "Person", "name": "Jack Pitts"},
+        "publisher": organization(), "url": SITE + route,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": SITE + route},
+    }
+    node.update(fields)
+    return node
+
+
+def without(node, field):
+    """A copy of `node` with one field left out, for the optional-field cases."""
+    return {key: value for key, value in node.items() if key != field}
+
+
+def breadcrumbs(*items):
+    """A BreadcrumbList over (name, route) pairs, Home first."""
+    return {"@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": position, "name": name, "item": SITE + route}
+        for position, (name, route) in enumerate(items, 1)]}
+
+
+class SyntheticSiteTestCase(unittest.TestCase):
+    """Runs the checker against a synthetic site written to a temp directory.
+
+    Each test builds the site it needs, breaks exactly one thing, and asserts
+    the checker notices. write_baseline() gives the smallest site that passes
+    every check: two pages, linked, both in the sitemap.
+    """
 
     def setUp(self):
         self._origin = os.getcwd()
         self._tmp = tempfile.TemporaryDirectory()
         os.chdir(self._tmp.name)
-        # A clean baseline that each test breaks in exactly one way. index links to
-        # about so the baseline satisfies the orphan check too.
-        self.write("index.html", page("/", body='<a href="/about">About</a>'))
-        self.write("about.html", page("/about"))
-        self.write_sitemap(["/", "/about"])
 
     def tearDown(self):
         os.chdir(self._origin)
@@ -85,6 +131,12 @@ class CheckSiteTestCase(unittest.TestCase):
     def write_sitemap(self, routes):
         self.write("sitemap.xml", sitemap(routes))
 
+    def write_baseline(self):
+        # index links to about so the baseline satisfies the orphan check too.
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write_sitemap(["/", "/about"])
+
     def run_checker(self, *argv):
         """Returns (exit_code, combined_output)."""
         out, err = io.StringIO(), io.StringIO()
@@ -92,10 +144,25 @@ class CheckSiteTestCase(unittest.TestCase):
             code = check_site.main(argv)
         return code, out.getvalue() + err.getvalue()
 
+    def assertPasses(self, reason="a clean site should pass"):
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, reason + ":\n" + output)
+        return output
+
     def assertFails(self, needle):
         code, output = self.run_checker()
         self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
         self.assertIn(needle, output)
+        return output
+
+
+class CheckSiteTestCase(SyntheticSiteTestCase):
+    """Every check in the page loop, against the two-page baseline."""
+
+    def setUp(self):
+        super().setUp()
+        # A clean baseline that each test breaks in exactly one way.
+        self.write_baseline()
 
     # --- the checker stays quiet when nothing is wrong ------------------------
 
@@ -140,10 +207,8 @@ class CheckSiteTestCase(unittest.TestCase):
         self.assertFails("does not parse")
 
     def test_valid_json_ld_passes(self):
-        good = '<script type="application/ld+json">{"@type": "Article"}</script>'
-        self.write("about.html", page("/about", head=good))
-        code, output = self.run_checker()
-        self.assertEqual(code, 0, "valid JSON-LD should pass:\n" + output)
+        self.write("about.html", page("/about", head=json_ld(article("/about"))))
+        self.assertPasses("valid JSON-LD should pass")
 
     def test_image_without_alt_is_caught(self):
         self.write("about.html", page("/about", body='<img src="/logo.png">'))
@@ -283,10 +348,8 @@ class CheckSiteTestCase(unittest.TestCase):
     def test_dataset_nested_in_a_citation_list_is_checked(self):
         # The real ones sit inside an Article's citation array, not at the top
         # level, so the walk has to recurse.
-        node = ('<script type="application/ld+json">'
-                '{"@type": "Article", "citation": ['
-                '{"@type": "Dataset", "name": "Buried Series"}]}</script>')
-        self.write("about.html", page("/about", head=node))
+        node = article("/about", citation=[{"@type": "Dataset", "name": "Buried Series"}])
+        self.write("about.html", page("/about", head=json_ld(node)))
         self.assertFails("Buried Series")
 
     def test_complete_dataset_passes(self):
@@ -475,40 +538,378 @@ class CheckSiteTestCase(unittest.TestCase):
         self.assertEqual(code, 0, output)
 
 
+    def test_the_short_form_in_the_navigation_lockup_passes(self):
+        self.write("about.html", page(
+            "/about", body='Salt Creek <span class="nav-logo-text-sub">Advisory</span>'))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "the short lockup should pass:\n" + output)
 
-class AnchorBalanceTestCase(unittest.TestCase):
+    def test_the_short_form_and_other_firms_pass(self):
+        body = ("<p>Salt Creek Advisory helps owners. Salt Creek Advisory&rsquo;s team, "
+                "unlike Bain &amp; Company, is two people.</p>")
+        self.write("about.html", page("/about", body=body))
+        code, output = self.run_checker()
+        self.assertEqual(code, 0, "the short form should pass:\n" + output)
+
+
+class OrganizationPointerTestCase(SyntheticSiteTestCase):
+    """A page that points at the firm's node must also define it.
+
+    JSON-LD references are resolved per page, not per site. Fifteen root pages
+    carried `"publisher": {"@id": ".../#organization"}` and nothing else, so on
+    every one of them a crawler saw a publisher with no name, which Search
+    Console reports as a missing field and an answer engine reads as nothing.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.write("index.html", page("/", head=json_ld(organization()),
+                                      body='<a href="/about">About</a>'))
+        self.write("about.html", page("/about"))
+        self.write_sitemap(["/", "/about"])
+
+    def write_about(self, *documents):
+        self.write("about.html", page("/about", head="".join(json_ld(d) for d in documents)))
+
+    def test_a_page_with_no_pointer_passes(self):
+        self.assertPasses()
+
+    def test_a_pointer_with_no_definition_on_the_page_fails(self):
+        self.write_about({"@type": "AboutPage", "publisher": pointer()})
+        self.assertFails("about.html: JSON-LD points at {} but no node on this page "
+                         "defines it".format(ORGANIZATION_ID))
+
+    def test_a_pointer_beside_a_matching_definition_passes(self):
+        self.write_about({"@type": "AboutPage", "publisher": pointer()}, organization())
+        self.assertPasses("a pointer resolved on the same page should pass")
+
+    def test_the_definition_inside_a_graph_counts(self):
+        self.write_about({"@context": "https://schema.org", "@graph": [
+            {"@type": "AboutPage", "about": pointer(), "publisher": pointer()}, organization()]})
+        self.assertPasses("a definition anywhere on the page should count")
+
+    def test_a_definition_whose_name_differs_from_the_home_page_fails(self):
+        self.write_about({"@type": "AboutPage", "publisher": pointer()},
+                         organization(name="The Pitts Firm"))
+        self.assertFails("about.html: {} is named 'The Pitts Firm' here but "
+                         "'Salt Creek Advisory' on index.html".format(ORGANIZATION_ID))
+
+    def test_a_definition_whose_url_differs_from_the_home_page_fails(self):
+        self.write_about({"@type": "AboutPage", "publisher": pointer()},
+                         organization(url=SITE + "/about"))
+        self.assertFails("about.html: {} has url '{}/about' here but '{}/' on "
+                         "index.html".format(ORGANIZATION_ID, SITE, SITE))
+
+    def test_a_home_page_that_defines_nothing_is_reported_once(self):
+        self.write("index.html", page("/", body='<a href="/about">About</a>'))
+        self.write_about({"@type": "AboutPage", "publisher": pointer()}, organization())
+        output = self.assertFails("index.html: defines no node with @id {}, so no other "
+                                  "page's copy can be checked against it".format(ORGANIZATION_ID))
+        self.assertEqual(output.count("defines no node"), 1)
+
+    def test_pointers_at_other_nodes_are_left_alone(self):
+        # The website node and the principals live on other pages by design;
+        # only the firm's own node has to travel with every page that cites it.
+        self.write_about({"@type": "AboutPage", "isPartOf": pointer(SITE + "/#website"),
+                          "mainEntity": pointer(SITE + "/#jack-pitts")})
+        self.assertPasses("pointers at other nodes are not this check's business")
+
+    # --- the legal pages wait for counsel ------------------------------------
+
+    def write_privacy(self, *documents):
+        self.write("privacy.html", page("/privacy", head="".join(json_ld(d) for d in documents)))
+        self.write("index.html", page("/", head=json_ld(organization()),
+                                      body='<a href="/about">About</a><a href="/privacy">Privacy</a>'))
+        self.write_sitemap(["/", "/about", "/privacy"])
+
+    def test_a_held_legal_page_with_only_a_pointer_warns_instead_of_failing(self):
+        """privacy.html may not be edited until counsel clears it (decision I),
+        so its bare pointer stays in view as a warning rather than a failure."""
+        self.write_privacy({"@type": "WebPage", "publisher": pointer()})
+        output = self.assertPasses("a held legal page is a warning, not an error")
+        self.assertIn("warn  privacy.html: JSON-LD points at {} but no node on this page "
+                      "defines it".format(ORGANIZATION_ID), output)
+        self.assertIn("held for counsel", output)
+
+    def test_a_held_legal_page_that_defines_the_node_differently_still_fails(self):
+        # The hold covers the missing node only; a wrong one is wrong anywhere.
+        self.write_privacy({"@type": "WebPage", "publisher": pointer()},
+                           organization(name="The Pitts Firm"))
+        self.assertFails("privacy.html: {} is named 'The Pitts Firm' here but "
+                         "'Salt Creek Advisory' on index.html".format(ORGANIZATION_ID))
+
+
+def person(name="Jack Pitts", **fields):
+    node = {"@type": "Person", "@id": SITE + "/#jack-pitts", "name": name,
+            "jobTitle": "Co-Founder & Principal", "url": SITE + "/team#jack-pitts"}
+    node.update(fields)
+    return node
+
+
+class StructuredDataTestCase(SyntheticSiteTestCase):
+    """The markup that earns rich results and tells answer engines who wrote what.
+
+    Parsing is not validating, and matching is not agreeing: an Article whose
+    url names another page, a breadcrumb trail ending somewhere else, or a
+    principal whose job title differs between two pages, all parse cleanly
+    and all tell a crawler something false about this site.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.write_baseline()
+
+    def write_about(self, *documents, route="/about"):
+        self.write("about.html", page(route, head="".join(json_ld(d) for d in documents)))
+
+    # --- required fields, per type ------------------------------------------
+
+    def test_a_complete_article_faq_and_breadcrumb_trail_pass(self):
+        faq = {"@type": "FAQPage", "url": SITE + "/about", "mainEntity": [
+            {"@type": "Question", "name": "Q?", "acceptedAnswer": {"@type": "Answer", "text": "A."}}]}
+        self.write_about(article("/about"), faq, breadcrumbs(("Home", "/"), ("About", "/about")))
+        self.assertPasses()
+
+    def test_an_article_missing_any_required_field_fails(self):
+        for field in ("headline", "image", "datePublished", "dateModified", "author", "publisher"):
+            with self.subTest(field=field):
+                node = article("/about")
+                del node[field]
+                self.write_about(node)
+                self.assertFails("Article node 'unnamed' is missing {}".format(field))
+
+    def test_a_faq_page_without_questions_fails(self):
+        self.write_about({"@type": "FAQPage", "url": SITE + "/about"})
+        self.assertFails("FAQPage node 'unnamed' is missing mainEntity")
+
+    def test_a_breadcrumb_list_without_items_fails(self):
+        self.write_about({"@type": "BreadcrumbList"})
+        self.assertFails("BreadcrumbList node 'unnamed' is missing itemListElement")
+
+    # --- every self URL in the markup is the page's canonical -----------------
+
+    def test_an_article_url_naming_another_page_fails(self):
+        self.write_about(article("/about", url=SITE + "/"))
+        self.assertFails("about.html: Article url '{}/' is not the page canonical "
+                         "'{}/about'".format(SITE, SITE))
+
+    def test_an_article_main_entity_naming_another_page_fails(self):
+        self.write_about(article("/about", mainEntityOfPage={"@type": "WebPage", "@id": SITE + "/"}))
+        self.assertFails("about.html: Article mainEntityOfPage '{}/' is not the page "
+                         "canonical".format(SITE))
+
+    def test_a_main_entity_written_as_a_bare_string_is_read(self):
+        self.write_about(article("/about", mainEntityOfPage=SITE + "/about"))
+        self.assertPasses("a string mainEntityOfPage naming the page should pass")
+        self.write_about(article("/about", mainEntityOfPage=SITE + "/"))
+        self.assertFails("Article mainEntityOfPage")
+
+    def test_a_faq_page_url_naming_another_page_fails(self):
+        self.write_about({"@type": "FAQPage", "url": SITE + "/", "mainEntity": [{"@type": "Question"}]})
+        self.assertFails("about.html: FAQPage url '{}/' is not the page canonical".format(SITE))
+
+    def test_a_faq_page_without_a_url_is_not_asked_for_one(self):
+        self.write_about({"@type": "FAQPage", "mainEntity": [{"@type": "Question"}]})
+        self.assertPasses("FAQPage url is optional")
+
+    def test_an_article_without_a_url_is_not_asked_for_one(self):
+        self.write_about(without(article("/about"), "url"))
+        self.assertPasses("Article url is optional; only a wrong one is a finding")
+
+    def test_an_article_without_a_main_entity_is_not_asked_for_one(self):
+        self.write_about(without(article("/about"), "mainEntityOfPage"))
+        self.assertPasses("Article mainEntityOfPage is optional; only a wrong one is a finding")
+
+    def test_a_last_breadcrumb_without_an_item_is_not_asked_for_one(self):
+        # Google's breadcrumb rules: `item` is required on every crumb but the last.
+        trail = breadcrumbs(("Home", "/"), ("About", "/about"))
+        crumbs = trail["itemListElement"]
+        self.write_about({**trail, "itemListElement": crumbs[:-1] + [without(crumbs[-1], "item")]})
+        self.assertPasses("the last crumb's item is optional; only a wrong one is a finding")
+
+    def test_a_breadcrumb_trail_ending_on_another_page_fails(self):
+        self.write_about(breadcrumbs(("Home", "/"), ("Contact", "/contact")))
+        self.assertFails("about.html: the last breadcrumb item '{}/contact' is not the page "
+                         "canonical".format(SITE))
+
+    def test_a_trailing_slash_does_not_count_as_a_different_page(self):
+        self.write("index.html", page("/", head=json_ld(breadcrumbs(("Home", "/"))),
+                                      body='<a href="/about">About</a>'))
+        self.assertPasses("the home canonical ends in a slash and so does its crumb")
+
+    def test_a_page_without_a_canonical_is_not_compared(self):
+        self.write("404.html", page("/404", canonical="", head=json_ld(article("/404")) + (
+            '<meta name="robots" content="noindex, follow" />')))
+        self.assertPasses("no canonical, nothing to compare against")
+
+    # --- one @id, one set of facts, across the site ------------------------
+
+    def write_team_and_guide(self, team_person, guide_person):
+        self.write("team.html", page("/team", head=json_ld(team_person)))
+        self.write("articles/guide.html", page("/articles/guide", head=json_ld(
+            article("/articles/guide", author=guide_person))))
+        self.write("index.html", page("/", body=(
+            '<a href="/about">About</a><a href="/team">Team</a><a href="/articles/guide">G</a>')))
+        self.write_sitemap(["/", "/about", "/team", "/articles/guide"])
+
+    def test_copies_that_agree_pass(self):
+        # The guide's copy carries less, and its url has no fragment. Both are fine.
+        self.write_team_and_guide(
+            person(sameAs=["https://a.example/", "https://b.example/"]),
+            person(url=SITE + "/team", sameAs=["https://b.example/"]))
+        self.assertPasses()
+
+    def test_copies_that_disagree_on_a_name_fail(self):
+        self.write_team_and_guide(person(), person(name="John Pitts"))
+        self.assertFails("articles/guide.html: {}/#jack-pitts has name 'John Pitts' but "
+                         "team.html has 'Jack Pitts'".format(SITE))
+
+    def test_copies_that_disagree_on_a_job_title_fail(self):
+        self.write_team_and_guide(person(), person(jobTitle="Principal"))
+        self.assertFails("has jobTitle 'Principal' but team.html has 'Co-Founder & Principal'")
+
+    def test_copies_whose_urls_differ_beyond_the_fragment_fail(self):
+        self.write_team_and_guide(person(), person(url=SITE + "/about#jack-pitts"))
+        self.assertFails("has url '{}/about#jack-pitts' but team.html has "
+                         "'{}/team#jack-pitts'".format(SITE, SITE))
+
+    def test_a_same_as_link_the_fullest_copy_lacks_fails(self):
+        self.write_team_and_guide(
+            person(sameAs=["https://a.example/", "https://b.example/"]),
+            person(sameAs=["https://c.example/"]))
+        self.assertFails("articles/guide.html: {}/#jack-pitts lists sameAs https://c.example/, "
+                         "which the fullest copy on team.html does not".format(SITE))
+
+    def test_a_field_one_copy_lacks_is_not_a_disagreement(self):
+        node = person()
+        del node["jobTitle"]
+        self.write_team_and_guide(node, person())
+        self.assertPasses("a copy may carry fewer fields, not different ones")
+
+    def test_pointers_and_other_sites_ids_are_not_compared(self):
+        self.write_team_and_guide(
+            person(), {"@type": "Person", "@id": SITE + "/#jack-pitts"})
+        self.write("about.html", page("/about", head=json_ld(
+            {"@type": "Organization", "@id": "https://example.com/#org", "name": "A"})
+            + json_ld({"@type": "Organization", "@id": "https://example.com/#org", "name": "B"})))
+        self.assertPasses("a bare pointer carries no facts to disagree on")
+
+
+class HeadingBreakTestCase(SyntheticSiteTestCase):
+    """A <br> inside a heading must not sit between two words with no space.
+
+    A browser breaks the line either way. Everything that reads the heading as
+    text, a crawler, a feed reader, an answer engine quoting the title, sees
+    the two words run together: 59 h1s read "SomethingElse", and in one guide
+    the joined word was the firm's name.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.write_baseline()
+
+    def write_heading(self, heading):
+        self.write("about.html", page("/about", body=heading))
+
+    def test_a_break_with_a_space_before_it_passes(self):
+        self.write_heading("<h1>Selling a business <br>in 2026</h1>")
+        self.assertPasses()
+
+    def test_a_break_on_its_own_line_passes(self):
+        self.write_heading("<h1>Selling a business<br>\n  in 2026</h1>")
+        self.assertPasses()
+
+    def test_a_break_between_two_words_fails(self):
+        self.write_heading("<h1>Selling a business<br>in 2026</h1>")
+        self.assertFails("about.html: <h1> breaks the line between 'business' and 'in' with "
+                         "no space, so as text it reads 'businessin'")
+
+    def test_every_break_spelling_is_read(self):
+        for br in ("<br/>", "<br />", "<BR>", '<br class="x">'):
+            with self.subTest(br=br):
+                self.write_heading("<h2>Selling a business{}in 2026</h2>".format(br))
+                self.assertFails("about.html: <h2> breaks the line")
+
+    def test_a_break_inside_an_inline_tag_is_read(self):
+        self.write_heading("<h1>Selling a <em>business<br>in</em> 2026</h1>")
+        self.assertFails("reads 'businessin'")
+
+    def test_a_non_breaking_space_counts_as_a_space(self):
+        self.write_heading("<h1>Selling a business&nbsp;<br>in 2026</h1>")
+        self.assertPasses("an entity space is still a space")
+
+    def test_a_break_after_punctuation_still_needs_a_space(self):
+        # "ready,in" is as joined as "readyin" to anything reading the text.
+        self.write_heading("<h3>Ready,<br>set, sell</h3>")
+        self.assertFails("reads 'Ready,set,'")
+
+    def test_headings_without_breaks_are_left_alone(self):
+        self.write_heading("<h1>Selling a <em>business</em></h1><h2>Two</h2><h6>Six</h6>")
+        self.assertPasses()
+
+
+class AssetsIgnoreTestCase(SyntheticSiteTestCase):
+    """A hidden working folder at the top level must be held back from the deploy.
+
+    Cloudflare uploads everything under the assets directory, which is the
+    repository root, unless .assetsignore names it. A .claude or .superpowers
+    folder that lands there is served to anyone who guesses the path, with
+    whatever a session left in it.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.write_baseline()
+
+    def test_a_site_with_no_hidden_entries_passes(self):
+        self.assertPasses()
+
+    def test_a_hidden_folder_listed_in_assetsignore_passes(self):
+        os.makedirs(".claude")
+        self.write(".secret/notes.txt", "x")
+        self.write(".assetsignore", ".assetsignore\n.git\n.claude\n/.secret/\n")
+        self.assertPasses("a listed hidden folder is held back")
+
+    def test_a_hidden_folder_not_listed_fails(self):
+        os.makedirs(".claude")
+        self.write(".assetsignore", ".assetsignore\n.git\n")
+        self.assertFails(".claude is a hidden top-level entry that .assetsignore does not "
+                         "list, so a deploy would publish it")
+
+    def test_a_hidden_file_not_listed_fails(self):
+        self.write(".env", "SECRET=1\n")
+        self.write(".assetsignore", ".assetsignore\n.git\n")
+        self.assertFails(".env is a hidden top-level entry")
+
+    def test_a_hidden_entry_with_no_assetsignore_at_all_fails(self):
+        os.makedirs(".superpowers")
+        self.assertFails(".superpowers is a hidden top-level entry that .assetsignore does not list")
+
+    def test_a_comment_naming_the_folder_does_not_count(self):
+        os.makedirs(".claude")
+        self.write(".assetsignore", ".assetsignore\n# .claude\n")
+        self.assertFails(".claude is a hidden top-level entry")
+
+    def test_assetsignore_itself_must_be_listed(self):
+        # It is a hidden file at the top level like any other.
+        self.write(".assetsignore", ".git\n")
+        self.assertFails(".assetsignore is a hidden top-level entry")
+
+    def test_hidden_entries_below_the_top_level_are_not_this_checks_business(self):
+        self.write("fonts/.keep", "")
+        self.assertPasses("only the top level is the deploy's root")
+
+
+WRANGLER_HEAD = 'name = "site"\nmain = "src/index.js"\n\n[assets]\ndirectory = "."\n'
+
+
+
+class AnchorBalanceTestCase(SyntheticSiteTestCase):
     """A link missing its opening tag renders raw markup and passes every other check."""
 
     def setUp(self):
-        self._origin = os.getcwd()
-        self._tmp = tempfile.TemporaryDirectory()
-        os.chdir(self._tmp.name)
-        self.write("index.html", page("/", body='<a href="/about">About</a>'))
-        self.write("about.html", page("/about"))
-        self.write("sitemap.xml", sitemap(["/", "/about"]))
-
-    def tearDown(self):
-        os.chdir(self._origin)
-        self._tmp.cleanup()
-
-    def write(self, path, content):
-        full = os.path.join(self._tmp.name, path)
-        parent = os.path.dirname(full)
-        if parent:
-            os.makedirs(parent, exist_ok=True)
-        with open(full, "w", encoding="utf-8") as handle:
-            handle.write(content)
-
-    def run_checker(self, *argv):
-        out, err = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = check_site.main(argv)
-        return code, out.getvalue() + err.getvalue()
-
-    def assertFails(self, needle):
-        code, output = self.run_checker()
-        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
-        self.assertIn(needle, output)
+        super().setUp()
+        self.write_baseline()
 
     def test_balanced_anchors_pass(self):
         code, output = self.run_checker()
@@ -539,7 +940,7 @@ class AnchorBalanceTestCase(unittest.TestCase):
 
 
 
-class FooterDisclosureTestCase(unittest.TestCase):
+class FooterDisclosureTestCase(SyntheticSiteTestCase):
     """The regulatory disclosure is compliance surface, not decoration.
 
     It drifted the way an unguarded thing does: 56 of 58 pages carried it, and the
@@ -548,30 +949,8 @@ class FooterDisclosureTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self._origin = os.getcwd()
-        self._tmp = tempfile.TemporaryDirectory()
-        os.chdir(self._tmp.name)
-        self.write("index.html", page("/", body='<a href="/about">About</a>'))
-        self.write("about.html", page("/about"))
-        self.write("sitemap.xml", sitemap(["/", "/about"]))
-
-    def tearDown(self):
-        os.chdir(self._origin)
-        self._tmp.cleanup()
-
-    def write(self, path, content):
-        full = os.path.join(self._tmp.name, path)
-        parent = os.path.dirname(full)
-        if parent:
-            os.makedirs(parent, exist_ok=True)
-        with open(full, "w", encoding="utf-8") as handle:
-            handle.write(content)
-
-    def run_checker(self, *argv):
-        out, err = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = check_site.main(argv)
-        return code, out.getvalue() + err.getvalue()
+        super().setUp()
+        self.write_baseline()
 
     def test_pages_carrying_the_disclosure_pass(self):
         code, output = self.run_checker()
@@ -601,22 +980,13 @@ def header(current=None, value="page", drawer_tag="nav", prefix=""):
                      drawer_tag, drawer)
 
 
-class NavCurrentTestCase(unittest.TestCase):
+class NavCurrentTestCase(SyntheticSiteTestCase):
     """Each root page marks its own header link, in both the desktop nav and drawer.
 
     Six root pages used to set class="active", thirteen set nothing, and the
     drawer never marked anything, so the check pins one mapping for all of them.
     Article pages are skipped: they mark Insights as their section instead.
     """
-
-    def setUp(self):
-        self._origin = os.getcwd()
-        self._tmp = tempfile.TemporaryDirectory()
-        os.chdir(self._tmp.name)
-
-    def tearDown(self):
-        os.chdir(self._origin)
-        self._tmp.cleanup()
 
     def errors_for(self, path, body):
         errors = []
@@ -661,6 +1031,13 @@ class NavCurrentTestCase(unittest.TestCase):
         self.assertTrue(errors)
         self.assertIn('aria-current="true"', errors[0])
 
+    def test_new_sector_pages_mark_sectors_as_their_section(self):
+        for page in ("industrials-ma-advisor.html", "business-services-ma-advisor.html"):
+            with self.subTest(page=page):
+                self.assertEqual(
+                    self.errors_for(page, header("sectors", value="true")), [])
+                self.assertTrue(self.errors_for(page, header(None)))
+
     def test_valuation_marks_the_header_cta(self):
         self.assertEqual(self.errors_for("valuation.html", header("valuation")), [])
         self.assertTrue(self.errors_for("valuation.html", header(None)))
@@ -677,20 +1054,13 @@ class NavCurrentTestCase(unittest.TestCase):
         self.assertEqual(self.errors_for("about.html", "<p>no header</p>"), [])
 
     def test_checker_reports_it_end_to_end(self):
-        with open("index.html", "w", encoding="utf-8") as handle:
-            handle.write(page("/", body=header(None) + '<a href="/about">About</a>'))
-        with open("about.html", "w", encoding="utf-8") as handle:
-            handle.write(page("/about", body=header(None)))
-        with open("sitemap.xml", "w", encoding="utf-8") as handle:
-            handle.write(sitemap(["/", "/about"]))
-        out, err = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = check_site.main([])
-        output = out.getvalue() + err.getvalue()
-        self.assertEqual(code, 1, output)
-        self.assertIn('about.html: desktop nav link about needs aria-current="page"', output)
+        self.write("index.html", page("/", body=header(None) + '<a href="/about">About</a>'))
+        self.write("about.html", page("/about", body=header(None)))
+        self.write_sitemap(["/", "/about"])
+        self.assertFails('about.html: desktop nav link about needs aria-current="page"')
 
-class PublishChecklistTestCase(unittest.TestCase):
+
+class PublishChecklistTestCase(SyntheticSiteTestCase):
     """The two publish-checklist steps that drift silently: llms.txt and RELATED.
 
     Both are enforced by check_site.py rather than trusted to a list in the docs,
@@ -701,9 +1071,7 @@ class PublishChecklistTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self._origin = os.getcwd()
-        self._tmp = tempfile.TemporaryDirectory()
-        os.chdir(self._tmp.name)
+        super().setUp()
         # A guide, an essay (deliberately year-free), and a hub linking to both,
         # so the baseline satisfies the orphan and sitemap checks too.
         self.write("index.html", page("/", body=(
@@ -717,39 +1085,16 @@ class PublishChecklistTestCase(unittest.TestCase):
         self.write_llms(["guide-one-2026", "an-essay"])
         self.write_related({"guide-one": ["an-essay"], "an-essay": ["guide-one"]})
 
-    def tearDown(self):
-        os.chdir(self._origin)
-        self._tmp.cleanup()
-
-    def write(self, path, content):
-        full = os.path.join(self._tmp.name, path)
-        parent = os.path.dirname(full)
-        if parent:
-            os.makedirs(parent, exist_ok=True)
-        with open(full, "w", encoding="utf-8") as handle:
-            handle.write(content)
-
-    def write_llms(self, slugs):
+    def write_llms(self, slugs, path="llms.txt"):
         lines = ["# Site"] + [
             "- [{0}]({1}/articles/{0}): a summary".format(slug, SITE) for slug in slugs]
-        self.write("llms.txt", "\n".join(lines) + "\n")
+        self.write(path, "\n".join(lines) + "\n")
 
     def write_related(self, mapping):
         rows = "".join(
             '    "{}": [{}],\n'.format(key, ", ".join('"{}"'.format(t) for t in targets))
             for key, targets in mapping.items())
         self.write("tools/build_related.py", "RELATED = {\n" + rows + "}\n")
-
-    def run_checker(self, *argv):
-        out, err = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = check_site.main(argv)
-        return code, out.getvalue() + err.getvalue()
-
-    def assertFails(self, needle):
-        code, output = self.run_checker()
-        self.assertEqual(code, 1, "expected a failure, got a clean run:\n" + output)
-        self.assertIn(needle, output)
 
     def test_a_complete_site_passes(self):
         code, output = self.run_checker()
@@ -779,7 +1124,7 @@ class PublishChecklistTestCase(unittest.TestCase):
 
     def test_llms_txt_may_link_a_real_companion_file(self):
         """llms.txt points at llms-full.txt; that file exists, so it is not a 404."""
-        self.write("llms-full.txt", "# Site (full)\n")
+        self.write_llms(["guide-one-2026", "an-essay"], path="llms-full.txt")
         self.write_llms(["guide-one-2026", "an-essay"])
         with open(os.path.join(self._tmp.name, "llms.txt"), "a", encoding="utf-8") as handle:
             handle.write("See [llms-full.txt]({}/llms-full.txt).\n".format(SITE))
@@ -796,6 +1141,29 @@ class PublishChecklistTestCase(unittest.TestCase):
         os.remove(os.path.join(self._tmp.name, "llms.txt"))
         code, output = self.run_checker()
         self.assertEqual(code, 0, "absent llms.txt should skip:\n" + output)
+
+    # --- llms-full.txt is held to the same standard -----------------------------
+
+    def test_a_complete_llms_full_txt_passes(self):
+        self.write_llms(["guide-one-2026", "an-essay"], path="llms-full.txt")
+        self.assertPasses("both files complete should pass")
+
+    def test_an_article_missing_from_llms_full_txt_fails(self):
+        self.write_llms(["an-essay"], path="llms-full.txt")
+        output = self.assertFails("articles/guide-one-2026.html is not listed in llms-full.txt")
+        self.assertNotIn("not listed in llms.txt", output)
+
+    def test_llms_full_txt_naming_a_deleted_page_fails(self):
+        self.write_llms(["guide-one-2026", "an-essay", "gone-2026"], path="llms-full.txt")
+        output = self.assertFails("llms-full.txt: lists {}/articles/gone-2026, which no longer "
+                                  "exists".format(SITE))
+        self.assertNotIn("llms.txt: lists", output)
+
+    def test_each_file_is_reported_under_its_own_name(self):
+        self.write_llms(["an-essay"])
+        self.write_llms(["guide-one-2026"], path="llms-full.txt")
+        output = self.assertFails("not listed in llms.txt")
+        self.assertIn("articles/an-essay.html is not listed in llms-full.txt", output)
 
     # --- step 5: the RELATED map ----------------------------------------------
 

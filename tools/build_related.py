@@ -40,6 +40,8 @@ ROOT_PAGE_TITLES = {
     "/msp-ma-advisor": "Sell Your MSP: IT Managed Services M&A",
     "/pet-care-ma-advisor": "Sell Your Dog Daycare or Pet Care Business",
     "/preschool-childcare-ma-advisor": "Sell Your Preschool: Childcare M&A Advisor",
+    "/industrials-ma-advisor": "Industrials & Manufacturing M&A Advisor",
+    "/business-services-ma-advisor": "Business Services M&A Advisor",
 }
 
 # Three destinations per guide. Sector guides lead with their sell-side page,
@@ -55,10 +57,16 @@ RELATED = {
     # slot comes from what-buyers-look-for both times because it is the
     # best-linked target here at eight inbound; ma-glossary has one and cannot
     # spare its.
+    #
+    # Add-backs lead: this is the primary page for "valuation basics", and its
+    # two secondaries (add-backs and QoE) both answer "which add-backs survive",
+    # so the winner points at both. The dental advisor comparison yields the
+    # slot; the dental multiples guide still carries it.
     "ebitda-and-business-valuation-basics": [
-        "quality-of-earnings-report", "best-business-valuation-firms-lower-middle-market",
-        "ma-glossary-lower-middle-market", "best-ma-advisors-dental-practices",
-        "dental-practice-valuation-multiples", "how-to-value-accounting-cpa-firm-before-sale"],
+        "ebitda-add-backs", "quality-of-earnings-report",
+        "best-business-valuation-firms-lower-middle-market",
+        "ma-glossary-lower-middle-market", "dental-practice-valuation-multiples",
+        "how-to-value-accounting-cpa-firm-before-sale"],
     "ma-glossary-lower-middle-market": [
         "ebitda-and-business-valuation-basics", "working-capital-peg-ma",
         "lower-middle-market-ma-process"],
@@ -89,11 +97,15 @@ RELATED = {
     # structure list and closes the peg list for the same reason: both are
     # post-closing arithmetic run on books the buyer controls, so a reader who
     # just learned the price can still move wants the other half of that.
+    #
+    # As the primary page for "deal structure" it now carries every secondary
+    # in its cluster: earnouts (primary for "earnout"), seller protection
+    # (primary for "escrow" and R&W), the peg, net proceeds and asset-vs-stock.
+    # Plumbing yields the slot; it is carried by its own sector cluster.
     "ma-deal-structure": [
-        "earnouts-escrow-holdbacks", "working-capital-peg-ma",
-        "strategic-buyer-vs-private-equity-buyer",
-        "best-ma-advisors-plumbing-companies", "asset-sale-vs-stock-sale",
-        "what-you-keep-after-selling-a-business"],
+        "earnouts-escrow-holdbacks", "seller-risk-protection-deal-structuring",
+        "working-capital-peg-ma", "what-you-keep-after-selling-a-business",
+        "asset-sale-vs-stock-sale", "strategic-buyer-vs-private-equity-buyer"],
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
@@ -207,8 +219,10 @@ RELATED = {
     # form of the same question. Broker-versus-advisor sits second because the
     # comparison itself spans a listing marketplace and a targeted process, and
     # the EBITDA explainer closes it for the normalized-earnings arithmetic.
+    # The business services sell-side page leads, as it does for HVAC and
+    # plumbing: accounting is one of the verticals that page covers.
     "best-ma-advisors-accounting-cpa-firms": [
-        "how-to-value-accounting-cpa-firm-before-sale",
+        "/business-services-ma-advisor", "how-to-value-accounting-cpa-firm-before-sale",
         "strategic-buyer-vs-private-equity-buyer", "sell-side-advisor-vs-business-broker",
         "ebitda-and-business-valuation-basics", "best-ma-advisors-dental-practices"],
 
@@ -245,19 +259,28 @@ RELATED = {
     # industrials table), then the broker-versus-advisor explainer, which is the
     # distinction the comparison itself turns on once a buyer-paid firm is in
     # the field.
+    #
+    # The business services sell-side page now leads, and the industrials guide
+    # closes it for the half of the trade that sits in the industrials table.
+    # The HVAC and plumbing multiples guide follows the sector page;
+    # how-to-choose yields its slot as the best-linked hub on the site.
     "best-ma-advisors-hvac-companies": [
-        "hvac-plumbing-valuation-multiples", "ma-advisor-business-services", "sell-side-advisor-vs-business-broker",
-        "how-to-choose-an-ma-advisor", "best-ma-advisors-plumbing-companies"],
+        "/business-services-ma-advisor", "hvac-plumbing-valuation-multiples",
+        "ma-advisor-business-services",
+        "sell-side-advisor-vs-business-broker",
+        "best-ma-advisors-plumbing-companies", "ma-advisor-industrials-manufacturing"],
 
     # Sector: plumbing. Leads with HVAC, which is the nearest trade and shares
     # three of the seven firms compared, then the broker-versus-advisor guide the
     # article's own "Advisor type" test is the short form of. Buyer types closes
     # it because the spine of this one is the three paths out (PE platform,
-    # strategic, individual) rather than a multiple. Its two inbound links come
-    # from HVAC and from ma-deal-structure, both of which had three and can carry
-    # a fourth, the way the accounting guide was wired in.
+    # strategic, individual) rather than a multiple. Its inbound links come from
+    # HVAC and the business services advisor guide; ma-deal-structure gave its
+    # slot up to the seller-protection guide, the primary for "escrow".
+    # The business services sell-side page leads, as it does for HVAC.
     "best-ma-advisors-plumbing-companies": [
-        "hvac-plumbing-valuation-multiples", "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
+        "/business-services-ma-advisor", "hvac-plumbing-valuation-multiples",
+        "best-ma-advisors-hvac-companies", "sell-side-advisor-vs-business-broker",
         "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: early childhood education. The readiness guide is wired the way the
@@ -283,21 +306,33 @@ RELATED = {
         "/preschool-childcare-ma-advisor", "childcare-daycare-valuation-multiples",
         "how-to-choose-an-ma-advisor", "lower-middle-market-ma-process",
         "prepare-preschool-childcare-business-for-sale"],
+    # The readiness guide also points back at the two ECE guides it sits beside,
+    # so the cluster's secondaries all reach each other and the sell-side page.
     "prepare-preschool-childcare-business-for-sale": [
-        "/preschool-childcare-ma-advisor", "due-diligence-checklist-selling-a-business",
-        "earnouts-escrow-holdbacks"],
+        "/preschool-childcare-ma-advisor", "childcare-daycare-valuation-multiples",
+        "ma-advisor-early-childhood-education",
+        "due-diligence-checklist-selling-a-business", "earnouts-escrow-holdbacks"],
 
-    # Sector: manufacturing
+    # Sector: manufacturing. Both guides lead with the industrials sell-side
+    # page, the way the MSP, pet care and ECE guides lead with theirs.
     "manufacturing-valuation-multiples": [
-        "ma-advisor-industrials-manufacturing", "ebitda-and-business-valuation-basics",
+        "/industrials-ma-advisor", "ma-advisor-industrials-manufacturing",
+        "ebitda-and-business-valuation-basics",
         "what-buyers-look-for-in-an-acquisition-target"],
     "ma-advisor-industrials-manufacturing": [
-        "manufacturing-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "lower-middle-market-ma-process", "best-ma-advisors-hvac-companies"],
+        "/industrials-ma-advisor", "manufacturing-valuation-multiples",
+        "how-to-choose-an-ma-advisor", "lower-middle-market-ma-process",
+        "best-ma-advisors-hvac-companies"],
 
-    # Sector: business services
+    # Sector: business services. Both guides lead with the business services
+    # sell-side page. The advisor guide then runs through the trade
+    # comparisons (HVAC, plumbing, CPA, MSP) that are the verticals it names;
+    # how-to-choose yields its slot because it is the best-linked hub on the
+    # site. The multiples guide adds the manufacturing multiples guide as the
+    # neighbouring sector table.
     "business-services-valuation-multiples": [
-        "ma-advisor-business-services", "msp-valuation-multiples",
+        "/business-services-ma-advisor", "ma-advisor-business-services",
+        "msp-valuation-multiples", "manufacturing-valuation-multiples",
         "ebitda-and-business-valuation-basics", "hvac-plumbing-valuation-multiples"],
 
     # Sector: HVAC and plumbing valuation. The two trade advisor guides lead,
@@ -310,9 +345,10 @@ RELATED = {
         "ebitda-add-backs", "evaluate-unsolicited-offer-buy-business",
         "earnouts-escrow-holdbacks"],
     "ma-advisor-business-services": [
-        "business-services-valuation-multiples", "how-to-choose-an-ma-advisor",
-        "best-ma-advisors-msp-managed-service-providers",
-        "best-ma-advisors-hvac-companies"],
+        "/business-services-ma-advisor", "business-services-valuation-multiples",
+        "best-ma-advisors-hvac-companies", "best-ma-advisors-plumbing-companies",
+        "best-ma-advisors-accounting-cpa-firms",
+        "best-ma-advisors-msp-managed-service-providers"],
 
     # Choosing an advisor. The fee guide sits second in the two comparisons that
     # quote a percentage without deriving it: a reader just told a $20M sale runs
@@ -325,9 +361,11 @@ RELATED = {
     # reachable from top-lower-middle-market-investment-banks. Fee guide to fee
     # guide is the strongest bridge on the site: this page derives the sell-side
     # arithmetic, and the buy-side one explains why a buyer cannot use it.
+    # The $20M comparison returns as a fourth: it quotes the percentage this
+    # guide derives, so a reader of the arithmetic wants the worked case.
     "ma-advisor-fees": [
         "how-to-choose-an-ma-advisor", "sell-side-advisor-vs-business-broker",
-        "buy-side-ma-advisor"],
+        "buy-side-ma-advisor", "best-ma-advisors-selling-20-million-company"],
     "sell-side-advisor-vs-business-broker": [
         "how-to-choose-an-ma-advisor", "ma-advisor-fees",
         "top-lower-middle-market-investment-banks",
@@ -444,8 +482,11 @@ RELATED = {
         "m-and-a-auction-process-explained", "evaluate-unsolicited-offer-buy-business",
         "reduce-owner-dependence-before-selling",
         "selling-to-search-fund-independent-sponsor"],
+    # The primary page for succession timing. The "no successor" guide leads,
+    # ahead of the advisor comparison, because it is the same question one
+    # branch further down rather than a shopping list.
     "when-to-start-exit-planning": [
-        "best-exit-planning-advisors-consultants", "family-business-succession-planning",
+        "family-business-succession-planning", "best-exit-planning-advisors-consultants",
         "lower-middle-market-ma-process",
         "what-buyers-look-for-in-an-acquisition-target",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms"],
@@ -459,7 +500,7 @@ RELATED = {
     "due-diligence-checklist-selling-a-business": [
         "quality-of-earnings-report", "working-capital-peg-ma",
         "what-buyers-look-for-in-an-acquisition-target", "asset-sale-vs-stock-sale",
-        "ebitda-add-backs"],
+        "ebitda-add-backs", "how-long-does-it-take-to-sell-a-business"],
 
     # Market conditions. Grouped with timing rather than valuation because the
     # question it answers is sell now or wait. Its multiples are context for that
@@ -506,11 +547,11 @@ RELATED = {
     # rather than outlook: ma-deal-structure already links back here, so the pair
     # stays connected either way, whereas outlook lost its ma-deal-structure slot
     # to the earnout guide and dropping it here too would leave it with one
-    # inbound Keep Reading link on the whole site.
+    # inbound Keep Reading link on the whole site. The CPA valuation guide took
+    # the dental advisor comparison's slot; the CPA advisor guide still links it.
     "strategic-buyer-vs-private-equity-buyer": [
         "what-buyers-look-for-in-an-acquisition-target", "buy-side-ma-advisor",
         "lower-middle-market-ma-outlook", "best-ma-advisors-accounting-cpa-firms",
-        "best-ma-advisors-dental-practices",
         "selling-to-search-fund-independent-sponsor",
         "how-to-value-accounting-cpa-firm-before-sale"],
 

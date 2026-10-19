@@ -44,6 +44,18 @@
       descent-override: 29.57%;
       line-gap-override: 0%;
     }
+    /* The italic headline words. Without this face the browser slants the
+       upright fallback itself, at the upright's widths, and the swap to the
+       real italic (narrower) reflows the line. */
+    @font-face {
+      font-family: 'Cormorant Garamond Fallback';
+      font-style: italic;
+      src: local('Times New Roman Italic'), local('TimesNewRomanPS-ItalicMT');
+      size-adjust: 87.12%;
+      ascent-override: 106.07%;
+      descent-override: 32.94%;
+      line-gap-override: 0%;
+    }
     @font-face {
       font-family: 'Inter Fallback';
       src: local('Arial');
@@ -122,6 +134,11 @@
     html {
       scroll-behavior: smooth;
       scroll-padding-top: 72px;
+      /* iOS Safari enlarges body text on its own when the phone turns to
+         landscape. 100% keeps the type scale the stylesheet sets and still
+         lets the reader pinch to zoom. */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -150,6 +167,7 @@
       padding: 0 6%;
       height: 72px;
       background: rgba(7,17,26,0.96);
+      -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(244,240,235,0.07);
       transition: border-color 0.3s, box-shadow 0.4s;
@@ -188,7 +206,7 @@
     }
 
     .nav-links a {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -252,8 +270,9 @@
       display: none;
       position: fixed;
       top: 72px; left: 0; right: 0;
-      background: rgba(7,17,26,0.98);
-      backdrop-filter: blur(12px);
+      /* Fully opaque: at 0.98 the page's text still ghosted through the
+         open menu, faint but readable on a phone in bright light. */
+      background: var(--navy);
       border-bottom: 1px solid rgba(244,240,235,0.07);
       padding: 1.5rem 6% 2rem;
       z-index: 199;
@@ -268,6 +287,17 @@
          chrome does not reintroduce the same overflow. */
       max-height: calc(100vh - 72px);
       max-height: calc(100svh - 72px);
+      /* And a floor to match. With only a ceiling the panel stopped where
+         the list did, and the page showed through underneath it. */
+      min-height: calc(100vh - 72px);
+      min-height: calc(100svh - 72px);
+      /* dvh last, where supported. svh is the height with Safari's toolbars
+         showing; once a reader has scrolled, iOS has collapsed them and the
+         visible area is taller, so an svh panel opened mid-page stopped about
+         80px short of the bottom and the page showed through the gap. dvh
+         tracks whatever is visible right now. */
+      max-height: calc(100dvh - 72px);
+      min-height: calc(100dvh - 72px);
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
@@ -296,9 +326,28 @@
       vertical-align: middle;
       background: var(--copper2);
     }
+    /* "Value My Business" is the primary action, and it used to be the
+       eleventh of eleven identical links. It now leads the drawer as a filled
+       button in the .btn-primary colours. The href half of the selector and
+       the order are for the few pages whose markup still lists it last: they
+       get the same button in the same place. */
+    .nav-mobile-drawer a:is(.nav-drawer-cta, [href$="valuation"]) {
+      order: -1;
+      margin-bottom: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: none;
+      border-radius: 2px;
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-align: center;
+    }
+    .nav-mobile-drawer a:is(.nav-drawer-cta, [href$="valuation"]):hover { background: var(--cream3); }
+    .nav-mobile-drawer a:is(.nav-drawer-cta, [href$="valuation"])::before { content: none; }
 
     .nav-cta {
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -324,9 +373,9 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-size: 0.64rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.21em;
       text-transform: uppercase;
       color: var(--copper2);
       margin-bottom: 1.5rem;
@@ -349,12 +398,6 @@
        The hero and the contact section keep the full treatment because
        they are the two moments that earn it. Everything between gets a
        quiet label: no rule, less weight, muted rather than copper. */
-    .eyebrow--quiet {
-      color: var(--muted2);
-      font-weight: 500;
-      letter-spacing: 0.2em;
-    }
-    .eyebrow--quiet::before { display: none; }
 
     /* .eyebrow is a flex container, so text-align on the section does not
        reach its contents; they stay flush left however the section is
@@ -368,7 +411,7 @@
       display: inline-block;
       background: var(--cream);
       color: var(--navy);
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -393,7 +436,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -462,11 +505,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
-      .hero-scroll { animation: none !important; opacity: 1 !important; }
-      .hero-scroll-line::after { animation: none !important; }
       .hero-inner > .eyebrow,
-      .hero-inner > .hero-h1,
-      .hero-inner > .hero-sub,
       .hero-inner > .hero-actions,
       .hero-cred { animation: none !important; opacity: 1 !important; }
       .contact-deco, .contact-deco-outer { animation: none !important; }
@@ -477,6 +516,7 @@
        ============================================================ */
     .hero {
       min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       align-items: center;
       padding: 120px 6% 80px;
@@ -508,69 +548,21 @@
       -webkit-mask-image: radial-gradient(ellipse 60% 80% at 85% 50%, black 0%, transparent 70%);
     }
 
-    .hero-monogram {
-      position: absolute;
-      right: -4%;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-size: clamp(280px, 40vw, 540px);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 0.85;
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(184,115,51,0.14);
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-      letter-spacing: -0.04em;
-    }
-
-    .hero-deco {
-      position: absolute;
-      right: -12%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 56vw;
-      height: 56vw;
-      max-width: 680px;
-      max-height: 680px;
-      border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.1);
-      pointer-events: none;
-      z-index: 1;
-    }
-    .hero-deco::before {
-      content: '';
-      position: absolute;
-      inset: 14%;
-      border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.07);
-    }
-    .hero-deco::after {
-      content: '';
-      position: absolute;
-      inset: 30%;
-      border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.05);
-    }
-
     .hero-inner {
       max-width: 820px;
       position: relative;
       z-index: 2;
     }
 
-    /* Staged hero entrance */
+    /* Staged hero entrance. The headline and subhead are not in it: they are
+       the largest contentful paint, and a fade-in holds LCP back by the length
+       of the animation plus its delay on every page. They paint at once; the
+       eyebrow, the buttons and the credentials still rise in around them. */
     .hero-inner > .eyebrow,
-    .hero-inner > .hero-h1,
-    .hero-inner > .hero-sub,
     .hero-inner > .hero-actions {
       opacity: 0;
       animation: heroRise 0.95s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
-    .hero-inner > .hero-h1     { animation-delay: 0.14s; }
-    .hero-inner > .hero-sub    { animation-delay: 0.3s; }
     .hero-inner > .hero-actions { animation-delay: 0.46s; }
 
     @keyframes heroRise {
@@ -594,27 +586,6 @@
       color: var(--copper3);
     }
 
-    .hero-tagline {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-tagline-item {
-      font-size: 0.6rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted2);
-    }
-
-    .hero-tagline-sep {
-      width: 1px;
-      height: 12px;
-      background: rgba(244,240,235,0.15);
-    }
-
     .hero-sub {
       font-size: 1.07rem;
       font-weight: 300;
@@ -632,46 +603,6 @@
     }
 
     /* Hero scroll indicator */
-    .hero-scroll {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
-      opacity: 0;
-      animation: fadeInScroll 0.8s ease 1.8s forwards;
-    }
-
-    .hero-scroll-label {
-      font-size: 0.52rem;
-      font-weight: 600;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: rgba(244,240,235,0.2);
-    }
-
-    .hero-scroll-line {
-      width: 1px;
-      height: 36px;
-      background: rgba(244,240,235,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-scroll-line::after {
-      content: '';
-      position: absolute;
-      top: -36px;
-      left: 0;
-      width: 1px;
-      height: 36px;
-      background: linear-gradient(to bottom, transparent, rgba(244,240,235,0.45));
-      animation: scrollDrop 2s ease-in-out infinite 2.6s;
-    }
 
     @keyframes fadeInScroll {
       from { opacity: 0; transform: translateX(-50%) translateY(8px); }
@@ -712,12 +643,14 @@
     }
 
     .hero-cred-label {
-      font-size: 0.58rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--muted2);
-      max-width: 150px;
+      /* Was 150px for a 9.3px label. Widened in step with the type so each
+         label still breaks into two lines, not three. */
+      max-width: 185px;
       line-height: 1.6;
     }
 
@@ -726,22 +659,6 @@
       background: rgba(244,240,235,0.08);
       flex-shrink: 0;
     }
-
-    /* Creek line: signature wave motif from the brand mark */
-    .creek-line {
-      display: block;
-      width: 110px;
-      height: 12px;
-      margin-bottom: 1.75rem;
-    }
-    .creek-line path {
-      fill: none;
-      stroke: var(--copper2);
-      stroke-width: 1.5;
-      opacity: 0.75;
-    }
-    .creek-line--center { margin-left: auto; margin-right: auto; }
-    .creek-line--dark path { stroke: var(--copper); }
 
 
     /* ============================================================
@@ -804,20 +721,6 @@
       z-index: 1;
     }
 
-    .about-left-h2 {
-      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-size: var(--fs-display-4);
-      font-weight: 300;
-      color: var(--navy);
-      line-height: 1.18;
-      margin-bottom: 3.5rem;
-    }
-
-    .about-left-h2 em {
-      font-style: italic;
-      color: var(--copper);
-    }
-
     .values-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -844,9 +747,9 @@
 
     .value-card-label {
       display: block;
-      font-size: 0.63rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--copper-ink);
       margin-bottom: 0.75rem;
@@ -867,21 +770,6 @@
       color: rgba(7,17,26,0.64);
       line-height: 1.78;
     }
-
-    .about-right p {
-      font-size: 1rem;
-      color: rgba(7,17,26,0.65);
-      line-height: 1.9;
-      margin-bottom: 1.6rem;
-      font-weight: 300;
-    }
-
-    .about-right p strong {
-      font-weight: 500;
-      color: var(--navy);
-    }
-
-    .about-right p:last-of-type { margin-bottom: 2.5rem; }
 
     .about-logo-mark {
       margin-top: 2rem;
@@ -909,6 +797,35 @@
     }
     .about-intro--end { margin-bottom: 2.5rem; }
 
+    /* ---- About: principals strip (2026-10) ----
+       Spans both columns of .about .wrap above the intro. The founding
+       paragraph sits in the left column's measure and the two people
+       reuse the home page's .home-person cards on the right. */
+    .about-people {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 6rem;
+      align-items: center;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(7,17,26,0.1);
+    }
+    .about-people-story .eyebrow { margin-bottom: 1.5rem; }
+    .about-people-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+      max-width: 540px;
+    }
+    @media (max-width: 900px) {
+      .about-people { grid-template-columns: 1fr; gap: 3rem; padding-bottom: 3rem; }
+    }
+    @media (max-width: 480px) {
+      .about-people-list { gap: 1.25rem; }
+      .about-people-list .home-person-name { font-size: 1.3rem; }
+    }
+    /* ---- end about principals strip ---- */
+
     /* "Firm at a glance" definition list. Follows an h2.eyebrow.eyebrow--dark,
        which has margin-bottom:0, so the list supplies its own top spacing. */
     .about-glance {
@@ -922,7 +839,7 @@
       line-height: 1.6;
     }
     .about-glance dt {
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -934,6 +851,24 @@
     @media (max-width: 640px) {
       .about-glance { grid-template-columns: 1fr; gap: 0.2rem; }
       .about-glance dd { margin-bottom: 0.8rem; }
+    }
+
+    /* "Where our experience comes from", on this page and the home page.
+       Each page reuses a pattern it already has (the .about-glance list
+       here, the .home-how rows there), so all this adds is the gap above
+       the about block and the one small closing line the two share, which
+       says former employers are named for background only. 0.64 navy is
+       5.5:1 on --cream and 5.36:1 on --cream2. */
+    .about-experience { margin-top: 3rem; }
+    .about-experience .about-glance { margin-bottom: 0; }
+    .experience-note {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: rgba(7,17,26,0.64);
+    }
+    @media (max-width: 640px) {
+      .experience-note { font-size: 0.9rem; }
     }
 
     /* ============================================================
@@ -958,29 +893,6 @@
       z-index: 1;
     }
 
-    .process-header {
-      max-width: 580px;
-      margin-bottom: 3.25rem;
-    }
-
-    .process-h2 {
-      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-size: var(--fs-display-3);
-      font-weight: 300;
-      color: var(--cream);
-      line-height: 1.12;
-      margin-bottom: 1rem;
-    }
-
-    .process-h2 em { font-style: italic; color: var(--copper3); }
-
-    .process-sub {
-      font-size: 0.86rem;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      color: var(--muted2);
-    }
-
     .process-steps {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -990,6 +902,10 @@
     }
 
     .process-step {
+      /* A column, so a step's follow-on link can sit on the card's bottom edge
+         and the four links share one line however long each paragraph runs. */
+      display: flex;
+      flex-direction: column;
       padding: 3rem 2.5rem;
       border-right: 1px solid rgba(244,240,235,0.07);
       border-top: 2px solid rgba(184,115,51,0.3);
@@ -1030,7 +946,7 @@
     }
 
     .process-step h3 {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -1039,8 +955,8 @@
     }
 
     .process-step p {
-      font-size: 0.9rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.78;
     }
@@ -1067,23 +983,6 @@
       z-index: 1;
     }
 
-    .team-header {
-      margin-bottom: 3.25rem;
-    }
-
-    .team-h2 {
-      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-size: var(--fs-display-4);
-      font-weight: 300;
-      color: var(--cream);
-      line-height: 1.18;
-    }
-
-    .team-h2 em {
-      font-style: italic;
-      color: var(--copper3);
-    }
-
     /* minmax(0,1fr) rather than 1fr. A grid item defaults to
        min-width:auto, so a plain 1fr track refuses to shrink below the
        card's min-content width. The headshots carry width="628" and
@@ -1103,21 +1002,27 @@
     .team--advisors { padding-top: 0; }
     .team-advisors-note.team-advisors-join { margin: 2.5rem 0 0; }
     /* Advisor portraits arrive as square LinkedIn crops with the head
-       near the top edge; the principals' 15% anchor clips the hairline.
-       Gary's is tighter still, so he sits a little lower to keep his smile. */
+       touching the top edge, so they anchor to the top. Gary's chin sits
+       at about 66% of his square; the 7:5 frame below shows 71%, which is
+       the first frame that keeps both his hair and his chin. */
     .team--advisors .team-img-area img { object-position: center top; }
-    #gary-dennis .team-img-area img { object-position: center 12%; }
+    #gary-dennis .team-img-area img { object-position: center top; }
     .team-advisors-note {
       max-width: 44rem;
-      font-size: 0.92rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.82;
       margin-bottom: 2.5rem;
     }
     .team-img-area img { max-width: 100%; }
 
+    /* A column, so the LinkedIn/email row can pin to the card's bottom edge.
+       The bio lists differ in length, and without this Jack's contact row
+       ended 48px above Connor's with empty card beneath it. */
     .team-card {
+      display: flex;
+      flex-direction: column;
       background: var(--navy2);
       border-top: 2px solid rgba(184,115,51,0.22);
       transition: transform 0.3s ease, border-top-color 0.3s, box-shadow 0.3s;
@@ -1128,9 +1033,14 @@
       box-shadow: 0 12px 40px rgba(7,17,26,0.4), 0 0 30px rgba(184,115,51,0.06);
     }
 
+    /* 7:5 rather than a fixed 360px. The fixed height showed 60% of a
+       square advisor portrait, which cut Gary's hair at the top; 7:5
+       shows 71% and keeps every head intact at the same frame shape on
+       all four cards. */
     .team-img-area {
       background: var(--navy3);
-      height: 360px;
+      height: auto;
+      aspect-ratio: 7 / 5;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1170,6 +1080,9 @@
 
     .team-body {
       padding: 2.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .team-body h3 {
@@ -1181,7 +1094,7 @@
     }
 
     .team-title {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -1191,12 +1104,21 @@
     }
 
     .team-bio {
-      font-size: 0.92rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.82;
       margin-bottom: 1.75rem;
     }
+
+    /* The bios are bullet lists (owner: "at a 9th-grade reading level, in
+       bullet points, easy"). The <ul> keeps .team-bio, so the size, the
+       colour and both phone overrides further down still apply. This adds
+       only the list shape: a tighter line so each bullet reads as one unit,
+       a gap between bullets, and the copper marker the guide lists use. */
+    .team-bio-list { padding-left: 1.15rem; line-height: 1.65; }
+    .team-bio-list li + li { margin-top: 0.65rem; }
+    .team-bio-list li::marker { color: var(--copper2); }
 
     /* LinkedIn and the address sat on one non-wrapping row, and
        connor@saltcreekadvisory.com is 251px on its own, so on a phone it
@@ -1207,6 +1129,7 @@
       align-items: center;
       gap: 0.6rem 1rem;
       flex-wrap: wrap;
+      margin-top: auto;
     }
 
     .team-social-link { min-width: 0; overflow-wrap: anywhere; }
@@ -1215,7 +1138,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -1280,8 +1203,8 @@
     }
 
     .podcast-body {
-      font-size: 0.93rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.85;
       margin-bottom: 1.25rem;
@@ -1298,9 +1221,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      font-size: 0.57rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.11em;
       text-transform: uppercase;
       color: var(--muted2);
       border: 1px solid rgba(244,240,235,0.1);
@@ -1325,9 +1248,9 @@
     }
 
     .podcast-card-eyebrow {
-      font-size: 0.58rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.19em;
       text-transform: uppercase;
       color: var(--copper2);
       margin-bottom: 1.5rem;
@@ -1378,9 +1301,9 @@
     }
 
     .podcast-ep-tag {
-      font-size: 0.54rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--copper2);
       border: 1px solid rgba(184,115,51,0.18);
@@ -1390,9 +1313,9 @@
     }
 
     .podcast-ep-label {
-      font-size: 0.57rem;
+      font-size: 0.75rem;
       font-weight: 400;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted2);
     }
@@ -1420,9 +1343,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      font-size: 0.56rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--copper2);
       border-bottom: 1px solid rgba(184,115,51,0.22);
@@ -1439,9 +1362,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.62rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--copper2);
       border-bottom: 1px solid rgba(184,115,51,0.3);
@@ -1592,7 +1515,7 @@
     }
 
     .contact-person-role {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -1694,7 +1617,7 @@
 
     .contact-status:empty { margin-top: 0; }
 
-    .contact-status--error { color: #e8a184; }
+    .contact-status--error { color: var(--form-invalid); }
 
     .contact-fallback { margin-top: 1rem; font-size: 0.85rem; }
 
@@ -1723,7 +1646,7 @@
     .faq-item--deeplinked .faq-q { outline: 2px solid var(--copper-accent); outline-offset: -2px; }
 
     .contact-or {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -1761,29 +1684,22 @@
 
     /* A question link sitting under the step that raises the question. Quiet by
        design: it is an escape hatch for a worry, not a call to action. */
-    .process-step-faq {
-      margin-top: 1rem;
-      font-size: 0.82rem;
-      font-weight: 300;
+    /* Scoped under .process-step because .process-step p outranks a bare class
+       and was setting this link's size all along (14.4px then, and it would be
+       16px now). It stays at 14.4px so it reads as quieter than the step. */
+    .process-step .process-step-faq {
+      margin-top: auto;
+      padding-top: 1rem;
+      font-size: 0.9rem;
       line-height: 1.6;
     }
 
-    .process-step-faq a,
-    .team-faq-link a {
+    .process-step-faq a {
       color: var(--copper2);
       transition: color 0.2s;
     }
 
-    .process-step-faq a:hover,
-    .team-faq-link a:hover { color: var(--copper3); }
-
-    .team-faq-link {
-      margin-top: 1.25rem;
-      font-size: 0.85rem;
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1.7;
-    }
+    .process-step-faq a:hover { color: var(--copper3); }
 
     @media (max-width: 640px) {
       .contact-form-title { font-size: 1.45rem; }
@@ -1823,9 +1739,9 @@
     }
 
     .footer-col-title {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--copper2);
       margin-bottom: 0.4rem;
@@ -1898,8 +1814,16 @@
     @media (max-width: 820px) {
       .footer-grid { grid-template-columns: 1fr 1fr; }
     }
+    /* Two columns for the Firm and Connect lists, not for the whole grid.
+       The earlier two-column attempt put .footer-left in the grid too, which
+       squeezed the description to 98px. Here the brand block and the Contact
+       list (it carries the two 21-character addresses) each take the full
+       row, and only the two link lists sit side by side. Measured on a 390px
+       phone: the footer drops from about 2.5 screens to about 1.8. */
     @media (max-width: 520px) {
-      .footer-grid { grid-template-columns: 1fr; gap: 2.25rem; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.25rem 1.5rem; }
+      .footer-left,
+      .footer-col:last-child { grid-column: 1 / -1; }
     }
 
     footer::before {
@@ -1927,9 +1851,9 @@
     }
 
     .footer-tagline {
-      font-size: 0.54rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       /* Dimmed copper cannot clear 4.5:1 on navy at any alpha, so this keeps its
          quietness through size and letter-spacing rather than transparency. */
@@ -1980,6 +1904,9 @@
       color: var(--cream);
       line-height: 1.08;
       margin-bottom: 1.5rem;
+      /* At 1440 and 1920 these stranded one word on the last line
+         ("...than you / think."). Balance evens the lines out. */
+      text-wrap: balance;
     }
 
     /* The copper italic second line is the brand's signature, so it is
@@ -2060,7 +1987,7 @@
 
     .impact-stat-label {
       text-wrap: balance;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -2078,7 +2005,8 @@
 
     .impact-body {
       max-width: 820px;
-      margin: 0 auto;
+      /* Always follows a source note or card grid; at 0 it sat flush on it. */
+      margin: 3rem auto 0;
       display: grid;
       grid-template-columns: 1fr 1.6fr;
       gap: 4rem;
@@ -2089,6 +2017,11 @@
       padding: 3rem 3.5rem;
       box-shadow: 0 0 55px rgba(184,115,51,0.05), -4px 0 18px -4px rgba(184,115,51,0.14);
     }
+
+    /* The Sources line above the quote panel carries only an inline
+       margin-top, so the panel's border sat 5-8px under it while everything
+       else in the section is 28-40px apart. */
+    .source-note + .impact-body { margin-top: 2.5rem; }
 
     .impact-body-quote {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
@@ -2121,14 +2054,14 @@
     }
 
     .impact-body-text {
-      font-size: 0.96rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.85;
     }
 
     /* ============================================================
-       WHY SALT CREEK
+       WHY SALT CREEK ADVISORY
        ============================================================ */
     .why-us {
       background: var(--navy3);
@@ -2165,6 +2098,7 @@
       color: var(--cream);
       line-height: 1.12;
       margin-bottom: 1rem;
+      text-wrap: balance;
     }
 
     .why-h2 em {
@@ -2173,8 +2107,8 @@
     }
 
     .why-sub {
-      font-size: 0.96rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.82;
       margin-top: 1.25rem;
@@ -2208,9 +2142,9 @@
 
     .why-card-num {
       display: inline-block;
-      font-size: 0.63rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--copper2);
       background: rgba(184,115,51,0.1);
@@ -2233,11 +2167,17 @@
       color: var(--cream);
       margin-bottom: 0.75rem;
       line-height: 1.2;
+      /* Two lines at this line-height. A heading that wraps ("Proprietary
+         Deal Flow", "Subscale / Break-Fix Heavy") pushed its paragraph 27px
+         below the neighbouring cards', so a row's body copy started on two
+         different lines. Reserved space keeps every card's body level. The
+         single-column phone override below resets it. */
+      min-height: 2.4em;
     }
 
     .why-card p {
-      font-size: 0.9rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.82;
     }
@@ -2267,6 +2207,7 @@
       font-weight: 300;
       color: var(--cream);
       line-height: 1.15;
+      text-wrap: balance;
     }
 
     .why-process-callout h3 em {
@@ -2275,8 +2216,8 @@
     }
 
     .why-process-callout p {
-      font-size: 0.97rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.87;
     }
@@ -2315,29 +2256,6 @@
 
     .sectors .wrap { position: relative; z-index: 1; }
 
-    .sectors-header {
-      max-width: 640px;
-      margin-bottom: 5rem;
-    }
-
-    .sectors-h2 {
-      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-size: var(--fs-display-3);
-      font-weight: 300;
-      color: var(--navy);
-      line-height: 1.12;
-      margin-bottom: 1.25rem;
-    }
-
-    .sectors-h2 em { font-style: italic; color: var(--copper); }
-
-    .sectors-sub {
-      font-size: 0.97rem;
-      font-weight: 300;
-      color: rgba(7,17,26,0.62);
-      line-height: 1.85;
-    }
-
     .sectors-grid {
       display: grid;
       grid-template-columns: 1.35fr 1fr;
@@ -2362,9 +2280,9 @@
 
     .sector-flagship-tag {
       display: inline-block;
-      font-size: 0.58rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--copper3);
       border: 1px solid rgba(184,115,51,0.35);
@@ -2386,8 +2304,8 @@
     .sector-flagship h3 em { font-style: italic; color: var(--copper3); }
 
     .sector-flagship p {
-      font-size: 0.94rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.85;
       margin-bottom: 2rem;
@@ -2398,8 +2316,13 @@
       display: flex;
       gap: 2.5rem;
       padding-top: 1.75rem;
+      /* Matches .sector-flagship p. Without it the stat labels ran straight
+         into the "Our promise" paragraph, zero gap on a phone. */
+      margin-bottom: 2rem;
       border-top: 1px solid rgba(244,240,235,0.1);
       position: relative;
+      /* The paragraph after the stats sat flush against the stat labels. */
+      margin-bottom: 2rem;
     }
 
     .sector-flagship-stat { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -2413,16 +2336,22 @@
     }
 
     .sector-flagship-stat-label {
-      font-size: 0.57rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--muted2);
       line-height: 1.6;
-      max-width: 140px;
+      max-width: 185px;
     }
 
-    .sectors-side { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; }
+    /* The four cream cards sit directly on .sectors-grid. As a column of their
+       own they ran far taller than the flagship panel, which stretched to match
+       and left an empty navy area beside the last two. Now the flagship spans
+       the first two cards and ends with its own content, and the last two cards
+       take the row beneath it. */
+    .sectors-side { display: contents; }
+    .sector-flagship { grid-row: span 2; }
 
     .sector-card {
       background: rgba(7,17,26,0.035);
@@ -2455,9 +2384,9 @@
 
     .sector-card-label {
       display: block;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--copper-ink);
       margin-bottom: 0.9rem;
@@ -2470,6 +2399,26 @@
 
     .sector-link:hover { color: var(--copper2); }
 
+    /* The same link on a cream card. --copper3 is the navy-ground copper and
+       measured 2.07:1 on the card tint; --copper-ink measures 4.82:1 there. */
+    .sector-card .sector-link {
+      color: var(--copper-ink);
+      border-bottom-color: rgba(146,93,46,0.4);
+    }
+    .sector-card .sector-link:hover { color: var(--navy); border-bottom-color: var(--navy); }
+
+    /* One link per line, the way the flagship panel lists its own. They used
+       to share a paragraph and read as a single underlined block. */
+    .sector-card-links {
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+      margin: 1.1rem 0 0.9rem;
+      padding: 0;
+      font-size: 0.89rem;
+      line-height: 1.5;
+    }
+
     .sector-card-next {
       display: block;
       margin-top: 0.55rem;
@@ -2478,34 +2427,7 @@
       color: rgba(7,17,26,0.64);
     }
 
-    .sector-card-next:hover { color: var(--copper2); }
-
-    .sector-intro {
-      max-width: 760px;
-      margin: 0 auto 3.5rem;
-      background: rgba(7,17,26,0.03);
-      border: 1px solid rgba(7,17,26,0.08);
-      border-left: 3px solid var(--copper2);
-      padding: 2rem 2.25rem;
-    }
-
-    .sector-intro-label {
-      display: block;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--copper);
-      margin-bottom: 0.9rem;
-    }
-
-    .sector-intro p {
-      font-size: 1.02rem;
-      font-weight: 400;
-      color: var(--navy);
-      line-height: 1.75;
-      margin: 0;
-    }
+    .sector-card-next:hover { color: var(--copper-ink); }
 
     .sector-group-h2,
     .articles-group-h2 {
@@ -2561,8 +2483,8 @@
     .investors-h2 em { font-style: italic; color: var(--copper3); }
 
     .investors-body {
-      font-size: 0.96rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.87;
       margin-bottom: 1.5rem;
@@ -2593,8 +2515,8 @@
     }
 
     .investors-item p {
-      font-size: 0.9rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.78;
     }
@@ -2641,8 +2563,8 @@
     .faq-h2 em { font-style: italic; color: var(--copper3); }
 
     .faq-sub {
-      font-size: 0.95rem;
-      font-weight: 300;
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--muted);
       line-height: 1.85;
       max-width: 560px;
@@ -2752,7 +2674,7 @@
        ============================================================ */
     @media (max-width: 960px) {
       .sectors-grid { grid-template-columns: 1fr; }
-      .sectors-side { grid-template-rows: none; }
+      .sector-flagship { grid-row: auto; }
       .investors-inner { grid-template-columns: 1fr; gap: 3.5rem; }
       .impact-stats { grid-template-columns: 1fr 1fr; }
       .impact-stat:nth-child(2) { border-right: none; }
@@ -2762,7 +2684,6 @@
       .about .wrap,
       .podcast-inner { grid-template-columns: 1fr; gap: 4rem; }
       .team-grid { grid-template-columns: minmax(0, 1fr); }
-      .compprocess-inner { grid-template-columns: 1fr; gap: 3rem; }
       .why-grid { grid-template-columns: 1fr 1fr; }
       .why-card { border-right: none; border-bottom: 1px solid rgba(244,240,235,0.06); }
       .why-card:nth-child(3),
@@ -2789,6 +2710,8 @@
       .why-grid { grid-template-columns: 1fr; }
       .why-card { border-right: none; border-bottom: 1px solid rgba(244,240,235,0.06); }
       .why-card:last-child { border-bottom: none; }
+      /* One card per row, so there is no neighbour to stay level with. */
+      .why-card h3 { min-height: auto; }
       .contact-persons { flex-direction: column; gap: 2.5rem; }
       .contact-person-divider { width: 60px; height: 1px; }
 
@@ -2830,8 +2753,10 @@
     /* ============================================================
        MULTI-PAGE: TRANSITIONS, PAGE HERO, VALUATION, CTA BANDS
        ============================================================ */
+    /* A short settle, not a fade: main starts fully painted, so the largest
+       contentful paint is not held until the animation ends. */
     main { animation: pageIn 0.45s cubic-bezier(0.22,0.61,0.36,1) both; }
-    @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pageIn { from { transform: translateY(12px); } to { transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) { main { animation: none; } }
 
     .page-hero { background: var(--navy); padding: 150px 6% 72px; position: relative; overflow: hidden; }
@@ -2853,9 +2778,10 @@
        var(--navy3) background, so 320px between them reads as a gap rather
        than a chapter break. */
     .why-us + .why-us { padding-top: 4rem; }
-    .page-hero .eyebrow, .page-hero-h1, .page-hero-sub { opacity:0; animation: heroRise .85s cubic-bezier(.22,.61,.36,1) forwards; }
-    .page-hero-h1 { animation-delay:.12s; } .page-hero-sub { animation-delay:.26s; }
-    @media (prefers-reduced-motion: reduce){ .page-hero .eyebrow,.page-hero-h1,.page-hero-sub{animation:none;opacity:1;} }
+    /* Only the eyebrow rises in; the headline and subhead paint at once, for
+       the same LCP reason as the home hero above. */
+    .page-hero .eyebrow { opacity:0; animation: heroRise .85s cubic-bezier(.22,.61,.36,1) forwards; }
+    @media (prefers-reduced-motion: reduce){ .page-hero .eyebrow{animation:none;opacity:1;} }
 
     .nav-cta--val { border-color: rgba(184,115,51,0.55); color: var(--copper3); }
     .nav-cta--val:hover { background: rgba(184,115,51,0.12); border-color: var(--copper2); color: var(--copper3); }
@@ -2872,21 +2798,33 @@
     .val-band-h2 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-3); font-weight:300; color:var(--cream); line-height:1.12; margin-bottom:1.4rem; }
     .val-band-h2 em { font-style: normal; color: inherit; }
     .val-band-sub { font-size:.97rem; font-weight:300; color: var(--muted); line-height:1.85; max-width:540px; margin:0 auto 2.75rem; }
-    .val-band-note { display:block; margin-top:1.4rem; font-size:.62rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted2); }
+    .val-band-note { display:block; margin-top:1.4rem; font-size:.75rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted2); }
 
     /* Valuation tool */
-    .val { background: var(--navy2); padding: 5rem 6% 9rem; position:relative; }
+    /* 6rem below, against 5rem above: the card used to sit over 144px of
+       navy with 80px above it. */
+    .val { background: var(--navy2); padding: 5rem 6% 6rem; position:relative; }
     .val-card { max-width: 720px; margin: 0 auto; background: var(--navy3); border: 1px solid rgba(244,240,235,0.07); border-top: 2px solid var(--copper2); padding: 3.25rem 3.25rem 3.5rem; box-shadow: 0 0 60px rgba(184,115,51,0.06); }
-    .val-progress { display:flex; gap:6px; margin-bottom: 2.75rem; }
-    .val-progress span { flex:1; height:2px; background: rgba(244,240,235,0.08); transition: background .4s; }
-    .val-progress span.on { background: linear-gradient(to right, var(--copper), var(--copper3)); }
+    /* The four steps, named, so the name-and-email step is in view from the first
+       screen rather than a surprise on the third. Each item draws its own rule
+       above its label, and .on marks the steps reached. Labels are 12px and may
+       wrap on a narrow phone, where four columns leave about 65px each. */
+    .val-progress { display:flex; gap:6px; margin-bottom: 2.75rem; list-style:none; padding:0; }
+    .val-progress li { flex:1; min-width:0; font-size:.75rem; font-weight:400; line-height:1.35; color:var(--muted2); transition: color .4s; }
+    .val-progress li::before { content:''; display:block; height:2px; margin-bottom:.6rem; background: rgba(244,240,235,0.08); transition: background .4s; }
+    .val-progress li.on { color: var(--cream); }
+    .val-progress li.on::before { background: linear-gradient(to right, var(--copper), var(--copper3)); }
     .val-step { display:none; }
     .val-step.active { display:block; animation: stepIn .5s cubic-bezier(.22,.61,.36,1); }
     @keyframes stepIn { from { opacity:0; transform: translateX(22px); } to { opacity:1; transform:none; } }
-    .val-step-kicker { display:block; font-size:.6rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--copper2); margin-bottom:.7rem; }
+    .val-step-kicker { display:block; font-size:.75rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--copper2); margin-bottom:.7rem; }
     .val-step-title { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size:1.8rem; font-weight:400; color:var(--cream); margin-bottom:2rem; line-height:1.2; }
     .val-field { margin-bottom: 1.5rem; }
-    .val-label { display:block; font-size:.62rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted2); margin-bottom:.55rem; }
+    /* 12px. These were 9.9px tracked capitals, the smallest text a visitor had to
+       read in order to answer anything. The tracking relaxes as the size goes up,
+       which keeps the same texture and stops the longer questions wrapping
+       sooner than they did. */
+    .val-label { display:block; font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted2); margin-bottom:.55rem; }
     /* Parenthetical hints inside a .val-label. They used inline opacity:.5, which
        multiplied the label's already muted colour down to roughly 0.36 effective
        alpha and measured 3.04:1. Differentiate by case and tracking rather than by
@@ -2908,13 +2846,24 @@
        form and the valuation card paint. :focus-visible so a mouse click does not
        draw a ring. Matches the global a/button rule near the top of this file. */
     .val-input:focus-visible, .val-select:focus-visible { outline: 2px solid var(--copper-accent); outline-offset: 2px; }
-    /* aria-invalid was being set faithfully and shown to nobody: a rejected field
-       looked identical to a clean one. #e8a184 is 8.10:1 on --navy3. */
-    .val-input[aria-invalid="true"], .val-select[aria-invalid="true"] { border-color: #e8a184; }
+    /* One colour for everything a rejected field shows, in both forms. The old
+       #e8a184 was a peach a few degrees of hue from the copper focus ring, so an
+       invalid field and a focused one read as the same state. This is a warm
+       coral: redder and more saturated, still at home beside the copper, and
+       6.55:1 on --navy3. The two are close in brightness, so colour is not the
+       only cue: the border doubles in weight and the reason is printed under
+       the field. */
+    .val-card, .contact-form { --form-invalid: #f07f72; }
+    .val-input[aria-invalid="true"], .val-select[aria-invalid="true"] { border-color: var(--form-invalid); box-shadow: inset 0 0 0 1px var(--form-invalid); }
+    /* The reason a field was rejected, directly beneath it. valuation.js and
+       contact.js create one per field, empty, and fill it on a failed check. An
+       empty slot takes no room. */
+    .val-field-error { font-size:.82rem; font-weight:400; line-height:1.5; color: var(--form-invalid); }
+    .val-field-error:not(:empty) { margin-top:.5rem; }
     .val-select option { background: var(--navy3); color: var(--cream); }
     .val-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
     .val-help { font-size:.74rem; color:var(--muted2); margin-top:.45rem; font-weight:300; line-height:1.6; }
-    .val-error-msg { display:none; font-size:.8rem; color:#e08f6a; margin-top:1rem; font-weight:400; }
+    .val-error-msg { display:none; font-size:.8rem; color:var(--form-invalid); margin-top:1rem; font-weight:400; }
     /* Shown only when the lead POST fails, so the estimate screen never implies we
        received something we did not. Centered to sit above the result CTAs. */
     .val-lead-warning { text-align:center; max-width:520px; margin:0 auto 1.5rem; line-height:1.7; }
@@ -2959,7 +2908,7 @@
       cursor: pointer;
     }
 
-    .val-result-eyebrow { display:block; text-align:center; font-size:.6rem; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--copper2); margin-bottom:1.5rem; }
+    .val-result-eyebrow { display:block; text-align:center; font-size:.75rem; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--copper2); margin-bottom:1.5rem; }
     /* html already has scroll-padding-top:72px, which left each step's kicker
        flush under the fixed nav. 88px leaves room to breathe. */
     .val-step { scroll-margin-top: 88px; }
@@ -2974,7 +2923,18 @@
     .val-result.shown .val-bar-fill { transform: scaleX(1); }
     .val-bar-labels { display:flex; justify-content:space-between; font-size:0.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted2); margin-bottom:2rem; font-weight:600; }
     .val-note { font-size:.9rem; font-weight:300; color:var(--muted); line-height:1.85; text-align:center; max-width:520px; margin:0 auto 2.4rem; }
+    /* The two principals on the result screen, so "Schedule a Call" has faces
+       beside it. Layout and type come from .contact-persons, which also stacks
+       the pair on a phone; only the photo and the spacing are new. The headshots
+       are portrait and keep the upper-centre crop the team page gives them. */
+    .val-persons { margin: 0 auto 2.2rem; text-align: center; }
+    .val-persons .contact-person { align-items: center; }
+    .val-person-photo { width: 84px; height: 105px; object-fit: cover; object-position: center 15%; border-radius: 2px; margin-bottom: .5rem; filter: saturate(0.92); }
     .val-result-actions { display:flex; justify-content:center; align-items:center; gap:1.75rem; flex-wrap:wrap; margin-bottom:2.2rem; }
+    /* --muted2, not the 35% cream this used to be: the line that says the
+       estimate is confidential measured 2.96:1 on --navy3 and was the hardest
+       thing on the screen to read. --muted2 is 6.51:1 there. .val-buyers-note
+       further down follows it. */
     .val-disclaimer { font-size:.7rem; color:var(--muted2); line-height:1.7; text-align:center; border-top:1px solid rgba(244,240,235,0.07); padding-top:1.5rem; font-weight:300; }
 
     /* Next CTA band (subpages) */
@@ -3009,10 +2969,15 @@
     .next-cta { background: var(--navy3); padding: 5.5rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
     .next-cta-h2 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin:0 auto 1.2rem; max-width: 30ch; text-wrap: balance; }
     .next-cta-h2 em { font-style:italic; color:var(--copper3); }
-    .next-cta-sub { font-size:.93rem; font-weight:300; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
+    .next-cta-sub { font-size:1rem; font-weight:400; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
     .next-cta-actions { display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap; }
 
-    .contact-logo { height: 110px; width:auto; margin: 0 auto 2rem; display:block; border-radius: 6px; }
+    /* Tall enough that the lockup's second line reads; at 110px it was a smudge. */
+    .contact-logo { height: 160px; width:auto; margin: 0 auto 2rem; display:block; border-radius: 6px; }
+    /* The bare cream mark, the way the footer shows it: no tile, no second
+       copy of the name under a nav that already carries both. For
+       contact.html once its <img> points at logo-mark.png. */
+    .contact-logo--mark { height: 56px; border-radius: 0; margin-bottom: 2rem; }
 
     .val-input::-webkit-outer-spin-button, .val-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 
@@ -3021,6 +2986,19 @@
       .val-grid2 { grid-template-columns:1fr; }
       .page-hero { padding:140px 5% 70px; }
       .val-actions { flex-direction:column-reverse; align-items:stretch; text-align:center; }
+      /* The two range labels filled the 293px row edge to edge and ran
+         together; a gap and tighter tracking keep them apart. */
+      .val-bar-labels { gap:1rem; letter-spacing:.08em; }
+      .val-bar-labels span:last-child { text-align:right; }
+      /* Result-screen principals: photo beside the name on a phone, so the pair
+         costs two short rows instead of two tall cards and the buttons stay
+         close. Comes after the .contact-persons phone rule it adjusts. */
+      .val-persons { gap: 1.25rem; align-items: stretch; width: fit-content; max-width: 100%; }
+      .val-persons .contact-person { display: grid; grid-template-columns: 64px minmax(0, auto); grid-template-rows: 1fr 1fr; column-gap: 1rem; row-gap: .15rem; text-align: left; }
+      .val-persons .contact-person-name { align-self: end; }
+      .val-persons .contact-email-addr { align-self: start; margin-top: 0; overflow-wrap: anywhere; }
+      .val-persons .contact-person-divider { display: none; }
+      .val-person-photo { width: 64px; height: 80px; margin-bottom: 0; grid-row: 1 / span 2; }
       .val-band { padding: 6rem 5%; }
       .next-cta { padding: 5.5rem 5%; }
     }
@@ -3061,16 +3039,20 @@
     /* 6% side padding scales with the viewport while the row's contents do
        not, so the row runs out of room around 1470px, not at some rounder
        number. Step down at 1560px to keep a margin either side of that. */
+    /* The links hold 12px through both steps; only the gap and the tracking
+       give. Measured at 1101px with 12px links: 160px of free room remains
+       either side of the link group, so nothing wraps before the drawer
+       takes over. */
     @media (max-width: 1560px) {
       #nav { padding: 0 4%; }
       .nav-links { gap: 1.35rem; }
-      .nav-links a { font-size: 0.68rem; letter-spacing: 0.07em; }
+      .nav-links a { letter-spacing: 0.07em; }
     }
 
     @media (max-width: 1240px) {
       #nav { padding: 0 3%; }
       .nav-links { gap: 1rem; }
-      .nav-links a { font-size: 0.645rem; letter-spacing: 0.045em; }
+      .nav-links a { letter-spacing: 0.045em; }
       .nav-logo { gap: 0.5rem; }
       .nav-logo-text { font-size: 0.92rem; letter-spacing: 0.1em; }
       .nav-cta { padding: 0.5rem 0.9rem; letter-spacing: 0.08em; }
@@ -3133,11 +3115,13 @@
     .footer-chi {
       display: block;
       margin-top: 0.9rem;
-      font-size: 0.58rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--copper2);
+      /* Two lines at 12px. Balance them so "the summer" is not left alone. */
+      text-wrap: balance;
     }
 
     /* Valuation closer-look panel */
@@ -3190,9 +3174,9 @@
        card, and a date competing with it flattens the card's reading order. */
     .article-card-label {
       display: block;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: rgba(7,17,26,0.62);
       margin-bottom: 0.9rem;
@@ -3217,7 +3201,7 @@
     }
 
     .article-card-arrow {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -3242,7 +3226,7 @@
          a tab rather than a floating underline. */
       border-bottom: 2px solid transparent;
       margin-bottom: -1px;
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -3318,7 +3302,7 @@
       flex-wrap: wrap;
     }
     .article-hero-tag {
-      font-size: 0.58rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -3329,7 +3313,7 @@
       border-radius: 2px;
     }
     .article-hero-date {
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -3342,6 +3326,11 @@
       position: relative;
     }
 
+    /* The valuation page, the 404 and the legal pages close with .article
+       and nothing after it, so the 2rem bottom padding sized for a guide's
+       next-cta band left them 32px above the footer. */
+    main > .article:last-child { padding-bottom: 6.5rem; }
+
     .article-answer {
       max-width: 760px;
       margin: 0 auto 3.5rem;
@@ -3353,7 +3342,7 @@
 
     .article-answer-label {
       display: block;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -3403,7 +3392,7 @@
        so a fourth level stays legible without adding a fourth size to the scale.
        Scoped to .article-body, which is why podcast.html's two h4s are unaffected. */
     .article-body h4 {
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -3447,6 +3436,13 @@
     .text-link-dark { color: var(--copper2); border-bottom: 1px solid rgba(196,132,74,0.4); }
     .text-link-dark:hover { color: var(--copper3); border-bottom-color: var(--copper3); }
     .text-link:hover { color: var(--navy); border-bottom-color: var(--navy); }
+    /* These four sections are navy on every page that has them, and the sector
+       landing pages put about seventy .text-link anchors inside them: 3.24:1 on
+       --navy, 3.14:1 on --navy2, 2.94:1 on --navy3, with a hover colour equal to
+       the background. Give them the .text-link-dark colours there (--copper2:
+       6.11:1, 5.91:1 and 5.54:1 on the same three grounds). */
+    :is(.impact, .why-us, .faq, .process) .text-link { color: var(--copper2); border-bottom-color: rgba(196,132,74,0.4); }
+    :is(.impact, .why-us, .faq, .process) .text-link:hover { color: var(--copper3); border-bottom-color: var(--copper3); }
 
     .article-body a { color: var(--copper-ink); border-bottom: 1px solid rgba(146,93,46,0.4); }
     .article-body a:hover { color: var(--navy); border-bottom-color: var(--navy); }
@@ -3470,6 +3466,22 @@
 
     .article-table-wrap { overflow-x: auto; margin: 0 0 1.75rem; }
 
+    /* main.js marks a wrap .is-scrollable when its table is wider than it.
+       The cue sits above the table and is sticky, so it stays in view while
+       the table slides under it. Same voice as the sector comparison cue. */
+    .article-table-wrap.is-scrollable::before {
+      content: 'Swipe \2192';
+      display: block;
+      position: sticky;
+      left: 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--copper-ink);
+      padding-bottom: 0.6rem;
+    }
+
     /* Dark-theme comparison table for landing sections (the light .article-body
        table styles below are scoped to article pages and do not reach here). */
     .comp-table-wrap { overflow-x: auto; max-width: 780px; margin: 2.75rem auto 0; }
@@ -3483,7 +3495,7 @@
     .comp-table thead th {
       text-align: left;
       font-family: 'Inter', 'Inter Fallback', Arial, sans-serif;
-      font-size: 0.66rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.13em;
       text-transform: uppercase;
@@ -3520,7 +3532,7 @@
 
     .article-body th {
       text-align: left;
-      font-size: 0.62rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -3616,7 +3628,7 @@
 
     .article-tldr-label {
       display: block;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -3649,13 +3661,12 @@
 
     .article-tldr-list li strong { color: var(--navy); font-weight: 600; }
 
-    .article-body p.profile-bestfor {
-      border-left: 2px solid var(--copper);
-      padding-left: 0.9rem;
-      color: var(--navy);
-    }
-
-    .article-body p.profile-bestfor strong { color: var(--copper); }
+    /* The valuation band near the top of each guide. Same box as the TL;DR
+       below it, drawn lighter: hairline, no fill, no copper rail, so it reads
+       as a pointer rather than a second summary. */
+    .article-tldr.article-tldr--band { margin-bottom:2.5rem; padding:1.1rem 1.5rem 1.15rem; background:transparent; border:1px solid rgba(184,115,51,0.3); border-left-width:1px; }
+    .article-tldr--band .article-tldr-label { margin-bottom:0.45rem; }
+    .article-tldr--band > p { font-size:0.9rem; line-height:1.6; color:rgba(7,17,26,0.72); margin:0 0 0.55rem; }
 
     .article-fit {
       max-width: 760px;
@@ -3739,6 +3750,33 @@
     @media (max-width: 640px) {
       .article { padding: 4.5rem 5% 1rem; }
       .article-answer, .article-fit, .article-tldr { padding: 1.5rem 1.5rem; }
+
+      /* The tables a reader has to use. Headers were the smallest text on
+         the page at 9.9px; cells sat at 13.9px. The tracking relaxes as the
+         headers grow so a three-column table still fits, and hyphens let a
+         long header ("PRINCIPAL DRIVER") break instead of forcing the table
+         past the wrap. */
+      .article-body th,
+      .comp-table thead th { font-size: 0.75rem; letter-spacing: 0.08em; }
+      .article-body td,
+      .article-body tbody th[scope="row"] { font-size: 0.95rem; }
+      .article-body td,
+      .article-body th { hyphens: auto; padding-left: 0.7rem; padding-right: 0.7rem; }
+
+      .article-hero-date { font-size: 0.78rem; }
+
+      /* 11.8px explanations under the form fields, and the contact form's
+         privacy line. 0.9rem matches the other helper copy on a phone. */
+      .val-help,
+      .contact-form-trust { font-size: 0.9rem; }
+    }
+
+    /* At 390px the guides' four-column tables ran 34px past the wrap.
+       Trimming the cells' side padding brings them to within a couple of
+       pixels and gives the three-column ones room to breathe. */
+    @media (max-width: 390px) {
+      .article-body td,
+      .article-body th { padding-left: 0.45rem; padding-right: 0.45rem; }
     }
 
     /* At 390px the guides' four-column tables ran 34px past the wrap.
@@ -3758,7 +3796,7 @@
     }
 
     .capability-list { margin: 1.5rem 0 0; padding-left: 1.4rem; }
-    .capability-list li { font-size: 0.94rem; font-weight: 300; line-height: 1.8; margin-bottom: 0.7rem; }
+    .capability-list li { font-size: 1rem; font-weight: 400; line-height: 1.8; margin-bottom: 0.7rem; }
     .capability-list li::marker { color: var(--copper2); }
     .capability-section.navy .capability-list li { color: var(--muted); }
     .capability-section.navy .capability-list strong { color: var(--cream); font-weight: 500; }
@@ -3786,14 +3824,20 @@
     .capability-section.navy .capability-section-header h2 { color: var(--cream); }
     .capability-section.cream .capability-section-header h2 { color: var(--navy); }
     .capability-section-header h2 em { font-style: italic; color: var(--copper-accent); }
-    .capability-section.navy .capability-section-header p { color: var(--muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8; }
+    .capability-section.navy .capability-section-header p { color: var(--muted); font-size: 1rem; font-weight: 400; line-height: 1.8; }
+    /* The home page's practice-area list, reused on the navy "Sectors we focus
+       on" band so the band carries more than one paragraph. Same five names
+       and links; only the colours change for the dark ground. */
+    .capability-section .capability-sectors-list { margin-bottom: 0; }
+    .capability-section .capability-sectors-list li { color: var(--cream); border-right-color: rgba(244,240,235,0.18); }
+    .capability-section .capability-sectors-list a:hover { color: var(--copper3); }
     .capability-section.cream .capability-section-header p { color: rgba(7,17,26,0.62); font-size: 0.95rem; font-weight: 300; line-height: 1.8; }
 
     .capability-onepager-note {
       display: block;
-      font-size: 0.62rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--muted2);
       margin-top: 1.4rem;
@@ -3848,11 +3892,19 @@
       .contact-person-book,
       .team-social-link,
       .footer-col a,
-      .footer-legal-links a {
+      .footer-legal-links a,
+      .article-hero-date a,
+      .article-tldr .text-link {
         display: inline-flex;
         align-items: center;
         min-height: 44px;
       }
+
+      /* The rule above turns the email and "Book time" links into flex
+         items of the .contact-person column, and a flex item's content
+         aligns to the start, so they hung off the block's left edge under
+         a centred name. Centre the items themselves. */
+      .contact-person { align-items: center; }
 
       /* The 0.7rem column gap was sized for ~21px links. Now that each
          link is 44px the gap separates them twice over and only makes
@@ -3888,9 +3940,89 @@
       min-height: auto;
       padding: 150px 6% 88px;
     }
+    /* The hero shares the 1200px body column every section below it uses.
+       It used to start at the 6% gutter, so at 1920 the headline hung 245px
+       left of the copy under it. The 820px limit moves onto the headline. */
+    .hero--home .hero-inner { max-width: 1200px; width: 100%; margin: 0 auto; }
+    .hero--home .hero-h1 { max-width: 820px; }
     .hero--home .hero-cred { margin-top: 3rem; }
     .hero--home::after { display: none; }
     .hero--home .hero-sub { max-width: 640px; }
+
+    /* ---- Home hero: principals beside the copy (2026-10) ----
+       The right half of the hero was empty at desktop. The two principals
+       now sit there, each linking to their card on /team. The text stays
+       in the first column as direct children of .hero-inner, so the
+       staged-entrance selectors above still match. The vertical rhythm is
+       tightened a little so the credential strip clears a 900px fold. */
+    @media (min-width: 1101px) {
+      .hero--home { padding-top: 132px; }
+      .hero--home .hero-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(300px, 28vw, 400px);
+        column-gap: 4rem;
+      }
+      .hero--home .hero-inner > * { grid-column: 1; }
+      .hero--home .hero-inner > .hero-principals {
+        grid-column: 2;
+        grid-row: 1 / span 5;
+        align-self: center;
+      }
+      .hero--home .hero-h1 { margin-bottom: 2rem; }
+      .hero--home .hero-sub { margin-bottom: 2.5rem; }
+      .hero--home .hero-cred { margin-top: 2.25rem; }
+    }
+    .hero-principals {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+    .hero-principal {
+      display: flex;
+      flex-direction: column;
+      color: var(--cream);
+    }
+    .hero-principal img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 1rem;
+      border-top: 2px solid var(--copper2);
+      filter: saturate(0.88);
+      transition: filter 0.3s;
+    }
+    .hero-principal:hover img { filter: saturate(1); }
+    .hero-principal-name {
+      font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      transition: color 0.2s;
+    }
+    .hero-principal:hover .hero-principal-name { color: var(--copper3); }
+    .hero-principal-role {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      line-height: 1.5;
+    }
+    @media (max-width: 1100px) {
+      .hero-principals { max-width: 440px; margin-top: 3rem; }
+    }
+    @media (max-width: 640px) {
+      /* Compact on a phone: the same two people appear with their bios
+         further down the page, so this row only has to introduce them. */
+      .hero-principals { max-width: 300px; gap: 1rem; margin-top: 2.5rem; }
+      .hero-principal img { margin-bottom: 0.75rem; }
+      .hero-principal-name { font-size: 1.2rem; }
+      .hero-principal-role { letter-spacing: 0.1em; }
+    }
+    /* ---- end home hero principals ---- */
 
     .home-section {
       background: var(--cream);
@@ -3930,7 +4062,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -3978,9 +4110,9 @@
     .home-sectors { padding-top: 3rem; }
     .home-sectors-label {
       display: block;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: rgba(7,17,26,0.64);
       margin-bottom: 1.25rem;
@@ -4044,10 +4176,17 @@
       max-width: 540px;
     }
 
+    /* Two 280px cards and, beside them, the pull quote about the two
+       people. The cards alone ended at x=728 of the 1200px wrap and left
+       the right half of the row blank while the quote sat 500px lower. */
     .home-people {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 280px));
+      grid-template-columns: repeat(2, minmax(0, 280px)) minmax(0, 1fr);
       gap: 3rem;
+    }
+    .home-people .home-quote {
+      align-self: center;
+      margin: 0 0 0 2rem;
     }
     .home-person {
       display: flex;
@@ -4073,9 +4212,9 @@
       margin-bottom: 0.35rem;
     }
     .home-person-role {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--copper-ink);
       margin-bottom: 0.85rem;
@@ -4101,9 +4240,9 @@
       margin-bottom: 2rem;
     }
     .home-advisors-label {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: rgba(7,17,26,0.64);
       padding-top: 0.35rem;
@@ -4143,9 +4282,9 @@
     }
     .home-advisors-list a:hover .home-advisor-name { color: var(--copper-ink); }
     .home-advisor-focus {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--copper-ink);
       margin-bottom: 0.75rem;
@@ -4176,11 +4315,39 @@
     .home-insights-grid .article-card { padding: 2.25rem 2.25rem 2rem; }
     .home-insights-grid .article-card h3 { flex-grow: 1; margin-bottom: 1.5rem; }
 
+    /* ---- Home podcast card (2026-10) ----
+       The article card, run full width under the three guides, with the
+       show's artwork beside it. Wording comes from podcast.html. */
+    .home-podcast-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 2.25rem;
+      margin-top: 2px;
+      padding: 2.25rem;
+    }
+    .home-podcast-logo {
+      width: 112px;
+      height: 112px;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+    .home-podcast-body { display: flex; flex-direction: column; min-width: 0; }
+    .home-podcast-card p { max-width: 620px; flex-grow: 0; }
+    @media (max-width: 640px) {
+      .home-podcast-card { flex-direction: column; align-items: flex-start; gap: 1.5rem; padding: 2.25rem; }
+      .home-podcast-logo { width: 88px; height: 88px; }
+    }
+    /* ---- end home podcast card ---- */
+
     @media (max-width: 900px) {
       .home-split { grid-template-columns: 1fr; gap: 1.5rem; }
       .home-two { grid-template-columns: 1fr; gap: 2.5rem; }
       .home-how li { grid-template-columns: 1fr; gap: 0.75rem; }
       .home-people { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+      /* No third column here: the quote takes its own row under the cards. */
+      .home-people .home-quote { grid-column: 1 / -1; margin: 1.5rem 0 0; }
       .home-insights-grid { grid-template-columns: 1fr; }
     }
 
@@ -4191,7 +4358,7 @@
       .home-sectors-list { flex-direction: column; gap: 0.9rem; }
       .home-sectors-list li { border-right: 0; padding-right: 0; margin-right: 0; font-size: 1.3rem; }
       .home-people { grid-template-columns: 1fr; gap: 2.5rem; }
-      .home-quote { margin-top: 3rem; }
+      .home-people .home-quote { margin-top: 0.5rem; }
       .home-advisors-head { grid-template-columns: 1fr; gap: 0.75rem; }
       .home-advisors-intro { padding-left: 0; }
       .home-advisors-list { grid-template-columns: 1fr; }
@@ -4219,6 +4386,18 @@
         display: inline-flex;
         align-items: center;
         min-height: 44px;
+      }
+
+      /* Each stacked link is already 44px tall here, so the gap only has to
+         keep one link's underline clear of the next link's text. */
+      .sector-card-links { gap: 0.4rem; font-size: 1rem; }
+
+      /* Measured 24px tall on a phone. */
+      .sector-card-next {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        margin-top: 0;
       }
 
       .home-link { min-height: 44px; }
@@ -4263,9 +4442,7 @@
       .why-process-callout p,
       .impact-stat-desc,
       .impact-body-text,
-      .about-right p,
       .team-bio,
-      .podcast-desc,
       .value-card p,
       .sector-card p,
       .article-card p,
@@ -4276,10 +4453,11 @@
 
       /* Tracked uppercase at 9.6-11.5px is the hardest text on the site to
          read. Step the scale up and let the size carry the emphasis, so the
-         tracking can relax slightly and keep the same optical texture. */
-      .eyebrow { font-size: 0.74rem; }
-      .val-step-kicker { font-size: 0.7rem; }
-      .articles-jump a { font-size: 0.75rem; }
+         tracking can relax slightly and keep the same optical texture.
+         .eyebrow, .articles-jump a and .val-step-kicker used to be raised
+         here as well, which left them larger on a phone than on a desktop.
+         Their base rules now start at the 12px floor, so they need no
+         override. */
       .impact-stat-label { font-size: 0.8rem; }
     }
 
@@ -4315,17 +4493,19 @@
     @media (max-width: 720px) {
       .comp-table { min-width: 560px; }
       .comp-table-wrap { position: relative; }
-      .comp-table-wrap::after {
+      /* ::before, not ::after: the cue has to be read before the table, not
+         found 450px below it. */
+      .comp-table-wrap::before {
         content: 'Swipe to compare →';
         display: block;
         position: sticky;
         left: 0;
-        font-size: 0.62rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--muted2);
-        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
       }
     }
 
@@ -4339,7 +4519,7 @@
       .comp-table tbody td:first-child { width: 38%; }
       .comp-table thead th { padding: 0.85rem 0.6rem; }
       .comp-table tbody td { padding: 0.75rem 0.6rem; }
-      .comp-table-wrap::after { content: none; }
+      .comp-table-wrap::before { content: none; }
     }
 
     /* The hero on an iPhone SE (375x667) pushed the primary CTA to 583-705px,
@@ -4353,13 +4533,12 @@
       .hero--home .hero-cred { margin-top: 2rem; }
     }
 
-    /* NOT DONE: the footer is 2,182px tall on a 375px phone, roughly three full
-       screens on every page. Forcing two columns below 520px was tried and
-       REVERTED: .footer-left shares the grid, so it squeezed to 98px and the
-       firm description wrapped to one word per line while connor@ overflowed
-       its column. The single column is correct at this width. Shortening the
-       footer needs a content decision (the description, or the regulatory
-       disclosure, which is a legal call), not a grid change. */
+    /* The footer used to run 2,182px on a 375px phone, roughly three full
+       screens on every page. The 520px rule up in the FOOTER section now
+       pairs the Firm and Connect lists while the brand block and the Contact
+       list keep the full row, which is what the first two-column attempt
+       got wrong. Shortening it further is a content decision (the
+       description, or the regulatory disclosure, which is a legal call). */
 
     /* The wordmark stepped from 16.32px to 13.6px at exactly 400px, a 20% jump
        that lands between the current iPhone sizes: the 390px models got the
@@ -4372,6 +4551,212 @@
       }
     }
 
+    /* =====================================================
+       SECTOR PAGES: IN-PAGE JUMP BAR (2026-10-08)
+       The .articles-jump bar from /articles, recoloured for the navy
+       page hero. It already wraps (flex-wrap), so five links fold onto
+       two or three rows at 390px instead of overflowing.
+       ============================================================ */
+    .articles-jump--dark {
+      margin: 2.75rem 0 0;
+      border-bottom-color: rgba(244,240,235,0.14);
+    }
+    .articles-jump--dark a { color: var(--muted); }
+    .articles-jump--dark a:hover,
+    .articles-jump--dark a:focus-visible { color: var(--copper3); }
+    @media (max-width: 640px) {
+      .articles-jump--dark { margin-top: 2.25rem; gap: 0 1.4rem; }
+    }
+
+    /* ============================================================
+       SECTOR PAGES: WHO RUNS YOUR DEAL (2026-10-08)
+       The homepage principals block (.home-section, .home-people,
+       .home-person, .home-quote) placed before each sector FAQ. Only
+       what the homepage version lacks is added here: a linked name,
+       and the email and profile links under each bio.
+       ============================================================ */
+    .deal-team .home-person-name a {
+      color: inherit;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .deal-team .home-person-name a:hover,
+    .deal-team .home-person-name a:focus-visible { border-bottom-color: var(--copper); }
+    .deal-team .home-person-bio { margin-bottom: 1.1rem; }
+    .deal-team-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.85rem;
+    }
+    .deal-team-links a { overflow-wrap: anywhere; }
+    @media (max-width: 1100px), (pointer: coarse) {
+      .deal-team-links { gap: 0; }
+      .deal-team-links li { display: flex; align-items: center; min-height: 44px; }
+    }
+    /* On a phone the homepage stacks two full-width portraits, roughly a
+       screen each. Here the photo sits beside the name instead, so the pair
+       costs two short rows before the FAQ. */
+    @media (max-width: 640px) {
+      .deal-team .home-person {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        column-gap: 1.1rem;
+        align-items: start;
+      }
+      .deal-team .home-person img { grid-row: 1 / span 4; margin-bottom: 0; }
+    }
+
+    /* ============================================================
+       INSIGHTS INDEX: FILTER CHIPS, BYLINES, RSS (2026-10-08)
+       main.js turns the .articles-jump links into toggle buttons
+       (aria-pressed) and adds .articles-filter-on once it has wired
+       them up. Without JS they stay jump links over a full list.
+       ============================================================ */
+    .articles-jump button {
+      background: none;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      padding: 0.85rem 0;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.62);
+      cursor: pointer;
+      transition: color 0.25s;
+    }
+    .articles-jump button:hover,
+    .articles-jump button:focus-visible { color: var(--copper-ink); }
+    .articles-jump button[aria-pressed="true"] {
+      color: var(--copper-ink);
+      border-bottom-color: var(--copper-ink);
+    }
+    .articles-filter-on .articles-group[hidden] { display: none; }
+    /* One group showing: its hidden predecessors still satisfy the
+       sibling selector, so drop the gap that separates stacked groups. */
+    .articles-filtered .articles-group + .articles-group { margin-top: 0; }
+
+    /* Author under the title: quieter than the title, same ink as the label. */
+    .article-card-byline {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(7,17,26,0.62);
+      margin: -0.25rem 0 0.85rem;
+    }
+
+    .articles-rss { margin-top: 1.5rem; font-size: 0.85rem; }
+
+    /* ============================================================
+       SECTORS PAGE: SUBSECTOR LINE ON EVERY CARD (2026-10-08)
+       Same small caps as .sector-card-label, separated by middots,
+       so all five cards name what they cover in the same place.
+       ============================================================ */
+    .sector-subsectors {
+      list-style: none;
+      margin: 0 0 1rem;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.62);
+    }
+    /* The dot trails each item rather than leading the next, so a wrapped
+       row never starts with a stray separator. */
+    .sector-subsectors li:not(:last-child)::after {
+      content: '\00B7';
+      margin: 0 0.6rem;
+      color: var(--copper-ink);
+    }
+    .sector-flagship .sector-subsectors { color: var(--muted); margin-bottom: 1.5rem; position: relative; }
+    .sector-flagship .sector-subsectors li:not(:last-child)::after { color: var(--copper3); }
+
+    /* ============================================================
+       IPHONE SAFARI PASS (2026-10-11)
+       Measured in WebKit with the iPhone SE, 15 and 15 Pro Max device
+       profiles. Appended for the same reason as the blocks above: a later
+       base declaration beats an earlier override of equal specificity.
+       ============================================================ */
+
+    /* Native select on WebKit ignored the vertical padding the text inputs
+       use, so every dropdown on the valuation tool measured 25px tall beside
+       49px inputs: half a fingertip, and a visibly different control. Drawing
+       the select ourselves makes it the same 49px box on every iOS version.
+       The chevron is the only thing the native control was supplying. */
+    .val-select {
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23f4f0eb' stroke-opacity='.7' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 12px 8px;
+      padding-right: 2.6rem;
+      text-overflow: ellipsis;
+    }
+    .val-select:disabled { opacity: 0.55; cursor: not-allowed; }
+    .val-input { -webkit-appearance: none; appearance: none; }
+
+    /* The honeypot is off screen, but iOS can still land focus on it from
+       the keyboard's next-field arrow, and at 11px Safari would zoom the
+       whole page to read it. */
+    .contact-honeypot input { font-size: 16px; }
+
+    /* Scroll lock while the menu drawer is open (main.js sets the class).
+       Without it a swipe on the drawer scrolled the page behind it, which
+       on iOS also collapses the toolbars and resizes the viewport under the
+       open menu. */
+    html.nav-open,
+    html.nav-open body { overflow: hidden; }
+    /* With the menu open, header and drawer read as one solid panel. */
+    html.nav-open #nav { background: var(--navy); }
+
+    /* Tap targets that still measured under 44px on a phone. The hit area
+       grows through an invisible pseudo-element, so the underline and the
+       text stay exactly where they are. */
+    @media (max-width: 1100px), (pointer: coarse) {
+      .article-hero-date a,
+      .article-tldr > .text-link,
+      .capability-grid h3 a,
+      .podcast-ep-listen,
+      .podcast-card-cta { position: relative; }
+      .article-hero-date a::before,
+      .article-tldr > .text-link::before,
+      .capability-grid h3 a::before,
+      .podcast-ep-listen::before,
+      .podcast-card-cta::before {
+        content: '';
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
+      }
+      /* Bordered buttons, so the box itself can grow. */
+      .podcast-link { min-height: 44px; }
+    }
+
+    /* The first screen on a phone. Safari's toolbars take about 120px of an
+       iPhone SE's 667, leaving roughly 548px of page, and the home CTA
+       ended at 586px, below that fold. Narrowing the band between the bar
+       and the eyebrow from 56px to 40px moves it to 570px, so the top of
+       the button is now on the first screen. The sector page heroes need a
+       shorter lede to get there, which is a copy decision. */
+    @media (max-width: 640px) {
+      .hero--home { padding-top: 112px; }
+      .page-hero { padding-top: 112px; }
+    }
+=======
     /* On a 320px phone (first-generation iPhone SE, small Androids) the bar
        ran 6px wide and clipped the hamburger, the only way into the menu
        at that width. The wordmark's clamp floor (13.6px) was the cause. */
@@ -4417,3 +4802,84 @@
     /* The privacy policy prints a long Google URL as its own link text,
        which ran 3px past a 320px screen. */
     main a { overflow-wrap: anywhere; }
+
+    /* ============================================================
+       QUIETER GROUNDS (2026-10-19)
+       The dot grid behind the home hero, the graph-paper grid on the
+       about and sectors sections, and the copper glow in the corner of
+       every page hero were texture for its own sake. Flat navy and flat
+       cream read as more assured, and the copper is left to the type
+       and the rules, where it means something.
+       ============================================================ */
+    .hero::after,
+    .about::before,
+    .sectors::before,
+    .page-hero::before { content: none; }
+    .hero::before {
+      background: linear-gradient(to bottom, transparent 60%, rgba(244,240,235,0.03) 100%);
+    }
+
+    /* The scrolled header cast a 36px dark shadow that smudged the first
+       lines of every cream section under it. The copper hairline (#nav::after)
+       already marks the edge; a 1px rule is all the separation it needs. */
+    #nav.scrolled { box-shadow: 0 1px 0 rgba(7,17,26,0.35); }
+
+    /* Cormorant Garamond defaults to old-style figures, so "50+", "$2M-$75M",
+       "40+" and every "(2026)" in a heading bobbed above and below the
+       baseline like lowercase letters. Lining figures sit level, the way
+       numbers read in a deal book. Inherited, so Inter (lining already) is
+       unaffected. */
+    html { font-variant-numeric: lining-nums; }
+
+    /* Sector link lists: four to six underlined links stacked one under
+       another read as a block of underline. A ruled list does the same job
+       the way a deal-book contents page does: each link on its own row,
+       copper text and the arrow say "link", the underline arrives on hover. */
+    .sector-card-links {
+      gap: 0;
+      border-top: 1px solid currentColor;
+      border-top-color: rgba(7,17,26,0.1);
+    }
+    .sector-flagship .sector-card-links { border-top-color: rgba(244,240,235,0.12); }
+    .sector-card-links li {
+      border-bottom: 1px solid rgba(7,17,26,0.1);
+    }
+    .sector-flagship .sector-card-links li { border-bottom-color: rgba(244,240,235,0.12); }
+    .sector-card-links .sector-link {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.45rem 0;
+      border-bottom: 0;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .sector-card-links .sector-link:hover,
+    .sector-card-links .sector-link:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+      text-decoration-thickness: 1px;
+    }
+
+    /* What we do: the firm sells companies, so selling leads and the buyer
+       list is a side note, not a second service of equal weight. The aside
+       takes the narrower column behind a rule and a small-caps label. */
+    .home-two { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+    .home-two-item--aside {
+      padding-left: 2.5rem;
+      border-left: 1px solid rgba(7,17,26,0.1);
+    }
+    .home-two-item--aside h3 {
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(7,17,26,0.64);
+      margin: 0.55rem 0 1rem;
+    }
+    .home-two-item--aside p { font-size: 0.92rem; }
+    @media (max-width: 900px) {
+      .home-two { grid-template-columns: 1fr; }
+      .home-two-item--aside { padding-left: 0; border-left: 0; padding-top: 2rem; border-top: 1px solid rgba(7,17,26,0.1); }
+    }

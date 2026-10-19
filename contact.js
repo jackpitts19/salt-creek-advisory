@@ -85,39 +85,81 @@
     submitBtn.textContent = 'Send Message';
   }
 
+  var FIELD_ERROR_SUFFIX = 'Error';
+
+  function errorSlotOf(fieldId) { return el(fieldId + FIELD_ERROR_SUFFIX); }
+
   /**
-   * Announces a problem and moves focus to the field that caused it.
+   * Removes a field's message and its invalid mark.
+   * @param {string} fieldId the field to clear
+   */
+  function clearFieldError(fieldId) {
+    var node = el(fieldId);
+    var slot = errorSlotOf(fieldId);
+    if (!node || !slot) return;
+    node.removeAttribute('aria-invalid');
+    node.removeAttribute('aria-describedby');
+    slot.textContent = '';
+  }
+
+  /**
+   * Adds an empty message slot directly under a field.
    *
-   * The valuation tool's err() in valuation.js follows the same pattern: an
-   * announced message, aria-invalid and aria-describedby on the failing field,
-   * and focus moved to it. Keep the two in step when either changes.
+   * The form has one status line above the button, but focus moves to the failing
+   * field, and on a phone that left the explanation off screen. The slots are
+   * created here rather than in the markup because only this file uses them:
+   * without JavaScript the browser's own required-field check speaks instead.
+   * They are created up front and left empty, because a role="alert" region is
+   * only announced reliably when it is on the page before its text changes.
+   * @param {string} fieldId the field the slot belongs to
+   */
+  function addErrorSlot(fieldId) {
+    var node = el(fieldId);
+    if (!node) return;
+    var slot = document.createElement('p');
+    slot.id = fieldId + FIELD_ERROR_SUFFIX;
+    slot.className = 'val-field-error';
+    slot.setAttribute('role', 'alert');
+    node.insertAdjacentElement('afterend', slot);
+    // Typing in the field is the fix, so the message leaves with it.
+    node.addEventListener('input', function () { clearFieldError(fieldId); });
+  }
+  FIELDS.forEach(function (field) { addErrorSlot(field.id); });
+
+  /**
+   * Explains a problem directly under the field that caused it and moves focus
+   * there.
+   *
+   * The valuation tool's fail() in valuation.js follows the same pattern: an
+   * announced message beneath the field, aria-invalid and aria-describedby on
+   * it, and focus moved to it. Keep the two in step when either changes.
    * @param {string} message what went wrong, in plain language
    * @param {string} fieldId the field to mark invalid and focus
    */
   function fail(message, fieldId) {
-    statusEl.className = 'contact-status contact-status--error';
-    statusEl.textContent = message;
-    FIELDS.forEach(function (field) {
-      var node = el(field.id);
-      if (!node) return;
-      var isCulprit = field.id === fieldId;
-      node.setAttribute('aria-invalid', String(isCulprit));
-      if (isCulprit) node.setAttribute('aria-describedby', 'contactStatus');
-      else node.removeAttribute('aria-describedby');
-    });
     var target = el(fieldId);
-    if (target) target.focus();
+    var slot = errorSlotOf(fieldId);
+    if (!target || !slot) {
+      // No slot to print in: the status line above the button still says it.
+      statusEl.className = 'contact-status contact-status--error';
+      statusEl.textContent = message;
+      return;
+    }
+    slot.textContent = message;
+    target.setAttribute('aria-invalid', 'true');
+    target.setAttribute('aria-describedby', slot.id);
+    // focus() alone scrolls just far enough to show the field, which parks it
+    // under the fixed header with the label hidden and the message flush below
+    // the header. Centring the whole field block (label, field, message) keeps
+    // all three clear of the header and off the bottom edge of a short screen.
+    target.focus({ preventScroll: true });
+    (target.closest('.val-field') || target).scrollIntoView({ block: 'center' });
   }
 
   function clearStatus() {
     statusEl.className = 'contact-status';
     statusEl.textContent = '';
-    FIELDS.forEach(function (field) {
-      var node = el(field.id);
-      if (!node) return;
-      node.removeAttribute('aria-invalid');
-      node.removeAttribute('aria-describedby');
-    });
+    FIELDS.forEach(function (field) { clearFieldError(field.id); });
   }
 
   function isEmail(value) {
