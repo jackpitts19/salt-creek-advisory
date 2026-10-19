@@ -3,7 +3,9 @@
 
 Run from the repository root after deploying new or edited pages:
 
-    python3 tools/submit_indexnow.py /midwest-ma-advisor
+    python3 tools/submit_indexnow.py /msp-ma-advisor
+    python3 tools/submit_indexnow.py --removed /retired-page
+    python3 tools/submit_indexnow.py --since <commit>
     python3 tools/submit_indexnow.py --all --dry-run
     python3 tools/submit_indexnow.py --all
 
@@ -11,6 +13,14 @@ The ownership key has been hosted at the site root all along and the content
 round design called for pings, but nothing ever sent one. Without this, a new
 page waits to be found by an organic crawl. With it, the participating engines
 hear about it within seconds of a deploy.
+
+The indexnow workflow runs `--since <previous commit>` on every push to main
+once the deploy has landed, so routine edits are announced without anyone
+remembering to. By hand, an explicit route must have a page file behind it:
+a typo would announce a URL that 404s, the engines would fetch nothing, and
+the page that actually changed would go unannounced. `--removed` is the way
+to announce a URL that is gone or redirected on purpose, so the engines drop
+or re-crawl it.
 
 Nothing in the repository changes. This reads the key file and sitemap.xml and
 makes one HTTPS request. Google does not participate in IndexNow, so this sits
@@ -22,6 +32,7 @@ import glob
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -41,8 +52,18 @@ MAX_URLS = 10000
 KEY_PATTERN = re.compile(r"^[0-9a-f]{8,128}$", re.IGNORECASE)
 
 SITEMAP_LOC = re.compile(r"<loc>(.*?)</loc>", re.DOTALL)
+# One <url> entry: its address and the date it last changed. build_feed.py
+# writes exactly this shape, one entry per line, lastmod as YYYY-MM-DD.
+SITEMAP_ENTRY = re.compile(r"<url>\s*<loc>(.*?)</loc>\s*(?:<lastmod>(.*?)</lastmod>)?", re.DOTALL)
+
+# A route whose last segment carries an extension names a file as is: feed.xml,
+# a PDF, the IndexNow key. Anything else is a clean page URL that the assets
+# binding answers from <route>.html, or index.html for the root.
+FILE_ROUTE = re.compile(r"\.[a-z0-9]+$", re.IGNORECASE)
 
 TIMEOUT_SECONDS = 30
+
+FLAGS = ("--dry-run", "--all", "--removed", "--since")
 
 
 class IndexNowError(Exception):
@@ -114,6 +135,74 @@ def absolute(url):
     return SITE + url if url.startswith("/") else url
 
 
+def page_file(url):
+    """The file on disk that answers a URL on this site, relative to the root.
+
+    Mirrors what the Worker and the assets binding do: a route with an
+    extension is served as that file, the root is index.html, and every other
+    clean route is <route>.html. A trailing slash or an explicit .html is not
+    a canonical URL here and so is never backed.
+    """
+    path = urlparse(url).path
+    if path == "/":
+        return "index.html"
+    if path.endswith("/") or path.endswith(".html"):
+        return None
+    relative = path.lstrip("/")
+    return relative if FILE_ROUTE.search(relative) else relative + ".html"
+
+
+def page_exists(url):
+    """Whether a URL on this site has a page file behind it right now."""
+    target = page_file(url)
+    return bool(target) and os.path.isfile(target)
+
+
+def sitemap_entries(text):
+    """(loc, lastmod) pairs from sitemap text, in order."""
+    return [(loc.strip(), (lastmod or "").strip()) for loc, lastmod in SITEMAP_ENTRY.findall(text)]
+
+
+def changed_since(old_text, new_text):
+    """URLs in the new sitemap that are absent from the old one or carry a
+    different lastmod. A URL dropped from the sitemap is not announced here:
+    the Worker redirects it, and announcing a removal is a deliberate --removed."""
+    before = dict(sitemap_entries(old_text))
+    return [loc for loc, lastmod in sitemap_entries(new_text) if before.get(loc) != lastmod]
+
+
+def sitemap_at(ref):
+    """sitemap.xml as it was at a git ref, or an error naming why it cannot be read."""
+    result = subprocess.run(
+        ["git", "show", "{}:sitemap.xml".format(ref)],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip().splitlines()[-1] if result.stderr.strip() else "git show failed"
+        raise IndexNowError("no sitemap.xml at {}: {}".format(ref, detail))
+    return result.stdout
+
+
+def changed_urls_since(ref):
+    """What to announce after a push: the sitemap entries new or changed since `ref`.
+
+    Returns None when the previous sitemap lived on another host. After a
+    domain move every URL looks new, and announcing all of them belongs to the
+    engines' site-move tools and a deliberate --all, not to a push.
+    """
+    previous = sitemap_at(ref)
+    hosts = {urlparse(loc).hostname for loc, _ in sitemap_entries(previous)}
+    if hosts and hosts != {HOST}:
+        return None
+    require_site_root()
+    try:
+        with open("sitemap.xml", encoding="utf-8") as handle:
+            current = handle.read()
+    except (OSError, UnicodeDecodeError) as err:
+        raise IndexNowError("could not read sitemap.xml: {}".format(err))
+    return changed_since(previous, current)
+
+
 def validated(urls):
     """The URLs unchanged, or an error naming the first one that is not ours.
 
@@ -173,6 +262,35 @@ def post(payload):
         raise IndexNowError("could not reach IndexNow: {}".format(err.reason))
 
 
+def parse_args(argv):
+    """(dry_run, use_sitemap, removed, since, targets), or an error for a mix
+    that cannot mean one thing."""
+    dry_run = "--dry-run" in argv
+    use_sitemap = "--all" in argv
+    removed = "--removed" in argv
+
+    since = None
+    if "--since" in argv:
+        position = argv.index("--since")
+        if position + 1 >= len(argv) or argv[position + 1].startswith("--"):
+            raise IndexNowError("--since needs a commit: --since <ref>.")
+        since = argv[position + 1]
+
+    targets = [arg for index, arg in enumerate(argv)
+               if arg not in FLAGS and not (index > 0 and argv[index - 1] == "--since")]
+
+    modes = sum(1 for chosen in (use_sitemap, bool(since), bool(targets)) if chosen)
+    if modes > 1:
+        raise IndexNowError("pass one of --all, --since <ref>, or explicit URLs, not a mix.")
+    if modes == 0:
+        raise IndexNowError(
+            "nothing to submit. Pass one or more URLs, --since <ref> for what changed "
+            "since a commit, or --all to submit every URL in sitemap.xml.")
+    if removed and not targets:
+        raise IndexNowError("--removed goes with explicit URLs; it says those pages are gone.")
+    return dry_run, use_sitemap, removed, since, targets
+
+
 def main(argv=None, submit=post):
     # `submit` defaults to the post function object captured at def time, not to
     # the module attribute. Patching submit_indexnow.post will therefore not
@@ -180,23 +298,38 @@ def main(argv=None, submit=post):
     # reason the seam exists.
     argv = list(sys.argv[1:] if argv is None else argv)
 
-    dry_run = "--dry-run" in argv
-    use_sitemap = "--all" in argv
-    targets = [arg for arg in argv if arg not in ("--dry-run", "--all")]
-
     try:
-        if use_sitemap and targets:
-            raise IndexNowError("pass either --all or explicit URLs, not both.")
-        if not use_sitemap and not targets:
-            raise IndexNowError(
-                "nothing to submit. Pass one or more URLs, or --all to submit "
-                "every URL in sitemap.xml.")
+        options = parse_args(argv)
+        dry_run, use_sitemap, removed, since, targets = options
 
         # Before find_key, and on both paths: the explicit-URL path never reads
         # the sitemap, so without this it would happily trust a stray key file.
         require_site_root()
         key = find_key()
-        urls = validated(sitemap_urls() if use_sitemap else [absolute(t) for t in targets])
+
+        if since:
+            changed = changed_urls_since(since)
+            if changed is None:
+                print("skipping: the sitemap at {} is on another host, so every URL would look "
+                      "new. A domain move is announced with --all, after the engines' "
+                      "site-move tools.".format(since))
+                return 0
+            if not changed:
+                print("nothing to submit: no sitemap entry is new or changed since {}.".format(since))
+                return 0
+            urls = validated(changed)
+        elif use_sitemap:
+            urls = validated(sitemap_urls())
+        else:
+            urls = validated([absolute(t) for t in targets])
+            if not removed:
+                missing = [url for url in urls if not page_exists(url)]
+                if missing:
+                    raise IndexNowError(
+                        "'{}' has no page file behind it, so the engines would fetch a 404. "
+                        "Check the route, or pass --removed to announce a URL that is "
+                        "gone or redirected on purpose.".format(missing[0]))
+
         payload = build_payload(key, urls)
         plural = "" if len(urls) == 1 else "s"
 

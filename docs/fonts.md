@@ -43,10 +43,10 @@ as it did before.
 
 ## Fallback faces
 
-Two extra `@font-face` rules, `Cormorant Garamond Fallback` (a local Times New
-Roman) and `Inter Fallback` (a local Arial), are what the browser draws while a
-web font is still downloading. Their descriptors are set so the swap moves
-nothing:
+Three extra `@font-face` rules, `Cormorant Garamond Fallback` (a local Times
+New Roman, in an upright and an italic face) and `Inter Fallback` (a local
+Arial), are what the browser draws while a web font is still downloading.
+Their descriptors are set so the swap moves nothing:
 
 - `size-adjust` equalises the average advance width of English text between
   the fallback and the web font, so line breaks land in the same places.
@@ -60,6 +60,8 @@ macOS and Windows use for these files):
 |---|---|---|---|
 | Cormorant Garamond (wght 300) | 0.924 | 0.287 | 0.3933 |
 | Times New Roman | | | 0.4052 |
+| Cormorant Garamond Italic (wght 300) | 0.924 | 0.287 | 0.3543 |
+| Times New Roman Italic | | | 0.4067 |
 | Inter (wght 400) | 0.9688 | 0.2412 | 0.4805 |
 | Arial | | | 0.4470 |
 
@@ -68,7 +70,16 @@ space. Then `size-adjust = web / fallback`, and each override is the web
 font's metric divided by `size-adjust`:
 
 - Cormorant on Times New Roman: size-adjust 97.06%, ascent 95.20%, descent 29.57%.
+- Cormorant Italic on Times New Roman Italic: size-adjust 87.12%, ascent 106.07%, descent 32.94%.
 - Inter on Arial: size-adjust 107.49%, ascent 90.12%, descent 22.44%.
+
+The italic face has its own descriptors because the headline on every hero
+sets one or two words in italic. Without it the browser slants the upright
+fallback itself, at the upright's widths; Cormorant's italic is a good deal
+narrower than Times New Roman's, so the swap used to pull the line in and
+reflow whatever followed. One tablet-width page's layout shift rose from
+0.012 to 0.029 with the face in place, which is accepted: both are far under
+the 0.1 that counts as good, and every other page moved less.
 
 Times New Roman was chosen over Georgia because its proportions sit closer to
 a Garamond, which keeps per-word widths, not only the average, close to the
@@ -88,6 +99,8 @@ falls through to Georgia or the generic family unadjusted, as it always did.
 4. `python3 tools/check_site.py`. It fails on any page that still names a
    Google Fonts host, on any font preload with no file behind it, and on any
    `@font-face` URL in `styles.css` that does not resolve to a file.
-5. `python3 tools/stamp_assets.py`, since `styles.css` changed.
+5. `python3 tools/stamp_assets.py`, since `styles.css` changed. It also
+   rewrites `styles.min.css`, the copy without comments that the Worker
+   actually sends for `/styles.css`; edit only `styles.css` and commit both.
 
 Font files are deliberately not `?v=` stamped: they never change in place.

@@ -38,11 +38,35 @@
     "inLanguage": "en-US",
     "isPartOf": { "@id": "https://saltcreekadvisory.com/#website" },
     "about": { "@id": "https://saltcreekadvisory.com/#organization" },
-    "mainEntity": { "@id": "https://saltcreekadvisory.com/#organization" },
+    "mainEntity": {
+      "@type": "Organization",
+      "@id": "https://saltcreekadvisory.com/#organization",
+      "name": "Salt Creek Advisory",
+      "legalName": "Salt Creek Advisory LLC",
+      "url": "https://saltcreekadvisory.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://saltcreekadvisory.com/#logo",
+        "url": "https://saltcreekadvisory.com/logo-full.png",
+        "contentUrl": "https://saltcreekadvisory.com/logo-full.png",
+        "width": 738,
+        "height": 593,
+        "caption": "Salt Creek Advisory"
+      },
+      "founder": [
+        { "@type": "Person", "@id": "https://saltcreekadvisory.com/#jack-pitts", "name": "Jack Pitts", "url": "https://saltcreekadvisory.com/team#jack-pitts" },
+        { "@type": "Person", "@id": "https://saltcreekadvisory.com/#connor-pitts", "name": "Connor Pitts", "url": "https://saltcreekadvisory.com/team#connor-pitts" }
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/company/salt-creek-advisory/",
+        "https://www.crunchbase.com/organization/salt-creek-advisory",
+        "https://network.axial.net/company/salt-creek-advisory"
+      ]
+    },
     "publisher": { "@id": "https://saltcreekadvisory.com/#organization" }
   }
   </script>
-  <link rel="stylesheet" href="styles.css?v=f53589e4" />
+  <link rel="stylesheet" href="styles.css?v=e47b699b" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
@@ -68,6 +92,7 @@
   </button>
 </nav>
 <nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
+  <a href="valuation" class="nav-drawer-cta">Value My Business</a>
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
@@ -78,7 +103,6 @@
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
-  <a href="valuation">Value My Business</a>
 </nav>
 
 <main id="main" tabindex="-1">
@@ -88,16 +112,16 @@
   <div class="contact-deco" aria-hidden="true"></div>
   <div class="wrap">
     <div class="reveal">
-      <img src="logo-full-sm.webp" alt="Salt Creek Advisory" class="contact-logo" width="280" height="225" fetchpriority="high" decoding="async" data-fallback="logo-full.png">
-      <span class="eyebrow eyebrow--light" style="justify-content:center;">Get In Touch</span>
+      <img src="logo-mark.png" alt="" aria-hidden="true" class="contact-logo contact-logo--mark" width="400" height="210" decoding="async">
+      <h1 class="eyebrow eyebrow--light" style="justify-content:center;">Get In Touch</h1>
       <div class="contact-accent"></div>
-      <h1 class="contact-h2">
+      <p class="contact-h2">
         The most important<br>
         conversation starts<br>
         <em>with a simple one.</em>
-      </h1>
+      </p>
       <p class="contact-sub">
-        The best relationships in this business start years before any deal. Whether you are thinking about a sale in six months or six years, want to talk about an acquisition, or just want an honest read on where things stand, reach out. No pitch. No pressure.
+        The best relationships in this business start years before any deal. Whether you are thinking about a sale in six months or six years, or just want an honest read on where things stand, reach out. No pitch. No pressure. If you are a buyer, tell us what you buy and we will add you to our <a href="investors" class="text-link-dark">buyer list</a>.
       </p>
       <form id="contactForm" class="contact-form" action="https://formspree.io/f/xzdqavol" method="POST">
         <h2 class="contact-form-title">Ask us anything</h2>
@@ -105,11 +129,11 @@
         <div class="val-grid2">
           <div class="val-field">
             <label class="val-label" for="cName">Your Name</label>
-            <input id="cName" name="name" class="val-input" type="text" placeholder="First and last name" autocomplete="name" maxlength="120" required>
+            <input id="cName" name="name" class="val-input" type="text" placeholder="First and last name" autocomplete="name" autocapitalize="words" maxlength="120" required>
           </div>
           <div class="val-field">
             <label class="val-label" for="cEmail">Email</label>
-            <input id="cEmail" name="email" class="val-input" type="email" placeholder="you@company.com" autocomplete="email" maxlength="200" required>
+            <input id="cEmail" name="email" class="val-input" type="email" placeholder="you@company.com" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="200" required>
           </div>
         </div>
         <div class="val-field">
@@ -120,7 +144,7 @@
           <label class="val-label" for="cMessage">Message</label>
           <textarea id="cMessage" name="message" class="val-input contact-textarea" rows="5" placeholder="Tell us as much or as little as you want." maxlength="4000" required></textarea>
         </div>
-        <p class="contact-form-trust">Jack and Connor read every message personally. We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
+        <p class="contact-form-trust">At Salt Creek Advisory, Jack and Connor read every message personally. We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
         <p class="contact-status" id="contactStatus" role="alert" aria-live="assertive" tabindex="-1"></p>
         <div class="contact-form-actions">
           <button type="submit" class="btn-primary" id="contactSubmit">Send Message</button>
@@ -179,7 +203,7 @@
       <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog" width="400" height="210" loading="lazy" decoding="async">
       <span class="footer-brand">Salt Creek Advisory LLC</span>
       <span class="footer-tagline">On Your Side</span>
-      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side M&amp;A advisory. We represent owners only. Midwestern roots, national reach.</p>
       <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
     </div>
     <div class="footer-col">
@@ -188,14 +212,16 @@
       <a href="sectors">Sector Expertise</a>
       <a href="preschool-childcare-ma-advisor">Preschool &amp; Childcare M&amp;A</a>
       <a href="msp-ma-advisor">MSP &amp; IT Services M&amp;A</a>
+      <a href="industrials-ma-advisor">Industrials &amp; Manufacturing M&amp;A</a>
+      <a href="business-services-ma-advisor">Business Services M&amp;A</a>
       <a href="pet-care-ma-advisor">Dog Daycare &amp; Pet Care M&amp;A</a>
       <a href="process">Our Process</a>
-      <a href="team">The Partners</a>
+      <a href="team">The Principals</a>
     </div>
     <div class="footer-col">
       <span class="footer-col-title">Connect</span>
       <a href="investors">For Investors</a>
-      <a href="podcast">The Making Of Hosted By Jack Pitts</a>
+      <a href="podcast">The Making Of Hosted by Jack Pitts</a>
       <a href="faq">Owner FAQ</a>
       <a href="articles">Insights</a>
       <a href="capabilities">Capabilities</a>
@@ -211,7 +237,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
+    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale of their companies. We represent sellers only: we do not take buy-side engagements, we do not represent buyers, and we do not accept fees or other compensation from buyers. We are not a chartered bank or depository institution, we do not accept deposits, and nothing we offer is FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the federal M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, added by the Consolidated Appropriations Act, 2023 and effective March 29, 2023. Under that provision, &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when it effects securities transactions solely in connection with the transfer of ownership of an &ldquo;eligible privately held company&rdquo; and reasonably believes the buyer will control the business and be active in its management afterward. An eligible privately held company is one with no class of securities registered with, or reporting to, the SEC that, in the fiscal year before the engagement, had EBITDA of less than $25,000,000 or gross revenues of less than $250,000,000 (amounts subject to periodic inflation adjustment). The exemption is not available to a broker that receives, holds, transmits, or has custody of the funds or securities being exchanged; acts for an issuer in a public offering; acts in a transaction involving a shell company; provides financing, or helps arrange third-party financing without complying with applicable law and disclosing its compensation in writing; represents both buyer and seller without clear written disclosure and the written consent of both; facilitates a transaction with a group of buyers it helped form; transfers ownership to a passive buyer; or binds a party to the transaction. Where a transaction would fall outside those conditions, we do not rely on the exemption, and any services that only a registered broker-dealer may perform would have to be provided by a registered broker-dealer, not by us. The federal exemption does not displace state law, and some states separately regulate business brokers and M&amp;A intermediaries. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Valuation ranges, multiples, and market figures on this site, including the valuation tool&rsquo;s estimates and any illustrative examples, are general information drawn from published sources or our own illustrations. They are not Salt Creek Advisory quotes, valuations, appraisals, or fairness opinions, and no figure here is a prediction or guarantee of any deal outcome. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
       <nav class="footer-legal-links" aria-label="Legal">
@@ -223,8 +249,8 @@
   </div>
 </footer>
 
-<script src="main.js?v=b6ea1432"></script>
-<script src="contact.js?v=51bb1c78" defer></script>
+<script src="main.js?v=220786fb"></script>
+<script src="contact.js?v=37d1468e" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

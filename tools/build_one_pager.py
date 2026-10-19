@@ -53,7 +53,7 @@ POLL_INTERVAL_S = 1.0
 PDF_TITLE = "Salt Creek Advisory: Capabilities One-Pager (2026)"
 PDF_AUTHOR = "Salt Creek Advisory"
 PDF_SUBJECT = (
-    "Sell-side and buy-side M&A advisory for privately held companies with "
+    "Sell-side M&A advisory for owners of privately held companies with "
     "$2 million to $75 million in revenue."
 )
 

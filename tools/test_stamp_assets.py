@@ -144,5 +144,69 @@ class StampAssetsTestCase(unittest.TestCase):
         self.assertIn('<a href="about">About</a>', page)
 
 
+class TrimCssTest(unittest.TestCase):
+    """trim_css strips comments and blank lines and touches nothing else."""
+
+    def test_strips_block_and_multiline_comments(self):
+        source = "/* head */\na { color: red; } /* trailing */\n/*\n  long\n  note\n*/\nb { margin: 0; }\n"
+        self.assertEqual(stamp_assets.trim_css(source), "a { color: red; }\nb { margin: 0; }\n")
+
+    def test_drops_blank_and_whitespace_only_lines(self):
+        source = "a { x: 1; }\n\n   \n\t\nb { y: 2; }\n"
+        self.assertEqual(stamp_assets.trim_css(source), "a { x: 1; }\nb { y: 2; }\n")
+
+    def test_keeps_indentation_and_declarations_as_written(self):
+        source = "@media (max-width: 640px) {\n  .a { padding: 0 1rem; }\n}\n"
+        self.assertEqual(stamp_assets.trim_css(source), source)
+
+    def test_comment_markers_inside_strings_survive(self):
+        source = ".q::before { content: \"/* not a comment */\"; }\n.u { background: url('a/*b.png'); }\n"
+        self.assertEqual(stamp_assets.trim_css(source), source)
+
+    def test_comment_between_declarations_on_one_line(self):
+        self.assertEqual(stamp_assets.trim_css("a { x: 1; /* why */ y: 2; }\n"), "a { x: 1;  y: 2; }\n")
+
+    def test_unterminated_comment_raises(self):
+        with self.assertRaises(ValueError):
+            stamp_assets.trim_css("a { x: 1; } /* never closed\n")
+
+
+class TrimmedStylesheetTest(StampAssetsTestCase):
+    """main() writes styles.min.css beside styles.css on every run."""
+
+    def test_writes_trimmed_copy(self):
+        self.write("styles.css", "/* note */\nbody { color: red; }\n\n")
+        self.write("index.html", self.page())
+        code, _ = self.run_stamper()
+        self.assertEqual(code, 0)
+        self.assertEqual(self.read("styles.min.css"), "body { color: red; }\n")
+
+    def test_trimmed_copy_follows_an_edit(self):
+        self.write("index.html", self.page())
+        self.run_stamper()
+        self.write("styles.css", "/* new */\nbody { color: blue; }\n")
+        self.run_stamper()
+        self.assertEqual(self.read("styles.min.css"), "body { color: blue; }\n")
+
+    def test_pages_keep_pointing_at_the_source_name(self):
+        # The Worker serves the trimmed bytes under /styles.css, so the markup,
+        # and every page's sitemap lastmod, stay exactly as they were.
+        self.write("index.html", self.page())
+        self.run_stamper()
+        self.assertIn('href="styles.css?v=', self.read("index.html"))
+        self.assertNotIn("styles.min.css", self.read("index.html"))
+
+    def test_stamp_moves_when_only_a_comment_changes(self):
+        # Harmless either way, but pinned: the stamp hashes the source, so it
+        # never lags the trimmed copy it names.
+        self.write("styles.css", "/* a */\nbody{}\n")
+        self.write("index.html", self.page())
+        self.run_stamper()
+        before = CSS_STAMP.search(self.read("index.html")).group(1)
+        self.write("styles.css", "/* b */\nbody{}\n")
+        self.run_stamper()
+        self.assertNotEqual(before, CSS_STAMP.search(self.read("index.html")).group(1))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

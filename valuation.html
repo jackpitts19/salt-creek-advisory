@@ -6,12 +6,12 @@
   <meta name="color-scheme" content="only light" />
   <meta name="theme-color" content="#07111a" />
   <title>Business Valuation Tool | What Is My Business Worth?</title>
-  <meta name="description" content="Free business valuation tool. Answer a few questions and get a ballpark value range in about a minute, built from published industry multiples." />
+  <meta name="description" content="Free business valuation tool. Answer a few questions and get a ballpark value range in about two minutes, built from published industry multiples." />
   <link rel="canonical" href="https://saltcreekadvisory.com/valuation" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Salt Creek Advisory" />
   <meta property="og:title" content="Business Valuation Tool | What Is My Business Worth? | Salt Creek" />
-  <meta property="og:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from published industry transaction multiple ranges." />
+  <meta property="og:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about two minutes, built from published industry transaction multiple ranges." />
   <meta property="og:url" content="https://saltcreekadvisory.com/valuation" />
   <meta property="og:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -21,14 +21,14 @@
   <meta property="og:locale" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Business Valuation Tool | What Is My Business Worth? | Salt Creek" />
-  <meta name="twitter:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about a minute, built from published industry transaction multiple ranges." />
+  <meta name="twitter:description" content="Free business valuation tool. Answer a few quick questions and get a ballpark value range for your business in about two minutes, built from published industry transaction multiple ranges." />
   <meta name="twitter:image" content="https://saltcreekadvisory.com/og-image.jpg" />
   <meta name="twitter:image:alt" content="Salt Creek Advisory, lower middle market M&amp;A advisory" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=f53589e4" />
+  <link rel="stylesheet" href="styles.css?v=e47b699b" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -38,7 +38,19 @@
   "name": "Business Valuation Tool",
   "isPartOf": { "@id": "https://saltcreekadvisory.com/#website" },
   "about": { "@id": "https://saltcreekadvisory.com/valuation#tool" },
-  "publisher": { "@id": "https://saltcreekadvisory.com/#organization" },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://saltcreekadvisory.com/#organization",
+    "name": "Salt Creek Advisory",
+    "url": "https://saltcreekadvisory.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://saltcreekadvisory.com/logo-full.png"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/salt-creek-advisory/"
+    ]
+  },
   "mainEntity": [
     {
       "@type": "Question",
@@ -117,6 +129,7 @@
   </button>
 </nav>
 <nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
+  <a href="valuation" class="nav-drawer-cta" aria-current="page">Value My Business</a>
   <a href="about">About</a>
   <a href="sectors">Sectors</a>
   <a href="process">Process</a>
@@ -127,21 +140,25 @@
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
-  <a href="valuation" aria-current="page">Value My Business</a>
 </nav>
 
 <main id="main" tabindex="-1">
 <section class="page-hero">
   <div class="wrap">
     <span class="eyebrow">Free Valuation Tool</span>
-    <h1 class="page-hero-h1">What is your business<br><em>actually worth?</em></h1>
-    <p class="page-hero-sub">A dozen quick dropdowns. About two minutes. A ballpark range built from published industry transaction multiple ranges, and an honest conversation if you want one.</p>
+    <h1 class="page-hero-h1">What is your business <br><em>actually worth?</em></h1>
+    <p class="page-hero-sub">A dozen quick dropdowns, then your name and email. About two minutes. A ballpark range built from published industry transaction multiple ranges, and an honest conversation if you want one.</p>
   </div>
 </section>
 
 <section class="val">
   <div class="val-card">
-    <div class="val-progress" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+    <ol class="val-progress" aria-label="Steps">
+      <li class="on" aria-current="step">Basics</li>
+      <li>Details</li>
+      <li>Name and email</li>
+      <li>Your range</li>
+    </ol>
 
     <h2 class="sr-only">Business Valuation Estimator</h2>
 
@@ -208,9 +225,8 @@
       <p class="val-help">Profit means earnings before interest, taxes, depreciation and amortization. The pay question matters more than it looks: a buyer has to hire someone to do your job, so if your own pay is still in that number, we set aside a market salary before pricing the business. A rough number is fine, and if you leave profit blank, we&rsquo;ll estimate from typical margins in your industry.</p>
       <div class="val-field" style="margin-top:1.5rem;">
         <label class="val-label" for="vWebsite">Company Website <span class="val-label-hint">(optional, helps us give you a sharper read)</span></label>
-        <input id="vWebsite" class="val-input" type="text" placeholder="yourcompany.com" autocomplete="off">
+        <input id="vWebsite" class="val-input" type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="yourcompany.com" autocomplete="off">
       </div>
-      <p class="val-error-msg" id="err1" role="alert"></p>
       <div class="val-actions">
         <span></span>
         <button class="btn-primary" id="toStep2" type="button">Continue &#8594;</button>
@@ -274,7 +290,6 @@
           </select>
         </div>
       </div>
-      <p class="val-error-msg" id="err2" role="alert"></p>
       <div class="val-actions">
         <button class="btn-ghost val-back" id="back1" type="button">&#8592; Back</button>
         <button class="btn-primary" id="toStep3" type="button">Continue &#8594;</button>
@@ -283,22 +298,23 @@
 
     <div class="val-step" data-step="3">
       <span class="val-step-kicker">Step 3 of 4</span>
-      <h3 class="val-step-title" tabindex="-1">Where should we send the full breakdown?</h3>
+      <h3 class="val-step-title" tabindex="-1">Who is this estimate for?</h3>
+      <p class="val-help" style="margin:-1rem 0 1.75rem;">Your range appears on the next screen. Your answers go to Jack and Connor, who personally review every submission.</p>
       <div class="val-grid2">
         <div class="val-field">
           <label class="val-label" for="vName">Your Name</label>
-          <input id="vName" class="val-input" type="text" placeholder="First and last name" autocomplete="name">
+          <input id="vName" class="val-input" type="text" placeholder="First and last name" autocomplete="name" autocapitalize="words">
         </div>
         <div class="val-field">
           <label class="val-label" for="vEmail">Email</label>
-          <input id="vEmail" class="val-input" type="email" placeholder="you@company.com" autocomplete="email">
+          <input id="vEmail" class="val-input" type="email" placeholder="you@company.com" autocomplete="email" autocapitalize="off" spellcheck="false">
         </div>
       </div>
       <div class="val-field">
         <label class="val-label" for="vPhone">Phone <span class="val-label-hint">(optional)</span></label>
         <input id="vPhone" class="val-input" type="tel" placeholder="(555) 555-5555" autocomplete="tel">
       </div>
-      <p class="val-trust">Your range appears instantly on the next screen. Jack and Connor personally review every submission. We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
+      <p class="val-trust">We do not sell your information, and we never hand it to buyers or lenders without your permission. See our <a href="privacy">Privacy Policy</a>.</p>
       <div class="val-consent">
         <p class="val-consent-assent">By clicking <strong>Show My Range</strong> you agree to our <a href="terms" target="_blank" rel="noopener">Terms of Use</a> and <a href="privacy" target="_blank" rel="noopener">Privacy Policy</a>, including the section titled <a href="terms#submissions" target="_blank" rel="noopener">What Sending Us Information Does and Does Not Do</a>.</p>
         <label class="val-consent-check" for="vConsentPhone">
@@ -306,24 +322,23 @@
           <span>Optional. I agree that Salt Creek Advisory may call and text me at the number I provided about my estimate and its services, including by automated dialing or prerecorded message. I do not have to agree to this to get my estimate. Message and data rates may apply. Reply STOP to stop texts.</span>
         </label>
       </div>
-      <p class="val-error-msg" id="err3" role="alert"></p>
       <div class="val-actions">
         <button class="btn-ghost val-back" id="back2" type="button">&#8592; Back</button>
         <button class="btn-primary" id="calcBtn" type="button">Show My Range</button>
       </div>
     </div>
 
-    <div class="val-step val-result" data-step="4" id="valResult">
+    <div class="val-step val-result" data-step="4" id="valResult" hidden data-nosnippet>
       <div id="valNumbers">
         <span class="val-result-eyebrow" tabindex="-1">Estimated Value Range</span>
-        <div class="val-range"><span id="valLow">$0</span><span class="val-range-dash">&ndash;</span><span id="valHigh">$0</span></div>
+        <div class="val-range"><span id="valLow"></span><span class="val-range-dash">&ndash;</span><span id="valHigh"></span></div>
         <div class="val-bar"><div class="val-bar-fill"></div></div>
         <div class="val-bar-labels"><span>Conservative</span><span>With a competitive process</span></div>
         <p class="val-note" id="valNote"></p>
       </div>
       <div id="valBigLook" style="display:none;">
         <span class="val-result-eyebrow" tabindex="-1">This One Deserves a Closer Look</span>
-        <p class="val-biglook-msg">Honestly? At your size, a calculator range isn&rsquo;t worth your time. Businesses like yours trade on things a tool can&rsquo;t see: buyer appetite, sector momentum, deal structure, and how the story gets told. Rather than hand you a number that could be off by tens of millions in either direction, we&rsquo;d like to take a real look. That conversation is free, confidential, and worth it at your scale.</p>
+        <p class="val-biglook-msg" id="valBigLookMsg"></p>
       </div>
       <div id="valSmallLook" style="display:none;">
         <span class="val-result-eyebrow" tabindex="-1">Let&rsquo;s Talk Before We Put a Number On It</span>
@@ -337,6 +352,19 @@
       </div>
 
       <p class="val-cta-line">A calculator can see eight inputs. Buyers look at a hundred. This range is a starting point. The only way to know what your business is really worth is a conversation with someone who has sat on the buyer&rsquo;s side of the table. It&rsquo;s free, it&rsquo;s confidential, and it&rsquo;s with <a href="team">the two people whose names are on the firm</a>. We personally review every submission, including your website.</p>
+      <div class="contact-persons val-persons">
+        <div class="contact-person">
+          <img class="val-person-photo" src="jack-headshot.webp" alt="Jack Pitts, Co-Founder and Principal, Salt Creek Advisory" width="628" height="784" loading="lazy" decoding="async" data-fallback="jack-headshot.jpg">
+          <span class="contact-person-name">Jack Pitts</span>
+          <a href="mailto:jack@saltcreekadvisory.com" class="contact-email-addr">jack@saltcreekadvisory.com</a>
+        </div>
+        <div class="contact-person-divider" aria-hidden="true"></div>
+        <div class="contact-person">
+          <img class="val-person-photo" src="connor-headshot.webp" alt="Connor Pitts, Co-Founder and Principal, Salt Creek Advisory" width="600" height="800" loading="lazy" decoding="async" data-fallback="connor-headshot.jpg">
+          <span class="contact-person-name">Connor Pitts</span>
+          <a href="mailto:connor@saltcreekadvisory.com" class="contact-email-addr">connor@saltcreekadvisory.com</a>
+        </div>
+      </div>
       <p class="val-error-msg val-lead-warning" id="valLeadWarning" role="status"></p>
       <div class="val-result-actions">
         <a href="https://helmiq.net/book/jack-pitts" target="_blank" rel="noopener" class="btn-primary">Schedule a Call</a>
@@ -379,7 +407,7 @@
         </div>
         <div class="faq-item">
           <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">Is this a real valuation I can use with a buyer?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
-          <div class="faq-a"><div class="faq-a-inner">No. This is a directional estimate for planning purposes, not a formal valuation, fairness opinion, or offer. A real valuation requires a review of your actual financial statements and a conversation about your business. That conversation is free.</div></div>
+          <div class="faq-a"><div class="faq-a-inner">No. This is a directional estimate for planning purposes, not a <a href="articles/best-business-valuation-firms-lower-middle-market-2026">formal valuation</a>, fairness opinion, or offer. A real valuation requires a review of your actual financial statements and a conversation about your business. That conversation is free.</div></div>
         </div>
         <div class="faq-item">
           <h3 class="faq-q-h"><button class="faq-q" aria-expanded="false">Is my information kept confidential?<span class="faq-q-icon" aria-hidden="true"></span></button></h3>
@@ -399,7 +427,7 @@
       <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog" width="400" height="210" loading="lazy" decoding="async">
       <span class="footer-brand">Salt Creek Advisory LLC</span>
       <span class="footer-tagline">On Your Side</span>
-      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side M&amp;A advisory. We represent owners only. Midwestern roots, national reach.</p>
       <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
     </div>
     <div class="footer-col">
@@ -408,14 +436,16 @@
       <a href="sectors">Sector Expertise</a>
       <a href="preschool-childcare-ma-advisor">Preschool &amp; Childcare M&amp;A</a>
       <a href="msp-ma-advisor">MSP &amp; IT Services M&amp;A</a>
+      <a href="industrials-ma-advisor">Industrials &amp; Manufacturing M&amp;A</a>
+      <a href="business-services-ma-advisor">Business Services M&amp;A</a>
       <a href="pet-care-ma-advisor">Dog Daycare &amp; Pet Care M&amp;A</a>
       <a href="process">Our Process</a>
-      <a href="team">The Partners</a>
+      <a href="team">The Principals</a>
     </div>
     <div class="footer-col">
       <span class="footer-col-title">Connect</span>
       <a href="investors">For Investors</a>
-      <a href="podcast">The Making Of Hosted By Jack Pitts</a>
+      <a href="podcast">The Making Of Hosted by Jack Pitts</a>
       <a href="faq">Owner FAQ</a>
       <a href="articles">Insights</a>
       <a href="capabilities">Capabilities</a>
@@ -431,7 +461,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors.</p>
+    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale of their companies. We represent sellers only: we do not take buy-side engagements, we do not represent buyers, and we do not accept fees or other compensation from buyers. We are not a chartered bank or depository institution, we do not accept deposits, and nothing we offer is FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the federal M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, added by the Consolidated Appropriations Act, 2023 and effective March 29, 2023. Under that provision, &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when it effects securities transactions solely in connection with the transfer of ownership of an &ldquo;eligible privately held company&rdquo; and reasonably believes the buyer will control the business and be active in its management afterward. An eligible privately held company is one with no class of securities registered with, or reporting to, the SEC that, in the fiscal year before the engagement, had EBITDA of less than $25,000,000 or gross revenues of less than $250,000,000 (amounts subject to periodic inflation adjustment). The exemption is not available to a broker that receives, holds, transmits, or has custody of the funds or securities being exchanged; acts for an issuer in a public offering; acts in a transaction involving a shell company; provides financing, or helps arrange third-party financing without complying with applicable law and disclosing its compensation in writing; represents both buyer and seller without clear written disclosure and the written consent of both; facilitates a transaction with a group of buyers it helped form; transfers ownership to a passive buyer; or binds a party to the transaction. Where a transaction would fall outside those conditions, we do not rely on the exemption, and any services that only a registered broker-dealer may perform would have to be provided by a registered broker-dealer, not by us. The federal exemption does not displace state law, and some states separately regulate business brokers and M&amp;A intermediaries. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Valuation ranges, multiples, and market figures on this site, including the valuation tool&rsquo;s estimates and any illustrative examples, are general information drawn from published sources or our own illustrations. They are not Salt Creek Advisory quotes, valuations, appraisals, or fairness opinions, and no figure here is a prediction or guarantee of any deal outcome. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
       <nav class="footer-legal-links" aria-label="Legal">
@@ -443,8 +473,8 @@
   </div>
 </footer>
 
-<script src="main.js?v=b6ea1432"></script>
-<script src="valuation.js?v=f6a1d3ca" defer></script>
+<script src="main.js?v=220786fb"></script>
+<script src="valuation.js?v=19339ea6" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

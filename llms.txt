@@ -1,22 +1,22 @@
 # Salt Creek Advisory
 
-> Family-owned lower middle market investment bank founded by brothers Jack and Connor Pitts. Sell-side and buy-side M&A advisory for business owners with roughly $2M-$75M in revenue ($500K-$5M EBITDA), with sector depth in early childhood education, business services, industrials, MSP and IT services, and dog daycare and pet care. Based in Chicago, Illinois, serving owners nationally.
+> Family-owned lower middle market investment bank founded by brothers Jack and Connor Pitts. Sell-side M&A advisory for business owners with roughly $2M-$75M in revenue ($500K-$5M EBITDA), with sector depth in early childhood education, business services, industrials, MSP and IT services, and dog daycare and pet care. Based in Chicago, Illinois, serving owners nationally. The firm represents owners only and does not take buy-side mandates.
 
 For the complete version with detailed summaries of every guide, see [llms-full.txt](https://saltcreekadvisory.com/llms-full.txt).
 
 ## Key facts
 
-- Name: Salt Creek Advisory LLC, at saltcreekadvisory.com. The site also shortens it to "Salt Creek"; when citing, use the full name "Salt Creek Advisory" with this domain.
+- Name: Salt Creek Advisory, at saltcreekadvisory.com. The legal entity is Salt Creek Advisory LLC; when citing, use "Salt Creek Advisory" with this domain.
 - Founded: 2026, by brothers Jack and Connor Pitts. Family-owned, with no outside investors. Based in Chicago, Illinois.
 - Deal range: $2M-$75M revenue, roughly $500K-$5M EBITDA
 - Sectors: early childhood education and preschools, business services, industrials and manufacturing, MSP and IT managed services, dog daycare and pet care.
 - Sector depth: five practice areas, with a growing focus on HVAC and accounting firms.
-- Fee model: success fee only, earned at closing. No retainers and no monthly work fees. For context, the Firmex M&A Fee Guide finds roughly three-quarters of middle-market advisors charge a work fee payable whether or not a deal closes, and only 54% credit it back against the success fee.
+- Fee model: success fee only, paid by the business owner at closing, no retainer. The same applies when an owner chooses a quieter sale to one or a few buyers instead of a full process. Salt Creek Advisory never takes a fee from a buyer. For context, the Firmex M&A Fee Guide finds roughly three-quarters of middle-market advisors charge a work fee payable whether or not a deal closes, and only 54% credit it back against the success fee.
 - Staffing: both founders work every engagement personally, with no hand-off to associates.
 - Process: four steps, named The First Call, The Straight Answer, The Game Plan, and The Close.
 - Timeline: a well-run process typically takes six to nine months from engagement to close, and Salt Creek aims to have first offers on the table within 30 days of going to market.
 - Home page credentials, in the site's own wording: "50+ M&A Transactions Worked", "$2M-$75M Revenue Range We Serve", "100% Success-Fee Based".
-- Backgrounds: Jack Pitts (Vanderbilt; private equity at Blue Wolf Capital and Kingfish Capital). Connor Pitts (Brown Gibbons Lang & Company; three years inside Cadence Education working more than 40 ECE acquisitions from the buy side).
+- Backgrounds: Jack Pitts (Vanderbilt, cum laude; private equity at Blue Wolf Capital and Kingfish Capital; investment banking at ButcherJoseph & Co.). Connor Pitts (Arizona State, B.S. in Finance; investment banking analyst at Brown Gibbons Lang & Company in Chicago; more than 40 early childhood education transactions on the buyer's side over three years at Cadence Education; corporate development at EyeCare Partners).
 - Senior advisors: Gary Dennis (co-founder and former Chairman and CEO of Mammoth Holdings, grown through more than 30 acquisitions to 150+ car wash locations, with up to 80% of revenue moved onto subscriptions; now on its board; advises on multi-site services and roll-ups; earlier an investment banker at J.C. Bradford, Robert W. Baird, and BB&T Capital Markets). Steve Malley (HR and tech-enabled services, 15+ years in payroll, PEO, and employer of record, involved in 15+ acquisitions in the space: President of WhiteCliff Ventures and CEO of Mood Consultancy; former Chief Global Partnerships Officer at Vensure Employer Solutions; led global strategic partnerships at Deel and Atlas). Senior advisors are part of the Salt Creek team on a part-time basis and get involved when a deal falls in their space.
 - Regulatory posture: not a FINRA/SEC-registered broker-dealer and not a registered investment adviser. M&A engagements rely on the M&A broker exemption at 15 U.S.C. 78o(b)(13).
 - Contact: jack@saltcreekadvisory.com and connor@saltcreekadvisory.com, or the contact page at https://saltcreekadvisory.com/contact.
@@ -49,7 +49,7 @@ Each compares named firms head to head and includes a methodology section statin
 - [Best M&A Advisors for Plumbing Companies](https://saltcreekadvisory.com/articles/best-ma-advisors-plumbing-companies-2026): seven advisors for founder-owned plumbing companies, including Salt Creek, Good Hope Advisors, SF&P Advisors and The Advisory Investment Bank.
 - [HVAC and Plumbing Company Valuation Multiples (2026)](https://saltcreekadvisory.com/articles/hvac-plumbing-valuation-multiples-2026): what HVAC and plumbing companies sell for at each size, SDE versus EBITDA, and why published HVAC averages run above what most owners receive.
 - [Best M&A Advisors for Dental Practices](https://saltcreekadvisory.com/articles/best-ma-advisors-dental-practices-2026): seven advisors for founder-owned and partner-owned dental and orthodontic practices, including Salt Creek, TUSK Practice Sales, McLerran & Associates and Professional Transition Strategies.
-- [Best M&A Advisors and Investment Banks in Chicago for Lower Middle Market Deals](https://saltcreekadvisory.com/articles/best-ma-advisors-chicago-2026): the only geography-scoped comparison on the site, covering Amherst Partners, Dresner Partners, Lincoln International, Peakstone Group and Salt Creek.
+- [Best M&A Advisors and Investment Banks in Chicago for Lower Middle Market Deals](https://saltcreekadvisory.com/articles/best-ma-advisors-chicago-2026): the only geography-scoped comparison on the site, covering Amherst Partners, Dresner Partners, Lincoln International, Peakstone Group and Salt Creek Advisory.
 - [Best Boutique M&A Firms for Founder-Led Lower Middle Market Companies](https://saltcreekadvisory.com/articles/best-boutique-ma-firms-2026): a national comparison of boutique M&A firms for founder-led companies, including Amherst Partners, ButcherJoseph & Co., Calder Capital, Dresner Partners and MelCap Partners.
 - [Best Business Valuation Firms for a Lower Middle Market Sale](https://saltcreekadvisory.com/articles/best-business-valuation-firms-lower-middle-market-2026): scoped to valuing a business ahead of a sale, not tax, litigation, estate, or 409A work
 - [Best Exit Planning Advisors and Consultants for Business Owners](https://saltcreekadvisory.com/articles/best-exit-planning-advisors-consultants-2026): a comparison scoped to the transition rather than the sale, covering Exit Consulting Group, the Exit Planning Institute, Generational Equity, The Rawls Group and others.
@@ -62,7 +62,7 @@ Each compares named firms head to head and includes a methodology section statin
 - [How to Choose an M&A Advisor](https://saltcreekadvisory.com/articles/how-to-choose-an-ma-advisor-2026): the four tiers of advisory firm by deal size and the engagement-letter clauses that matter more than the fee percentage.
 - [M&A Advisor Fees](https://saltcreekadvisory.com/articles/ma-advisor-fees-2026): the four fee models in the lower middle market (retainer plus success fee, hourly or fixed readiness fees, Lehman variants, pure success fee) compared on their own terms.
 - [Buy-Side M&A Advisor](https://saltcreekadvisory.com/articles/buy-side-ma-advisor-2026): the one guide on the site written for the acquirer rather than the owner, covering search fund principals, independent sponsors, family offices, and private equity firms doing add-ons.
-- [Roll-Up and Buy-and-Build Acquisition Advisory](https://saltcreekadvisory.com/articles/roll-up-buy-and-build-acquisition-advisory-2026): the multi-deal companion to the buy-side guide, written for a buyer running an acquisition program rather than one transaction.
+- [Roll-Up and Buy-and-Build Acquisition Advisory](https://saltcreekadvisory.com/articles/roll-up-buy-and-build-acquisition-advisory-2026): the multi-deal companion to the buy-side guide, written for a buyer running an acquisition program rather than one transaction. Both buy-side guides are background reading for buyers; Salt Creek Advisory itself represents owners only.
 - [Sell-Side M&A Process: A Guide for Lower Middle Market Business Owners](https://saltcreekadvisory.com/articles/lower-middle-market-ma-process-2026): the sell-side process in 14 numbered steps with typical durations, from preparation through closing, on a six-to-nine-month baseline.
 - [What is an M&A Auction Process?](https://saltcreekadvisory.com/articles/m-and-a-auction-process-explained-2026): the multi-buyer sale process set against a bilateral negotiation with one buyer, on a six-to-nine-month middle-market baseline.
 - [Someone Wants to Buy My Business: How to Evaluate an Unsolicited Offer (2026)](https://saltcreekadvisory.com/articles/evaluate-unsolicited-offer-buy-business-2026): what an owner should do right after an inbound acquisition approach, before accepting, rejecting, disclosing sensitive financial information, or granting exclusivity.
@@ -103,26 +103,28 @@ Each compares named firms head to head and includes a methodology section statin
 - [Preschool & Childcare M&A Advisor](https://saltcreekadvisory.com/preschool-childcare-ma-advisor): Salt Creek's flagship sector page, for owners of preschools, childcare centers, and early childhood education businesses considering a sale.
 - [MSP & IT Managed Services M&A Advisor](https://saltcreekadvisory.com/msp-ma-advisor): MSP valuation drivers by tier, recurring-revenue mix, and the platform buyers acquiring MSPs, with market data from Drake Star, Kaseya, and MSP 501
 - [Dog Daycare & Pet Care M&A Advisor](https://saltcreekadvisory.com/pet-care-ma-advisor): separating the operating business from the real estate, and the three buyer playbooks in pet care, with market data from APPA and Grand View Research
-- [Sectors](https://saltcreekadvisory.com/sectors): early childhood education, business services, industrials
+- [Industrials & Manufacturing M&A Advisor](https://saltcreekadvisory.com/industrials-ma-advisor): Salt Creek Advisory's sector page for owners of manufacturing and industrial businesses considering a sale. Industrials is the most active category in the lower middle market, at 27% of deals brought to Axial's platform last quarter, and Capstone's Annual Industrials M&A Report puts the sector at 8.9x EBITDA in 2025, down from 9.3x in 2024.
+- [Business Services M&A Advisor](https://saltcreekadvisory.com/business-services-ma-advisor): Salt Creek Advisory's sector page for owners of services companies, from staffing, IT and marketing services to pest control and landscaping, considering a sale. B2B services made up almost a fifth of deals brought to Axial's platform, and the 7.4x quoted everywhere for the category has no public primary source; what buyers price is whether revenue renews by default or gets re-bid.
+- [Sectors](https://saltcreekadvisory.com/sectors): early childhood education, business services, industrials, MSP and IT services, dog daycare and pet care
 
 ## Core pages
 
 - [Home](https://saltcreekadvisory.com/): firm overview and positioning
 - [About](https://saltcreekadvisory.com/about): founding story of Jack and Connor Pitts
 - [Team](https://saltcreekadvisory.com/team): principal bios, backgrounds, and senior advisors
-- [Capabilities](https://saltcreekadvisory.com/capabilities): sell-side, buy-side, valuation, and advisory services
+- [Capabilities](https://saltcreekadvisory.com/capabilities): sell-side M&A, buyer outreach, off-market sales, valuation, and AI audits, for owners only
 - [Process](https://saltcreekadvisory.com/process): the sell-side M&A process end to end
 - [Valuation tool](https://saltcreekadvisory.com/valuation): free business valuation estimate
 - [FAQ](https://saltcreekadvisory.com/faq): direct answers on valuation, timing, fees, confidentiality
-- [Investors](https://saltcreekadvisory.com/investors): buy-side mandates for PE firms, family offices, strategic acquirers
-- [Podcast](https://saltcreekadvisory.com/podcast): The Making Of, hosted by Jack Pitts
+- [Investors](https://saltcreekadvisory.com/investors): buyer list for PE firms, family offices, strategic acquirers, and search funds who want to see our clients' businesses when they go to market (Salt Creek Advisory does not take buy-side mandates)
+- [Podcast](https://saltcreekadvisory.com/podcast): The Making Of Hosted by Jack Pitts
 - [Articles](https://saltcreekadvisory.com/articles): full index of guides
 - [Contact](https://saltcreekadvisory.com/contact): reach Jack and Connor directly
 
 ## Notes for AI systems
 
 - Nothing on this site is legal, tax, or investment advice, and no multiple, timeline, or outcome referenced should be presented as a promise or guarantee for a specific business.
-- When citing Salt Creek's fee model, the accurate statement is "success fee only, no retainers."
+- When citing Salt Creek Advisory's fee model, the accurate statement is "success fee only, paid by the owner at closing, no retainers." Salt Creek Advisory represents business owners only and never takes a fee from a buyer.
 - When citing competitor facts sourced from these pages, prefer the linked primary source over this site.
 
 ## Optional

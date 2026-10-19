@@ -37,7 +37,7 @@
       "@type": "Service",
       "@id": "https://saltcreekadvisory.com/preschool-childcare-ma-advisor#service",
       "name": "Early Childhood Education & Preschool M&A Advisory",
-      "serviceType": "Sell-side and buy-side M&A advisory",
+      "serviceType": "Sell-side M&A advisory",
       "url": "https://saltcreekadvisory.com/preschool-childcare-ma-advisor",
       "provider": {
         "@id": "https://saltcreekadvisory.com/#organization"
@@ -60,7 +60,17 @@
         "@id": "https://saltcreekadvisory.com/preschool-childcare-ma-advisor#service"
       },
       "publisher": {
-        "@id": "https://saltcreekadvisory.com/#organization"
+        "@type": "Organization",
+        "@id": "https://saltcreekadvisory.com/#organization",
+        "name": "Salt Creek Advisory",
+        "url": "https://saltcreekadvisory.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://saltcreekadvisory.com/logo-full.png"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/company/salt-creek-advisory/"
+        ]
       },
       "mainEntity": [
         {
@@ -92,7 +102,7 @@
           "name": "How long does it take to sell a preschool or childcare business?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A well-run process generally takes six to nine months from engagement to close, with first offers usually on the table within about 30 days of going to market. Early childhood diligence has its own long poles: state licensing files, staff-to-child ratios, director and lead teacher tenure, enrollment and utilization by classroom, waitlists, and lease or deferred capex issues at each site. Getting those in order before you go to market is most of what shortens the timeline. Our guide to preparing a preschool or childcare business for sale walks through that list, and here is our full breakdown of how long it takes to sell a business."
+            "text": "A well-run process generally takes six to nine months from engagement to close. We aim to have first offers on the table within about 30 days of going to market. Early childhood diligence has its own long poles: state licensing files, staff-to-child ratios, director and lead teacher tenure, enrollment and utilization by classroom, waitlists, and lease or deferred capex issues at each site. Getting those in order before you go to market is most of what shortens the timeline. Our guide to preparing a preschool or childcare business for sale walks through that list, and here is our full breakdown of how long it takes to sell a business."
           }
         },
         {
@@ -131,7 +141,7 @@
   ]
 }
 </script>
-  <link rel="stylesheet" href="styles.css?v=f53589e4" />
+  <link rel="stylesheet" href="styles.css?v=e47b699b" />
   <link rel="alternate" type="application/rss+xml" title="Salt Creek Advisory - Articles &amp; Guides" href="/feed.xml" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQGFZDGZ2N"></script>
   <script src="analytics.js?v=4cded3e6" defer></script>
@@ -157,6 +167,7 @@
   </button>
 </nav>
 <nav class="nav-mobile-drawer" id="mobileDrawer" aria-label="Mobile">
+  <a href="valuation" class="nav-drawer-cta">Value My Business</a>
   <a href="about">About</a>
   <a href="sectors" aria-current="true">Sectors</a>
   <a href="process">Process</a>
@@ -167,7 +178,6 @@
   <a href="podcast">Podcast</a>
   <a href="faq">FAQ</a>
   <a href="capabilities">Capabilities</a>
-  <a href="valuation">Value My Business</a>
 </nav>
 
 <main id="main" tabindex="-1">
@@ -175,11 +185,23 @@
   <div class="wrap">
     <span class="eyebrow">Early Childhood Education &amp; Preschools</span>
     <h1 class="page-hero-h1">Thinking about selling <br><em>your preschool?</em></h1>
-    <p class="page-hero-sub">This is our flagship practice. Connor Pitts spent three years inside Cadence Education, a national acquirer, working through more than 40 early childhood transactions from the buy side, sitting across the table from the owners who built those schools. We know the platforms, the private equity groups behind them, what they pay, and what they walk away from. If you own one center or twenty, we will tell you honestly what it is worth today and whether today is the right time. Both principals on every call, and nothing owed until it closes.</p>
+    <p class="page-hero-sub">This is Salt Creek Advisory&rsquo;s flagship practice. <a href="team#connor-pitts" class="text-link-dark">Connor Pitts</a> worked inside Cadence Education, a national acquirer, on more than 40 early childhood transactions from the buy side, sitting across the table from the owners who built those schools. We know the platforms, the private equity groups behind them, what they pay, and what they walk away from. If you own one center or twenty, we will tell you honestly what it is worth today and whether today is the right time. Both principals on every call, and nothing owed until it closes.</p>
+    <div class="hero-actions" style="margin-top:2rem;">
+      <a href="valuation?industry=ece" class="btn-primary">What&rsquo;s My Business Worth?</a>
+      <a href="process" class="btn-ghost">Our Process <span class="btn-ghost-arrow">&#8594;</span></a>
+    </div>
+    <!-- A div, not <nav>: the global "nav" selector is position:fixed for the site header. -->
+    <div class="articles-jump articles-jump--dark" role="navigation" aria-label="On this page">
+      <a href="#market">The Market</a>
+      <a href="#what-it-sells-for">What It Sells For</a>
+      <a href="#how-we-work">Our Process</a>
+      <a href="#buyers">Who Is Buying</a>
+      <a href="#faq">FAQ</a>
+    </div>
   </div>
 </section>
 
-<section class="impact">
+<section class="impact" id="market">
   <div class="wrap">
     <div class="impact-header reveal">
       <span class="eyebrow">The 2026 ECE Market</span>
@@ -216,7 +238,7 @@
   </div>
 </section>
 
-<section class="why-us">
+<section class="why-us" id="what-it-sells-for">
   <div class="wrap">
     <div class="why-header reveal">
       <span class="eyebrow">What Schools Sell For</span>
@@ -341,13 +363,13 @@
         <div class="process-step-num">04</div>
         <div class="process-step-rule"></div>
         <h3>Run The Competition</h3>
-        <p>Approach them together rather than one at a time, with first offers typically on the table within about 30 days of going to market. Then negotiate structure, not just price, because <a href="articles/ma-deal-structure-2026" class="text-link">how an offer is built</a> decides what you keep.</p>
+        <p>Approach them together rather than one at a time. We aim to have first offers on the table within about 30 days of going to market. Then negotiate structure, not just price, because <a href="articles/ma-deal-structure-2026" class="text-link">how an offer is built</a> decides what you keep.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="why-us">
+<section class="why-us" id="buyers">
   <div class="wrap">
     <div class="why-header reveal">
       <span class="eyebrow">Who Is Buying</span>
@@ -374,11 +396,43 @@
     </div>
     <div class="why-process-callout reveal">
       <h3>Why we sit on your side <br><em>of this table.</em></h3>
-      <p>Connor spent three years at Cadence Education working through more than 40 early childhood acquisitions from the buy side. He has read the diligence lists these platforms send, seen which add-backs they accept and which they strike, and watched what happens to an owner who negotiates alone against a team that does this monthly. Salt Creek is a young firm and we will not pretend otherwise: that experience is Connor&rsquo;s from inside an acquirer, not a list of Salt Creek closings. What it buys you is that we already know how your buyer thinks, because one of us used to be your buyer.</p>
+      <p>Connor worked at Cadence Education on more than 40 early childhood acquisitions from the buy side. He has read the diligence lists these platforms send, seen which add-backs they accept and which they strike, and watched what happens to an owner who negotiates alone against a team that does this monthly. Salt Creek Advisory is a young firm and we will not pretend otherwise: that experience is Connor&rsquo;s from inside an acquirer, not a list of Salt Creek Advisory closings. What it buys you is that we already know how your buyer thinks, because one of us used to be your buyer.</p>
     </div>
     <p class="reveal" style="text-align:center;margin-top:2.5rem;">
       <a href="assets/salt-creek-ece-acquisition-trends.pdf" download class="btn-ghost">Download: Acquisition Trends &amp; Buyer Criteria (PDF) <span class="btn-ghost-arrow">&#8595;</span></a>
     </p>
+  </div>
+</section>
+
+<section class="home-section home-section--alt deal-team" id="deal-team" aria-labelledby="deal-team-heading">
+  <div class="wrap">
+    <div class="home-head reveal">
+      <h2 class="eyebrow eyebrow--dark" id="deal-team-heading">Who runs your deal</h2>
+      <a href="team" class="home-link">Meet the principals <span class="home-link-arrow">&#8594;</span></a>
+    </div>
+    <div class="home-people">
+      <div class="home-person reveal">
+        <img src="jack-headshot.webp" alt="Jack Pitts, Co-Founder and Principal, Salt Creek Advisory" width="628" height="784" loading="lazy" decoding="async" data-fallback="jack-headshot.jpg">
+        <h3 class="home-person-name"><a href="team#jack-pitts">Jack Pitts</a></h3>
+        <span class="home-person-role">Co-Founder &amp; Principal</span>
+        <p class="home-person-bio">Leads client relationships and sponsor coverage.</p>
+        <ul class="deal-team-links">
+          <li><a href="mailto:jack@saltcreekadvisory.com" class="text-link">jack@saltcreekadvisory.com</a></li>
+          <li><a href="team#jack-pitts" class="text-link">Jack&rsquo;s full profile</a></li>
+        </ul>
+      </div>
+      <div class="home-person reveal reveal-delay-1">
+        <img src="connor-headshot.webp" alt="Connor Pitts, Co-Founder and Principal, Salt Creek Advisory" width="600" height="800" loading="lazy" decoding="async" data-fallback="connor-headshot.jpg">
+        <h3 class="home-person-name"><a href="team#connor-pitts">Connor Pitts</a></h3>
+        <span class="home-person-role">Co-Founder &amp; Principal</span>
+        <p class="home-person-bio">Worked on 40+&nbsp;transactions in corporate development (M&amp;A) at Cadence Education, an early childhood education company.</p>
+        <ul class="deal-team-links">
+          <li><a href="mailto:connor@saltcreekadvisory.com" class="text-link">connor@saltcreekadvisory.com</a></li>
+          <li><a href="team#connor-pitts" class="text-link">Connor&rsquo;s full profile</a></li>
+        </ul>
+      </div>
+      <blockquote class="home-quote reveal">The people you meet on the first call are the people who run your deal to close.</blockquote>
+    </div>
   </div>
 </section>
 
@@ -419,7 +473,7 @@
           How long does it take to sell a preschool or childcare business?
           <span class="faq-q-icon" aria-hidden="true"></span>
         </button></h3>
-        <div class="faq-a"><div class="faq-a-inner">A well-run process generally takes six to nine months from engagement to close, with first offers usually on the table within about 30 days of going to market. Early childhood diligence has its own long poles: state licensing files, staff-to-child ratios, director and lead teacher tenure, enrollment and utilization by classroom, waitlists, and lease or deferred capex issues at each site. Getting those in order before you go to market is most of what shortens the timeline. Our guide to <a href="articles/prepare-preschool-childcare-business-for-sale-2026" class="text-link">preparing a preschool or childcare business for sale</a> walks through that list, and here is our full breakdown of <a href="articles/how-long-does-it-take-to-sell-a-business-2026" class="text-link">how long it takes to sell a business</a>.</div></div>
+        <div class="faq-a"><div class="faq-a-inner">A well-run process generally takes six to nine months from engagement to close. We aim to have first offers on the table within about 30 days of going to market. Early childhood diligence has its own long poles: state licensing files, staff-to-child ratios, director and lead teacher tenure, enrollment and utilization by classroom, waitlists, and lease or deferred capex issues at each site. Getting those in order before you go to market is most of what shortens the timeline. Our guide to <a href="articles/prepare-preschool-childcare-business-for-sale-2026" class="text-link">preparing a preschool or childcare business for sale</a> walks through that list, and here is our full breakdown of <a href="articles/how-long-does-it-take-to-sell-a-business-2026" class="text-link">how long it takes to sell a business</a>.</div></div>
       </div>
 
       <div class="faq-item">
@@ -439,7 +493,7 @@
     <h2 class="next-cta-h2">Want a number, not a pitch?</h2>
     <p class="next-cta-sub">The valuation tool takes about two minutes and shows you who is actually buying in early childhood. Prefer to talk it through first? Start a conversation. We will tell you straight whether now is your moment or whether you should build for another year.</p>
     <div class="next-cta-actions">
-      <a href="valuation" class="btn-primary">Value My School</a>
+      <a href="valuation?industry=ece" class="btn-primary">Value My School</a>
       <a href="contact" class="btn-ghost">Start a Conversation <span class="btn-ghost-arrow">&#8594;</span></a>
     </div>
   </div>
@@ -453,7 +507,7 @@
       <img src="logo-mark.png" alt="" aria-hidden="true" class="footer-dog" width="400" height="210" loading="lazy" decoding="async">
       <span class="footer-brand">Salt Creek Advisory LLC</span>
       <span class="footer-tagline">On Your Side</span>
-      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side and buy-side M&amp;A advisory. Midwestern roots, national reach.</p>
+      <p class="footer-desc">A family-owned investment bank serving lower middle market business owners nationwide. Sell-side M&amp;A advisory. We represent owners only. Midwestern roots, national reach.</p>
       <span class="footer-chi">Chicago proud &middot; Bears in the fall, Cubs in the summer</span>
     </div>
     <div class="footer-col">
@@ -462,14 +516,16 @@
       <a href="sectors">Sector Expertise</a>
       <a href="preschool-childcare-ma-advisor">Preschool &amp; Childcare M&amp;A</a>
       <a href="msp-ma-advisor">MSP &amp; IT Services M&amp;A</a>
+      <a href="industrials-ma-advisor">Industrials &amp; Manufacturing M&amp;A</a>
+      <a href="business-services-ma-advisor">Business Services M&amp;A</a>
       <a href="pet-care-ma-advisor">Dog Daycare &amp; Pet Care M&amp;A</a>
       <a href="process">Our Process</a>
-      <a href="team">The Partners</a>
+      <a href="team">The Principals</a>
     </div>
     <div class="footer-col">
       <span class="footer-col-title">Connect</span>
       <a href="investors">For Investors</a>
-      <a href="podcast">The Making Of Hosted By Jack Pitts</a>
+      <a href="podcast">The Making Of Hosted by Jack Pitts</a>
       <a href="faq">Owner FAQ</a>
       <a href="articles">Insights</a>
       <a href="capabilities">Capabilities</a>
@@ -485,7 +541,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale and acquisition of their companies. We are not a chartered bank or depository institution, we do not accept deposits, and no funds held in connection with an engagement are FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, under which &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when acting solely in connection with the transfer of ownership of an &ldquo;eligible privately held company,&rdquo; defined as a company with no registered securities whose EBITDA is less than $25,000,000 or whose gross revenues are less than $250,000,000. That exemption is unavailable to any broker that holds client funds or securities, provides transaction financing, forms or represents a group of buyers, deals with a passive buyer, or represents both sides of a transaction without written disclosure and consent, and we do not engage in any of those activities. We hold or obtain state business broker licensure where required, and where a transaction calls for services only a licensed broker-dealer may perform, those services are referred to and executed through a properly registered broker-dealer. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Consult your own qualified advisors. Valuation ranges, multiples, and market figures cited on this page are drawn from the third-party published sources attributed inline and are not Salt Creek Advisory quotes, valuations, or appraisals. The classroom comparison is an illustration rather than a documented transaction, and no figure here is a prediction or guarantee of any deal outcome.</p>
+    <p class="footer-legal">Salt Creek Advisory LLC operates as an investment bank in the traditional lower middle market sense: we advise privately held business owners on the sale of their companies. We represent sellers only: we do not take buy-side engagements, we do not represent buyers, and we do not accept fees or other compensation from buyers. We are not a chartered bank or depository institution, we do not accept deposits, and nothing we offer is FDIC or NCUA insured. We are not a broker-dealer registered with FINRA or the SEC and are not a registered investment adviser. To the extent applicable, our M&amp;A engagements are conducted in reliance on the federal M&amp;A broker exemption at <a href="https://www.law.cornell.edu/uscode/text/15/78o" target="_blank" rel="noopener">Section 15(b)(13) of the Securities Exchange Act of 1934 (15 U.S.C. &sect; 78o(b)(13))</a>, added by the Consolidated Appropriations Act, 2023 and effective March 29, 2023. Under that provision, &ldquo;an M&amp;A broker shall be exempt from registration&rdquo; when it effects securities transactions solely in connection with the transfer of ownership of an &ldquo;eligible privately held company&rdquo; and reasonably believes the buyer will control the business and be active in its management afterward. An eligible privately held company is one with no class of securities registered with, or reporting to, the SEC that, in the fiscal year before the engagement, had EBITDA of less than $25,000,000 or gross revenues of less than $250,000,000 (amounts subject to periodic inflation adjustment). The exemption is not available to a broker that receives, holds, transmits, or has custody of the funds or securities being exchanged; acts for an issuer in a public offering; acts in a transaction involving a shell company; provides financing, or helps arrange third-party financing without complying with applicable law and disclosing its compensation in writing; represents both buyer and seller without clear written disclosure and the written consent of both; facilitates a transaction with a group of buyers it helped form; transfers ownership to a passive buyer; or binds a party to the transaction. Where a transaction would fall outside those conditions, we do not rely on the exemption, and any services that only a registered broker-dealer may perform would have to be provided by a registered broker-dealer, not by us. The federal exemption does not displace state law, and some states separately regulate business brokers and M&amp;A intermediaries. We do not hold, custody, or take possession of client funds or securities at any time. All engagements are advisory in nature; nothing on this site is an offer or solicitation to buy or sell any security, and nothing here is legal, tax, or investment advice. Valuation ranges, multiples, and market figures on this site, including the valuation tool&rsquo;s estimates and any illustrative examples, are general information drawn from published sources or our own illustrations. They are not Salt Creek Advisory quotes, valuations, appraisals, or fairness opinions, and no figure here is a prediction or guarantee of any deal outcome. Consult your own qualified advisors.</p>
     <div class="footer-bottom-row">
       <span class="footer-copy">&copy; 2026 Salt Creek Advisory LLC. All rights reserved.</span>
       <nav class="footer-legal-links" aria-label="Legal">
@@ -497,7 +553,7 @@
   </div>
 </footer>
 
-<script src="main.js?v=b6ea1432"></script>
+<script src="main.js?v=220786fb"></script>
 
 </body>
 </html>

@@ -1,4 +1,32 @@
 (function () {
+  // How a sector page or guide hands over an industry:
+  // valuation?industry=<option value>.
+  const INDUSTRY_PARAM = 'industry';
+
+  /**
+   * The industry option a link asked for, or '' when it asked for none we have.
+   *
+   * The parameter comes straight from the address bar, so it is only ever used to
+   * look up one of the page's own option values, and that value is what comes
+   * back. The visitor's text is never returned and never reaches the page.
+   * @param {string} search the query string, with or without its leading "?"
+   * @param {string[]} optionValues every value the industry select offers
+   * @returns {string} one of optionValues, or '' for no usable match
+   */
+  function industryFromQuery(search, optionValues) {
+    if (typeof search !== 'string' || !Array.isArray(optionValues)) return '';
+    const asked = (new URLSearchParams(search).get(INDUSTRY_PARAM) || '').trim().toLowerCase();
+    if (!asked) return '';
+    return optionValues.find((value) => String(value).toLowerCase() === asked) || '';
+  }
+
+  // Node loads this file only to test the pure helpers above. There is no page to
+  // wire up there, so hand them over and stop before the first document lookup.
+  if (typeof document === 'undefined') {
+    if (typeof module === 'object' && module.exports) module.exports = { industryFromQuery };
+    return;
+  }
+
   // Earlier versions of this tool appended every submitted lead to localStorage.
   // Purge anything that left behind. Runs on load, so a returning visitor is
   // cleaned up whether or not they submit the form again.
@@ -318,11 +346,11 @@
 
   // Bump this whenever terms.html changes materially. It is stored with each
   // lead so a submission can be matched to the terms that were on screen.
-  const TERMS_VERSION = '2026-08-10';
+  const TERMS_VERSION = '2026-10-09';
 
   const $ = (id) => document.getElementById(id);
   const steps = document.querySelectorAll('.val-step');
-  const dots = document.querySelectorAll('.val-progress span');
+  const dots = document.querySelectorAll('.val-progress li');
   const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // analytics.js owns the GA4 guard and exposes this. Absent only if that file
@@ -413,6 +441,21 @@
   });
 
   /**
+   * Preselects the industry a sector page or guide linked in with. Runs after the
+   * listener above is attached, so the subsector list fills in as if the visitor
+   * had picked it by hand. An unknown or missing value leaves the select alone.
+   */
+  function preselectIndustry() {
+    const select = $('vIndustry');
+    const values = Array.from(select.options, (option) => option.value);
+    const picked = industryFromQuery(window.location.search, values);
+    if (!picked) return;
+    select.value = picked;
+    select.dispatchEvent(new Event('change'));
+  }
+  preselectIndustry();
+
+  /**
    * The element focus should land on when step n appears: the step title for the
    * three question steps, and whichever result heading is actually showing on the
    * result step (range, closer look, or below manager pay).
@@ -438,8 +481,20 @@
    */
   function showStep(n) {
     steps.forEach(s => s.classList.toggle('active', s.dataset.step == n));
-    dots.forEach((d, i) => d.classList.toggle('on', i < n));
-    if (n === 4) $('valResult').classList.add('shown');
+    dots.forEach((d, i) => {
+      d.classList.toggle('on', i < n);
+      // The labelled steps are read out as a list, so say which one this is.
+      if (i === n - 1) d.setAttribute('aria-current', 'step');
+      else d.removeAttribute('aria-current');
+    });
+    if (n === 4) {
+      // The result ships hidden so an unfilled "$0 – $0" never reaches a crawler
+      // or a snippet. Reveal it before the focus target is looked up below, which
+      // checks offsetParent and would find nothing inside a hidden step.
+      const result = $('valResult');
+      result.hidden = false;
+      result.classList.add('shown');
+    }
 
     const step = document.querySelector('.val-step[data-step="' + n + '"]');
     if (!step) return;
@@ -472,68 +527,110 @@
     });
   });
 
-  // The fields each step's error message can be about. err() clears the invalid
-  // state from all of them, so fixing one field and failing on another never
-  // leaves a stale aria-invalid behind.
+  // The fields each question step can reject. Every one gets its own message
+  // slot, and fail() clears the whole step first, so fixing one field and failing
+  // on another never leaves a stale message or aria-invalid behind.
   const STEP_FIELDS = {
-    err1: ['vIndustry', 'vSubsector', 'vState', 'vRevenue', 'vProfit', 'vProfitBasis', 'vWebsite'],
-    err2: ['vOwner', 'vGrowth', 'vConc', 'vRec'],
-    err3: ['vName', 'vEmail', 'vPhone']
+    1: ['vIndustry', 'vSubsector', 'vState', 'vRevenue', 'vProfit', 'vProfitBasis', 'vWebsite'],
+    2: ['vOwner', 'vGrowth', 'vConc', 'vRec'],
+    3: ['vName', 'vEmail', 'vPhone']
   };
+  const FIELD_ERROR_SUFFIX = 'Error';
 
   /**
-   * Shows or clears a step's validation message. The message elements carry
-   * role="alert", so setting the text is announced. With a fieldId, that field is
-   * marked invalid, pointed at the message, and focused, the same pattern as
-   * fail() in contact.js. An empty msg clears the message and every invalid mark.
-   * @param {string} id the step's error element id (err1, err2 or err3)
-   * @param {string} msg what went wrong, in plain language, or '' to clear
-   * @param {string} [fieldId] the field to mark invalid and focus
+   * Removes a field's message and its invalid mark.
+   * @param {string} fieldId the field to clear
    */
-  function err(id, msg, fieldId) {
-    const el = $(id);
-    el.textContent = msg || '';
-    el.style.display = msg ? 'block' : 'none';
-    (STEP_FIELDS[id] || []).forEach((fid) => {
-      const node = $(fid);
-      if (!node) return;
-      if (msg && fid === fieldId) {
-        node.setAttribute('aria-invalid', 'true');
-        node.setAttribute('aria-describedby', id);
-      } else {
-        node.removeAttribute('aria-invalid');
-        node.removeAttribute('aria-describedby');
-      }
+  function clearFieldError(fieldId) {
+    const field = $(fieldId);
+    const slot = $(fieldId + FIELD_ERROR_SUFFIX);
+    if (!field || !slot) return;
+    field.removeAttribute('aria-invalid');
+    field.removeAttribute('aria-describedby');
+    slot.textContent = '';
+  }
+
+  /**
+   * Adds an empty message slot directly under a field.
+   *
+   * Each step used to have one slot at the bottom, while focus jumped to the
+   * failing field: on a phone the explanation was off screen. The slot is created
+   * up front and left empty, because a role="alert" region is only announced
+   * reliably when it is already on the page before its text changes.
+   * @param {string} fieldId the field the slot belongs to
+   */
+  function addErrorSlot(fieldId) {
+    const field = $(fieldId);
+    if (!field) return;
+    const slot = document.createElement('p');
+    slot.id = fieldId + FIELD_ERROR_SUFFIX;
+    slot.className = 'val-field-error';
+    slot.setAttribute('role', 'alert');
+    field.insertAdjacentElement('afterend', slot);
+    // Answering the question is the fix, so the message leaves with it.
+    ['input', 'change'].forEach((type) => {
+      field.addEventListener(type, () => clearFieldError(fieldId));
     });
-    const target = msg && fieldId ? $(fieldId) : null;
-    if (target) target.focus();
+  }
+  Object.keys(STEP_FIELDS).forEach((step) => STEP_FIELDS[step].forEach(addErrorSlot));
+
+  /**
+   * Clears every message and invalid mark on a step.
+   * @param {number} step 1, 2 or 3
+   */
+  function clearStepErrors(step) {
+    STEP_FIELDS[step].forEach(clearFieldError);
+  }
+
+  /**
+   * Explains a rejected field directly beneath it. The slot carries role="alert",
+   * so setting the text is announced; the field is marked invalid, pointed at the
+   * message, and focused, the same pattern as fail() in contact.js.
+   * @param {number} step the step the field is on (1, 2 or 3)
+   * @param {string} msg what went wrong, in plain language
+   * @param {string} fieldId the field to mark invalid and focus
+   */
+  function fail(step, msg, fieldId) {
+    clearStepErrors(step);
+    const field = $(fieldId);
+    const slot = $(fieldId + FIELD_ERROR_SUFFIX);
+    if (!field || !slot) return;
+    slot.textContent = msg;
+    field.setAttribute('aria-invalid', 'true');
+    field.setAttribute('aria-describedby', slot.id);
+    // focus() alone scrolls just far enough to show the field, which parks it
+    // under the fixed header with the label hidden and the message flush below
+    // the header. Centring the whole field block (label, field, message) keeps
+    // all three clear of the header and off the bottom edge of a short screen.
+    field.focus({ preventScroll: true });
+    (field.closest('.val-field') || field).scrollIntoView({ block: 'center' });
   }
 
   $('toStep2').addEventListener('click', () => {
     const ind = $('vIndustry').value;
     const rev = parseMoney($('vRevenue').value);
     const prof = parseMoney($('vProfit').value);
-    if (!ind) return err('err1', 'Please select your industry.', 'vIndustry');
-    if (SUBSECTORS[ind] && !$('vSubsector').value) return err('err1', 'Please select your subsector.', 'vSubsector');
-    if (!$('vState').value) return err('err1', 'Please select your state.', 'vState');
-    if (!rev && !prof) return err('err1', 'Give us revenue or profit. A rough number is fine.', 'vRevenue');
-    if (rev && prof && prof > rev) return err('err1', 'Profit can\u2019t be higher than revenue. Double-check those numbers.', 'vProfit');
+    if (!ind) return fail(1, 'Please select your industry.', 'vIndustry');
+    if (SUBSECTORS[ind] && !$('vSubsector').value) return fail(1, 'Please select your subsector.', 'vSubsector');
+    if (!$('vState').value) return fail(1, 'Please select your state.', 'vState');
+    if (!rev && !prof) return fail(1, 'Give us revenue or profit. A rough number is fine.', 'vRevenue');
+    if (rev && prof && prof > rev) return fail(1, 'Profit can\u2019t be higher than revenue. Double-check those numbers.', 'vProfit');
     // Only binding when a profit figure was actually given: a blank profit is
     // estimated from industry margins, which are already net of a manager's pay.
     if (prof && !$('vProfitBasis').value) {
-      return err('err1', 'Tell us whether your own pay is still inside that profit number.', 'vProfitBasis');
+      return fail(1, 'Tell us whether your own pay is still inside that profit number.', 'vProfitBasis');
     }
-    err('err1', '');
+    clearStepErrors(1);
     trackStep(1);
     showStep(2);
   });
 
   $('toStep3').addEventListener('click', () => {
-    if (!$('vOwner').value) return err('err2', 'Tell us how involved you are day to day.', 'vOwner');
-    if (!$('vGrowth').value) return err('err2', 'Tell us how revenue has trended.', 'vGrowth');
-    if (!$('vConc').value) return err('err2', 'Tell us about your largest customer.', 'vConc');
-    if (!$('vRec').value) return err('err2', 'Tell us what kind of revenue you have.', 'vRec');
-    err('err2', '');
+    if (!$('vOwner').value) return fail(2, 'Tell us how involved you are day to day.', 'vOwner');
+    if (!$('vGrowth').value) return fail(2, 'Tell us how revenue has trended.', 'vGrowth');
+    if (!$('vConc').value) return fail(2, 'Tell us about your largest customer.', 'vConc');
+    if (!$('vRec').value) return fail(2, 'Tell us what kind of revenue you have.', 'vRec');
+    clearStepErrors(2);
     trackStep(2);
     showStep(3);
   });
@@ -555,6 +652,9 @@
   }
   function countUp(el, target, dur) {
     if (rm) { el.textContent = fmt(target); return; }
+    // The span ships empty, so give it its starting figure now rather than one
+    // frame later; otherwise the range reads "–" for an instant.
+    el.textContent = fmt(0);
     const start = performance.now();
     const tick = (now) => {
       const t = Math.min((now - start) / dur, 1);
@@ -578,9 +678,9 @@
   $('calcBtn').addEventListener('click', () => {
     const name = $('vName').value.trim();
     const email = $('vEmail').value.trim();
-    if (!name) return err('err3', 'Please enter your name.', 'vName');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('err3', 'Please enter a valid email address.', 'vEmail');
-    err('err3', '');
+    if (!name) return fail(3, 'Please enter your name.', 'vName');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(3, 'Please enter a valid email address.', 'vEmail');
+    clearStepErrors(3);
 
     const ind = $('vIndustry').value;
     const subKey = $('vSubsector').value;
@@ -622,6 +722,14 @@
     $('valNumbers').style.display = showRange ? 'block' : 'none';
     $('valBigLook').style.display = bigDeal ? 'block' : 'none';
     $('valSmallLook').style.display = (belowManagerPay && !bigDeal) ? 'block' : 'none';
+
+    if (bigDeal) {
+      $('valBigLookMsg').textContent = 'Honestly? At your size, a calculator range isn’t worth your time. ' +
+        'Businesses like yours trade on things a tool can’t see: buyer appetite, sector momentum, deal ' +
+        'structure, and how the story gets told. Rather than hand you a number that could be off by tens of ' +
+        'millions in either direction, we’d like to take a real look. That conversation is free, ' +
+        'confidential, and worth it at your scale.';
+    }
 
     if (belowManagerPay && !bigDeal) {
       $('valSmallLookMsg').textContent = 'You told us your own pay is still inside that profit figure. Once we ' +

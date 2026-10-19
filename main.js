@@ -15,6 +15,14 @@ const setDrawer = (open) => {
   drawer.classList.toggle('open', open);
   hamburger.setAttribute('aria-expanded', String(open));
   hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  // The drawer covers the page but did not own focus: Tab after its last
+  // link landed on the hero buttons underneath it, with no visible ring and
+  // the menu still open. inert takes the page out of the tab order and the
+  // accessibility tree while the menu is up. The nav stays live so the
+  // hamburger itself remains reachable.
+  document.querySelectorAll('main, footer').forEach((el) => { el.inert = open; });
+  // Locks page scroll behind the drawer (styles.css, html.nav-open).
+  document.documentElement.classList.toggle('nav-open', open);
 };
 
 const closeDrawer = () => setDrawer(false);
@@ -55,6 +63,9 @@ const applyImageFallback = (img) => {
   const fallback = img.getAttribute('data-fallback');
   if (!fallback || img.dataset.fallbackApplied) return;
   img.dataset.fallbackApplied = 'true';
+  // A srcset would outrank src, so drop it or the fallback never shows.
+  img.removeAttribute('srcset');
+  img.removeAttribute('sizes');
   img.src = fallback;
 };
 document.querySelectorAll('img[data-fallback]').forEach(img => {
@@ -62,6 +73,42 @@ document.querySelectorAll('img[data-fallback]').forEach(img => {
   // The error may already have fired before this script ran.
   if (img.complete && img.naturalWidth === 0) applyImageFallback(img);
 });
+
+// Guide tables sit in an .article-table-wrap that scrolls sideways on a phone,
+// but nothing said so: a reader saw the fourth column clipped to "PRIN / DRIV"
+// and no hint that the rest was a swipe away. Mark the wraps that actually
+// overflow, and styles.css draws a sticky "Swipe" cue above those alone.
+const tableWraps = Array.from(document.querySelectorAll('.article-table-wrap'));
+// Sub-pixel column widths can leave a table 1px wider than its wrap, which
+// scrolls in name only. Below this much overflow nothing a reader needs is hidden.
+const SCROLL_CUE_MIN_PX = 4;
+const markScrollableTables = () => {
+  tableWraps.forEach((wrap) => {
+    const isScrollable = wrap.scrollWidth - wrap.clientWidth >= SCROLL_CUE_MIN_PX;
+    wrap.classList.toggle('is-scrollable', isScrollable);
+    // A scrolling table is a keyboard tab stop with a name, but only while it
+    // scrolls, and never over a tabindex the page itself authored.
+    if (wrap.dataset.a11yAuthored === undefined) {
+      wrap.dataset.a11yAuthored = wrap.hasAttribute('tabindex') ? '1' : '0';
+    }
+    if (wrap.dataset.a11yAuthored === '1') return;
+    if (isScrollable) {
+      wrap.setAttribute('tabindex', '0');
+      wrap.setAttribute('role', 'region');
+      wrap.setAttribute('aria-label', 'Comparison table, scrollable');
+    } else {
+      wrap.removeAttribute('tabindex');
+      wrap.removeAttribute('role');
+      wrap.removeAttribute('aria-label');
+    }
+  });
+};
+if (tableWraps.length) {
+  markScrollableTables();
+  // Webfonts settle after this script runs and can change a column's width.
+  window.addEventListener('load', markScrollableTables, { once: true });
+  window.addEventListener('resize', markScrollableTables, { passive: true });
+}
 
 // The scroll-reveal observer that used to live here is gone. It was the only
 // thing that made .reveal content visible, so a failure to reach this line left
@@ -172,104 +219,82 @@ function openFaqFromHash() {
 openFaqFromHash();
 window.addEventListener('hashchange', openFaqFromHash);
 
-// Articles index category tabs. Shows one category at a time so the page lands
-// as a single screen instead of a 29-card scroll. Enhancement only: the markup
-// is a plain list of anchor links pointing at sections that are all visible by
-// default, so if this never runs the page still works as a stacked index.
+// Articles index topic filter. The markup is a plain bar of jump links over a
+// fully stacked index, so without this script every guide is still listed and
+// each link still scrolls to its group. When it runs, each link becomes a
+// toggle button (aria-pressed): one shows only its group, "All" shows them all.
+// Real <button>s, so Tab, Enter and Space work with no key handling of our own.
 const articlesSection = document.querySelector('.articles-list');
-const articlesTabBar = articlesSection && articlesSection.querySelector('.articles-jump');
-if (articlesTabBar) {
-  const tabs = Array.from(articlesTabBar.querySelectorAll('a[href^="#"]'));
-  const panels = tabs.map(tab => document.querySelector(tab.getAttribute('href')));
+const articlesFilterBar = articlesSection && articlesSection.querySelector('.articles-jump');
+if (articlesFilterBar) {
+  const links = Array.from(articlesFilterBar.querySelectorAll('a[href^="#"]'));
+  const groups = links.map(link => document.getElementById(link.getAttribute('href').slice(1)));
 
-  // Bail out rather than hide anything if a tab points at a section that is not
+  // Bail out rather than hide anything if a link points at a group that is not
   // there, otherwise a stale link would blank out part of the index.
-  if (tabs.length > 1 && panels.every(Boolean)) {
-    articlesSection.classList.add('articles-tabs-on');
-    articlesTabBar.setAttribute('role', 'tablist');
+  if (links.length > 1 && groups.every(Boolean)) {
+    const ALL = '';
+    const makeChip = (label, target) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.textContent = label;
+      chip.dataset.filter = target;
+      chip.setAttribute('aria-pressed', 'false');
+      if (target) chip.setAttribute('aria-controls', target);
+      return chip;
+    };
+    const chips = [makeChip('All', ALL)].concat(
+      links.map((link, i) => makeChip(link.textContent.trim(), groups[i].id))
+    );
+    articlesFilterBar.replaceChildren(...chips);
+    articlesFilterBar.setAttribute('role', 'group');
+    articlesFilterBar.setAttribute('aria-label', 'Filter guides by topic');
+    articlesSection.classList.add('articles-filter-on');
 
-    tabs.forEach((tab, i) => {
-      const panel = panels[i];
-      if (!tab.id) tab.id = 'tab-' + panel.id;
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-controls', panel.id);
-      panel.setAttribute('role', 'tabpanel');
-      panel.setAttribute('aria-labelledby', tab.id);
-      panel.setAttribute('tabindex', '0');
-    });
-
-    const selectTab = (index, { moveFocus = false } = {}) => {
-      tabs.forEach((tab, i) => {
-        const isActive = i === index;
-        tab.setAttribute('aria-selected', String(isActive));
-        tab.setAttribute('tabindex', isActive ? '0' : '-1');
-        panels[i].classList.toggle('is-active', isActive);
-      });
-      if (moveFocus) tabs[index].focus();
+    const applyFilter = (target) => {
+      chips.forEach(chip => chip.setAttribute('aria-pressed', String(chip.dataset.filter === target)));
+      groups.forEach(group => { group.hidden = target !== ALL && group.id !== target; });
+      articlesSection.classList.toggle('articles-filtered', target !== ALL);
     };
 
-    const indexFromHash = () =>
-      tabs.findIndex(tab => tab.getAttribute('href') === window.location.hash);
+    const filterFromHash = () => {
+      const id = window.location.hash.slice(1);
+      return groups.some(group => group.id === id) ? id : null;
+    };
 
-    const revealBar = (behavior) => {
-      if (articlesTabBar.getBoundingClientRect().top < 72) {
-        articlesTabBar.scrollIntoView({ block: 'start', behavior });
+    articlesFilterBar.addEventListener('click', (e) => {
+      const chip = e.target.closest('button[data-filter]');
+      if (!chip) return;
+      const target = chip.dataset.filter;
+      applyFilter(target);
+      // replaceState keeps a filtered view shareable without stacking a history
+      // entry per click, and without the jump that assigning location.hash causes.
+      const url = window.location.pathname + window.location.search + (target ? '#' + target : '');
+      window.history.replaceState(null, '', url);
+      if (articlesFilterBar.getBoundingClientRect().top < 72) {
+        articlesFilterBar.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
       }
-    };
-
-    articlesTabBar.addEventListener('click', (e) => {
-      const tab = e.target.closest('a[role="tab"]');
-      if (!tab || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      e.preventDefault();
-      selectTab(tabs.indexOf(tab));
-      // replaceState keeps a tab shareable without stacking a history entry per
-      // click, and without the jump that assigning location.hash would cause.
-      window.history.replaceState(null, '', tab.getAttribute('href'));
-      revealBar(reduceMotion ? 'auto' : 'smooth');
-    });
-
-    articlesTabBar.addEventListener('keydown', (e) => {
-      const current = tabs.indexOf(document.activeElement);
-      if (current === -1) return;
-      const last = tabs.length - 1;
-      let next = -1;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = current === last ? 0 : current + 1;
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = current === 0 ? last : current - 1;
-      else if (e.key === 'Home') next = 0;
-      else if (e.key === 'End') next = last;
-      if (next === -1) return;
-      e.preventDefault();
-      selectTab(next, { moveFocus: true });
-      window.history.replaceState(null, '', tabs[next].getAttribute('href'));
     });
 
     const initialHash = window.location.hash;
-    const initial = indexFromHash();
+    const initial = filterFromHash();
 
-    // A deep link makes the browser scroll to the section it names, but that
-    // section is now the top of the tab list, so the scroll only pushes the bar
-    // out of view and hides that the other categories are one click away.
-    // Trying to scroll back afterwards loses a race with the browser, so remove
-    // the fragment before it ever scrolls and put it back once the page has
-    // loaded, which keeps the URL shareable. replaceState never scrolls.
-    if (initial !== -1) {
+    // A deep link makes the browser scroll to the group it names, which is now
+    // the top of the filtered list, so the scroll only pushes the bar out of
+    // view. Remove the fragment before the browser scrolls and put it back once
+    // the page has loaded, which keeps the URL shareable. replaceState never scrolls.
+    if (initial) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
-
-    selectTab(initial === -1 ? 0 : initial);
-
-    if (initial !== -1) {
-      // Removing the fragment above is enough on its own: the page then loads at
-      // the top, showing the hero and the bar with the linked category already
-      // selected. Put the URL back afterwards so it stays shareable.
       const restoreHash = () => window.history.replaceState(null, '', initialHash);
       if (document.readyState === 'complete') restoreHash();
       else window.addEventListener('load', restoreHash, { once: true });
     }
 
+    applyFilter(initial || ALL);
+
     window.addEventListener('hashchange', () => {
-      const index = indexFromHash();
-      if (index !== -1) selectTab(index);
+      const target = filterFromHash();
+      if (target) applyFilter(target);
     });
   }
 }
@@ -301,3 +326,4 @@ const updateProgress = () => {
 window.addEventListener('scroll', updateProgress, { passive: true });
 window.addEventListener('resize', updateProgress, { passive: true });
 updateProgress();
+
