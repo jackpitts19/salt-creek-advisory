@@ -660,7 +660,6 @@
       flex-shrink: 0;
     }
 
-
     /* ============================================================
        ABOUT
        ============================================================ */
@@ -3952,7 +3951,6 @@
     .hero--home .hero-cred { margin-top: 3rem; }
     .hero--home::after { display: none; }
     .hero--home .hero-sub { max-width: 640px; }
-
 
     .home-section {
       background: var(--cream);
