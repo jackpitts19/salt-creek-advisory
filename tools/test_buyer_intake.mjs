@@ -14,6 +14,7 @@ import worker from "../src/index.js";
 import {
   BUYER_LIST_PATH, BUYER_TYPES, CONSENT_TEXT, CONSENT_TEXT_VERSION, MAX_ONE_PAGER_BYTES, handleBuyerList,
 } from "../src/buyer-intake.js";
+import { GEOGRAPHY, SECTORS, describeCriteria, parseMillions, validateCriteria } from "../src/buyer-criteria.js";
 
 const ORIGIN = "https://saltcreekadvisory.com";
 const INTAKE_URL = "https://helmiq.example/api/webhooks/buyer-intake/org_1/tok_1";
@@ -30,6 +31,9 @@ const VALID = {
   firmName: "Example Capital",
   firmWebsite: "example-capital.com",
   buyerType: "private_equity",
+  sectors: ["Healthcare", "Business Services"],
+  ebitdaMinM: "3",
+  ebitdaMaxM: "15",
   whatYouBuy: "",
   consent: "yes",
   website_confirm: "",
@@ -52,7 +56,9 @@ const status = (code) => new Response(JSON.stringify({ ok: false }), { status: c
 
 function post(fields = {}, { file = PDF, filename = "Example Capital one-pager.pdf", headers = {} } = {}) {
   const form = new FormData();
-  for (const [key, value] of Object.entries({ ...VALID, ...fields })) form.append(key, value);
+  for (const [key, value] of Object.entries({ ...VALID, ...fields })) {
+    for (const item of [value].flat()) form.append(key, item);
+  }
   if (file) form.append("onePager", new Blob([file], { type: "application/pdf" }), filename);
   return new Request(`${ORIGIN}${BUYER_LIST_PATH}`, {
     method: "POST",
@@ -126,6 +132,10 @@ test("a bad field comes back as a 400 naming that field, and nothing is sent", a
     [{ buyerType: "hedge_fund" }, "buyerType"],
     [{ consent: "" }, "consent"],
     [{ whatYouBuy: "x".repeat(2001) }, "whatYouBuy"],
+    [{ sectors: [] }, "sectors"],
+    [{ ebitdaMinM: "", ebitdaMaxM: "" }, "ebitdaMinM"],
+    [{ ebitdaMaxM: "2" }, "ebitdaMaxM"],
+    [{ revenueMinM: "lots" }, "revenueMinM"],
   ];
   for (const [patch, field] of cases) {
     const response = await handleBuyerList(post(patch), CONFIGURED, deps(fetchImpl));
@@ -135,10 +145,14 @@ test("a bad field comes back as a 400 naming that field, and nothing is sent", a
   assert.equal(calls.length, 0);
 });
 
-test("a one-pager or a note is required, and either one alone is enough", async () => {
-  const neither = await handleBuyerList(post({ whatYouBuy: "" }, { file: null }), CONFIGURED, deps(fakeNetwork(() => ok()).fetchImpl));
-  assert.equal(neither.status, 400);
-  assert.equal((await neither.json()).field, "onePager");
+test("the typed criteria are enough on their own; a one-pager and a note are optional extras", async () => {
+  const criteriaOnly = fakeNetwork(() => ok());
+  const bare = await handleBuyerList(post({ whatYouBuy: "" }, { file: null }), CONFIGURED, deps(criteriaOnly.fetchImpl));
+  assert.equal(bare.status, 200);
+  const bareSent = await received(criteriaOnly.calls[0]);
+  assert.ok(!("whatYouBuy" in bareSent.payload));
+  assert.ok(!("onePager" in bareSent.payload));
+  assert.deepEqual(bareSent.payload.criteria, { sectors: ["Business Services", "Healthcare"], ebitdaMinM: 3, ebitdaMaxM: 15 });
 
   const noteOnly = fakeNetwork(() => ok());
   const note = await handleBuyerList(post({ whatYouBuy: "HVAC add-ons, $2-10M EBITDA" }, { file: null }), CONFIGURED, deps(noteOnly.fetchImpl));
@@ -192,15 +206,15 @@ test("a configured sign-up reaches HelmIQ signed over the payload part, with the
   });
 });
 
-test("the HelmIQ payload is exactly the v2 contract, with empty optionals left out", async () => {
+test("the HelmIQ payload is exactly the v3 contract, with empty optionals left out", async () => {
   const { calls, fetchImpl } = fakeNetwork(() => ok());
   await handleBuyerList(post(), CONFIGURED, deps(fetchImpl));
   const { payload } = await received(calls[0]);
   assert.deepEqual(Object.keys(payload).sort(), [
-    "buyerType", "buyerTypeLabel", "consent", "contact", "firm", "ipHash", "onePager",
+    "buyerType", "buyerTypeLabel", "consent", "contact", "criteria", "firm", "ipHash", "onePager",
     "sourceUrl", "submissionId", "submittedAt", "version",
   ]);
-  assert.equal(payload.version, 2);
+  assert.equal(payload.version, 3);
   assert.equal(payload.submissionId, UUID);
   assert.equal(payload.submittedAt, "2026-10-19T17:00:00.000Z");
   assert.equal(payload.sourceUrl, `${ORIGIN}/investors`);
@@ -239,6 +253,7 @@ test("HelmIQ unreachable twice: the sign-up goes to Formspree, naming the one-pa
   assert.equal(fallback.submissionId, UUID);
   assert.equal(fallback.whatTheyBuy, "Business services");
   assert.match(fallback.onePager, /Example Capital one-pager\.pdf.*Ask them to email it/);
+  assert.equal(fallback.criteria, "Sectors: Business Services, Healthcare\nEBITDA: $3M to $15M");
   assert.match(fallback._subject, /Buyer list sign-up: Example Capital/);
 });
 
@@ -332,8 +347,16 @@ test("every buyer type on the form is one the Worker accepts, and the other way 
   assert.deepEqual(values, [...BUYER_TYPES.keys()]);
 });
 
+test("the sector and region boxes on the form are exactly the lists the Worker sends to HelmIQ", () => {
+  const boxes = (name) => [...html.matchAll(new RegExp(`name="${name}" value="([^"]+)"`, "g"))].map((m) => m[1].replace(/&amp;/g, "&"));
+  assert.deepEqual(boxes("sectors"), [...SECTORS]);
+  assert.deepEqual(boxes("geography"), [...GEOGRAPHY]);
+});
+
 test("the form posts the field names the Worker reads, and only accepts PDFs", () => {
-  for (const name of ["fullName", "email", "firmName", "firmWebsite", "buyerType", "whatYouBuy", "consent", "onePager"]) {
+  for (const name of ["fullName", "email", "firmName", "firmWebsite", "buyerType", "whatYouBuy", "consent", "onePager",
+    "ebitdaMinM", "ebitdaMaxM", "revenueMinM", "revenueMaxM", "addOnEbitdaMinM", "addOnEbitdaMaxM",
+    "currentFundSizeM", "currentFundVintage"]) {
     assert.match(html, new RegExp(`name="${name}"`), name);
   }
   assert.match(html, /id="bOnePager"[^>]*accept="application\/pdf,\.pdf"/);
@@ -344,4 +367,68 @@ test("the form posts the field names the Worker reads, and only accepts PDFs", (
 test("the checkbox the buyer ticks says exactly what HelmIQ records as the consent text", () => {
   const label = html.match(/id="bConsent"[^>]*>\s*<span>([^<]+)<\/span>/)[1];
   assert.equal(label, CONSENT_TEXT);
+});
+
+// The criteria rules on their own, without the request around them.
+const YEAR = 2026;
+const criteriaOf = (patch, type = "private_equity") =>
+  validateCriteria({ sectors: ["Healthcare"], ebitdaMinM: "3", ...patch }, type, YEAR);
+
+test("money answers read the way people type them, in $ millions", () => {
+  assert.equal(parseMillions("5"), 5);
+  assert.equal(parseMillions(" $7.5M "), 7.5);
+  assert.equal(parseMillions("1,200"), 1200);
+  assert.equal(parseMillions("25 million"), 25);
+  assert.equal(parseMillions(""), null);
+  assert.ok(Number.isNaN(parseMillions("5-10")));
+  assert.ok(Number.isNaN(parseMillions("-3")));
+});
+
+test("blank answers are left out of the criteria, never sent as null or 0", () => {
+  const result = criteriaOf({ ebitdaMaxM: "", revenueMinM: "", geography: [], currentFundSizeM: "", currentFundVintage: "" });
+  assert.deepEqual(result, { ok: true, criteria: { sectors: ["Healthcare"], ebitdaMinM: 3 } });
+});
+
+test("every answered field reaches the criteria under HelmIQ's key, lists in canonical order", () => {
+  const result = criteriaOf({
+    sectors: ["Technology", "Healthcare", "Healthcare", "Crypto"],
+    ebitdaMaxM: "15", revenueMinM: "20", revenueMaxM: "100", addOnEbitdaMinM: "1", addOnEbitdaMaxM: "3",
+    geography: ["West", "Midwest", "Mars"], currentFundSizeM: "450", currentFundVintage: "2023",
+  });
+  assert.deepEqual(result.criteria, {
+    sectors: ["Healthcare", "Technology"], ebitdaMinM: 3, ebitdaMaxM: 15, revenueMinM: 20, revenueMaxM: 100,
+    addOnEbitdaMinM: 1, addOnEbitdaMaxM: 3, geography: ["Midwest", "West"], currentFundSizeM: 450, currentFundVintage: 2023,
+  });
+});
+
+test("an EBITDA band is required of financial buyers but not of strategics", () => {
+  assert.equal(criteriaOf({ ebitdaMinM: "" }, "search_fund").field, "ebitdaMinM");
+  assert.equal(criteriaOf({ ebitdaMinM: "" }, "strategic").ok, true);
+  assert.deepEqual(criteriaOf({ ebitdaMinM: "", ebitdaMaxM: "10" }).criteria, { sectors: ["Healthcare"], ebitdaMaxM: 10 });
+});
+
+test("fund size and vintage count only for buyers who raise a fund", () => {
+  const fund = { currentFundSizeM: "450", currentFundVintage: "2023" };
+  assert.equal(criteriaOf(fund, "family_office").criteria.currentFundSizeM, 450);
+  for (const type of ["independent_sponsor", "search_fund", "strategic", "holding_company", "other"]) {
+    const { criteria } = criteriaOf(fund, type);
+    assert.ok(!("currentFundSizeM" in criteria) && !("currentFundVintage" in criteria), type);
+  }
+});
+
+test("out-of-range numbers name the field that is wrong", () => {
+  assert.equal(criteriaOf({ ebitdaMinM: "20000" }).field, "ebitdaMinM");
+  assert.equal(criteriaOf({ addOnEbitdaMinM: "5", addOnEbitdaMaxM: "2" }).field, "addOnEbitdaMaxM");
+  assert.equal(criteriaOf({ currentFundSizeM: "0" }).field, "currentFundSizeM");
+  assert.equal(criteriaOf({ currentFundSizeM: "450000000" }).field, "currentFundSizeM");
+  assert.equal(criteriaOf({ currentFundVintage: "1979" }).field, "currentFundVintage");
+  assert.equal(criteriaOf({ currentFundVintage: String(YEAR + 2) }).field, "currentFundVintage");
+  assert.equal(criteriaOf({ currentFundVintage: "2023.5" }).field, "currentFundVintage");
+  assert.equal(criteriaOf({ currentFundVintage: String(YEAR + 1) }).ok, true);
+});
+
+test("the fallback email spells the criteria out the way a banker reads them", () => {
+  assert.equal(describeCriteria({
+    sectors: ["Healthcare"], ebitdaMinM: 3, revenueMaxM: 1500, geography: ["Midwest"], currentFundSizeM: 450, currentFundVintage: 2023,
+  }), "Sectors: Healthcare\nEBITDA: $3M and up\nRevenue: up to $1.5B\nRegions: Midwest\nCurrent fund: $450M, 2023");
 });

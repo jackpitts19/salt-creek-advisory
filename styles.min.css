@@ -3586,3 +3586,35 @@
     .buyer-consent { margin-top: 1.5rem; }
     .buyer-turnstile { display: flex; justify-content: center; margin-top: 1.5rem; }
     .buyer-turnstile:empty { margin-top: 0; }
+    .buyer-form [hidden] { display: none; }
+    .buyer-group, .buyer-range { border: 0; padding: 0; min-width: 0; }
+    .buyer-group legend, .buyer-range legend { padding: 0; }
+    .buyer-checks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.55rem 1.25rem;
+      margin-top: 0.35rem;
+    }
+    .buyer-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.86rem;
+      font-weight: 300;
+      line-height: 1.5;
+      color: rgba(244,240,235,0.86);
+      cursor: pointer;
+    }
+    .buyer-check input {
+      flex: 0 0 auto;
+      width: 17px;
+      height: 17px;
+      margin-top: 0.1rem;
+      accent-color: var(--copper);
+      cursor: pointer;
+    }
+    .buyer-group[aria-invalid="true"] .buyer-checks { outline: 1px solid var(--form-invalid); outline-offset: 6px; }
+    @media (max-width: 640px) {
+      .buyer-range .val-grid2 { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      .buyer-checks { grid-template-columns: 1fr 1fr; gap: 0.6rem 0.9rem; }
+    }
