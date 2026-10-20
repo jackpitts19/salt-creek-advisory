@@ -1006,7 +1006,11 @@
        at about 66% of his square; the 7:5 frame below shows 71%, which is
        the first frame that keeps both his hair and his chin. */
     .team--advisors .team-img-area img { object-position: center top; }
-    #gary-dennis .team-img-area img { object-position: center top; }
+    /* Gary's square crop is tight on his face, so in the shared 7:5 frame
+       it read as a close-up next to the principals. A 6:5 frame on the
+       advisor cards shows 83% of the square, down to his tie, so he sits
+       lower in the photo without losing the top of his hair. */
+    .team--advisors .team-img-area { aspect-ratio: 6 / 5; }
     .team-advisors-note {
       max-width: 44rem;
       font-size: 1rem;

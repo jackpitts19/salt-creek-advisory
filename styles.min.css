@@ -743,7 +743,7 @@
     .team--advisors { padding-top: 0; }
     .team-advisors-note.team-advisors-join { margin: 2.5rem 0 0; }
     .team--advisors .team-img-area img { object-position: center top; }
-    #gary-dennis .team-img-area img { object-position: center top; }
+    .team--advisors .team-img-area { aspect-ratio: 6 / 5; }
     .team-advisors-note {
       max-width: 44rem;
       font-size: 1rem;
