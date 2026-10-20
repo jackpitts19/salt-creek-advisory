@@ -28,7 +28,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=3ef47f4c" />
+  <link rel="stylesheet" href="styles.css?v=45feaf5e" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -124,7 +124,7 @@
           Joining the list costs nothing and commits you to nothing. We add you to our buyer distribution list. When a client&rsquo;s business fits what you told us, we reach out directly, and only with what that client has approved us to share.
         </p>
         <h2 class="investors-h2">What to <em>send us.</em></h2>
-        <p class="investors-body">A short note is enough. The more of this it covers, the better we can match you to the right businesses:</p>
+        <p class="investors-body">The easiest way is to upload your one-pager in the <a href="#join" class="text-link-dark">form below</a>. No one-pager? A few lines covering this is enough:</p>
         <ul class="capability-list investors-send-list">
           <li><strong>Who you are.</strong> Private equity firm, family office, strategic acquirer, search fund, or independent sponsor.</li>
           <li><strong>Sectors.</strong> The industries you buy in, and the ones you will not touch.</li>
@@ -158,12 +158,86 @@
     </div>
   </div>
 </section>
+<section class="contact buyer-join" id="join">
+  <div class="wrap">
+    <form id="buyerForm" class="contact-form buyer-form" action="https://formspree.io/f/xzdqavol" method="POST">
+      <input type="hidden" name="_subject" value="Buyer list sign-up">
+      <input type="hidden" name="form" value="buyer-list">
+      <h2 class="contact-form-title">Join the buyer list</h2>
+      <p class="contact-form-sub">About a minute. Upload your one-pager, or tell us in a few lines what you buy, and we will reach out when a client&rsquo;s business fits. All fields are required unless marked optional.</p>
+
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="bName">Your Name</label>
+          <input id="bName" name="fullName" class="val-input" type="text" placeholder="First and last name" autocomplete="name" autocapitalize="words" maxlength="120" required>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="bEmail">Work Email</label>
+          <input id="bEmail" name="email" class="val-input" type="email" placeholder="you@firm.com" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" required>
+        </div>
+      </div>
+      <div class="val-grid2">
+        <div class="val-field">
+          <label class="val-label" for="bFirm">Firm</label>
+          <input id="bFirm" name="firmName" class="val-input" type="text" placeholder="Firm name" autocomplete="organization" maxlength="160" required>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="bWebsite">Firm Website <span class="val-label-hint">(optional)</span></label>
+          <input id="bWebsite" name="firmWebsite" class="val-input" type="text" inputmode="url" placeholder="firm.com" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="200">
+        </div>
+      </div>
+      <div class="val-field">
+        <label class="val-label" for="bType">What Kind of Buyer Are You?</label>
+        <select id="bType" name="buyerType" class="val-select" required>
+          <option value="">Choose one</option>
+          <option value="private_equity">Private equity fund</option>
+          <option value="independent_sponsor">Independent sponsor</option>
+          <option value="search_fund">Search fund or searcher</option>
+          <option value="family_office">Family office</option>
+          <option value="strategic">Strategic or corporate acquirer</option>
+          <option value="holding_company">Holding company</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="val-field buyer-upload" id="bUploadField" hidden>
+        <label class="val-label" for="bOnePager">Your One-Pager <span class="val-label-hint">(PDF, up to 4 MB)</span></label>
+        <input id="bOnePager" name="onePager" class="val-input buyer-file" type="file" accept="application/pdf,.pdf">
+        <p class="val-help">The sheet you already send bankers: sectors, size, geography, what you look for. We read it so you do not have to retype it.</p>
+      </div>
+      <div class="val-field">
+        <label class="val-label" for="bWhatYouBuy">What You Buy <span class="val-label-hint" id="bWhatYouBuyHint">(a few lines)</span></label>
+        <textarea id="bWhatYouBuy" name="whatYouBuy" class="val-input contact-textarea" rows="4" placeholder="Sectors, company size or EBITDA range, geography, platform or add-on, and anything you will not touch." maxlength="2000"></textarea>
+      </div>
+
+      <label class="val-consent-check buyer-consent" for="bConsent">
+        <input type="checkbox" id="bConsent" name="consent" value="yes" required>
+        <span>Email me client opportunities that fit what I told you. I can unsubscribe at any time.</span>
+      </label>
+      <p class="contact-form-trust">We keep your details in our CRM and use them only to tell you about client businesses that match. We never share them with sellers or other buyers. See our <a href="privacy">Privacy Policy</a>.</p>
+
+      <div class="buyer-turnstile" id="buyerTurnstile"></div>
+      <p class="contact-status" id="buyerStatus" role="alert" aria-live="assertive" tabindex="-1"></p>
+      <div class="contact-form-actions">
+        <button type="submit" class="btn-primary" id="buyerSubmit">Join the Buyer List</button>
+      </div>
+      <p class="contact-honeypot" aria-hidden="true">
+        <label for="bConfirmUrl">Leave this field empty</label>
+        <input id="bConfirmUrl" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+      </p>
+    </form>
+    <div class="contact-done" id="buyerDone" tabindex="-1" aria-labelledby="buyerDoneTitle" hidden>
+      <h2 class="contact-form-title" id="buyerDoneTitle">You are on the list.</h2>
+      <p class="contact-form-sub">Thank you. When a client&rsquo;s business fits what you told us, Jack or Connor will reach out directly. Want to talk sooner? <a href="contact" class="text-link">Start a conversation</a>.</p>
+    </div>
+  </div>
+</section>
 <section class="next-cta">
   <div class="wrap reveal">
     <h2 class="next-cta-h2">Buying in our sectors?</h2>
     <p class="next-cta-sub">Tell us what you buy. If you are buying in early childhood education, business services, industrials, MSP and IT services, or pet care, join our buyer list before our next client goes to market.</p>
     <div class="next-cta-actions">
-      <a href="contact" class="btn-primary">Join the Buyer List</a>
+      <a href="#join" class="btn-primary">Join the Buyer List</a>
       <a href="sectors" class="btn-ghost">See Our Sectors <span class="btn-ghost-arrow">&#8594;</span></a>
     </div>
   </div>
@@ -224,6 +298,7 @@
 </footer>
 
 <script src="main.js?v=220786fb"></script>
+<script src="buyer-list.js?v=6e4f12a9" defer></script>
 
 </body>
 </html>
