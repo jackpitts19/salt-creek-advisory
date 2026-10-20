@@ -81,6 +81,11 @@
     ['addOnEbitdaMinM', 'bAddOnMin', 'bAddOnMax', 'add-on EBITDA']
   ];
   var MONEY = /^\$?\d[\d,]*(\.\d+)?\s*(m|mm|million)?$/i;
+  // The Worker's limits (src/buyer-criteria.js), checked here too so a typo is
+  // caught before the buyer has to redo the bot check.
+  var MAX_RANGE_M = 10000;
+  var MAX_FUND_M = 100000;
+  var FIRST_VINTAGE = 1980;
 
   var turnstileWidget = null;
 
@@ -146,8 +151,8 @@
       var range = RANGES[i];
       var min = amount(range[1]);
       var max = amount(range[2]);
-      if (isNaN(min)) return [range[0], 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
-      if (isNaN(max)) return [range[0].replace('Min', 'Max'), 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
+      if (isNaN(min) || min > MAX_RANGE_M) return [range[0], 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
+      if (isNaN(max) || max > MAX_RANGE_M) return [range[0].replace('Min', 'Max'), 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
       if (min !== null && max !== null && max < min) {
         return [range[0].replace('Min', 'Max'), 'The top of the ' + range[3] + ' range is below the bottom.'];
       }
@@ -157,9 +162,10 @@
     }
     if (isFundBuyer()) {
       var size = amount('bFundSize');
-      if (isNaN(size) || size === 0) return ['currentFundSizeM', 'Please enter the fund size in $ millions, for example 450.'];
+      if (isNaN(size) || size === 0 || size > MAX_FUND_M) return ['currentFundSizeM', 'Please enter the fund size in $ millions, for example 450.'];
       var vintage = value('bFundVintage');
-      if (vintage && !/^(19[89]\d|20\d\d)$/.test(vintage)) {
+      var year = Number(vintage);
+      if (vintage && (!/^\d{4}$/.test(vintage) || year < FIRST_VINTAGE || year > new Date().getFullYear() + 1)) {
         return ['currentFundVintage', 'Please enter the year the fund closed, for example 2023.'];
       }
     }

@@ -424,6 +424,8 @@ test("out-of-range numbers name the field that is wrong", () => {
   assert.equal(criteriaOf({ currentFundVintage: "1979" }).field, "currentFundVintage");
   assert.equal(criteriaOf({ currentFundVintage: String(YEAR + 2) }).field, "currentFundVintage");
   assert.equal(criteriaOf({ currentFundVintage: "2023.5" }).field, "currentFundVintage");
+  assert.equal(criteriaOf({ currentFundVintage: "2e3" }).field, "currentFundVintage");
+  assert.equal(criteriaOf({ currentFundVintage: "0x7E0" }).field, "currentFundVintage");
   assert.equal(criteriaOf({ currentFundVintage: String(YEAR + 1) }).ok, true);
 });
 

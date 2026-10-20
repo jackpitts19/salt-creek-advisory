@@ -102,7 +102,8 @@ function checkFund(raw, year) {
     return { error: { field: "currentFundSizeM", message: "Please enter the fund size in $ millions, for example 450." } };
   }
   const vintageText = typeof raw.currentFundVintage === "string" ? raw.currentFundVintage.trim() : "";
-  const vintage = vintageText ? Number(vintageText) : null;
+  // Four digits only: Number() alone would also read "2e3" or "0x7E0" as a year.
+  const vintage = vintageText ? (/^\d{4}$/.test(vintageText) ? Number(vintageText) : Number.NaN) : null;
   if (vintage !== null && !(Number.isInteger(vintage) && vintage >= FIRST_VINTAGE && vintage <= year + 1)) {
     return { error: { field: "currentFundVintage", message: "Please enter the year the fund closed, for example 2023." } };
   }
