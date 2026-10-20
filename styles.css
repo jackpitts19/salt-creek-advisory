@@ -3958,19 +3958,22 @@
        now sit there, each linking to their card on /team. The text stays
        in the first column as direct children of .hero-inner, so the
        staged-entrance selectors above still match. The vertical rhythm is
-       tightened a little so the credential strip clears a 900px fold. */
+       tightened a little so the credential strip clears a 900px fold.
+       The photos anchor to the bottom of the column, so their captions
+       line up with the credential labels; centered, they floated in the
+       middle of the hero with nothing to sit on. */
     @media (min-width: 1101px) {
       .hero--home { padding-top: 132px; }
       .hero--home .hero-inner {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) clamp(300px, 28vw, 400px);
+        grid-template-columns: minmax(0, 1fr) clamp(320px, 32vw, 460px);
         column-gap: 4rem;
       }
       .hero--home .hero-inner > * { grid-column: 1; }
       .hero--home .hero-inner > .hero-principals {
         grid-column: 2;
         grid-row: 1 / span 5;
-        align-self: center;
+        align-self: end;
       }
       .hero--home .hero-h1 { margin-bottom: 2rem; }
       .hero--home .hero-sub { margin-bottom: 2.5rem; }
