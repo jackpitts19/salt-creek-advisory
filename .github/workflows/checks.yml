@@ -60,6 +60,9 @@ jobs:
       - name: Worker redirect tests
         run: node tools/test_worker_redirects.mjs
 
+      - name: Buyer list form tests
+        run: node tools/test_buyer_intake.mjs
+
       - name: Valuation tool tests
         run: node tools/test_valuation_prefill.mjs
 

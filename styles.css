@@ -4811,3 +4811,31 @@
       .home-two { grid-template-columns: 1fr; }
       .home-two-item--aside { padding-left: 0; border-left: 0; padding-top: 2rem; border-top: 1px solid rgba(7,17,26,0.1); }
     }
+
+    /* ============================================================
+       BUYER LIST FORM (/investors#join, buyer-list.js)
+       Built from the contact form's parts (.contact panel, .val-* fields),
+       so the site keeps one form language. Only what that form lacks is
+       here: the one-pager picker and a slot for the Turnstile check.
+       ============================================================ */
+    .buyer-join { scroll-margin-top: 72px; }
+    .buyer-form { max-width: 680px; }
+    /* The one-pager picker: the native control, given the field chrome so it reads
+       as part of the same form rather than a browser default. */
+    .buyer-file { padding: 0.7rem 1rem; cursor: pointer; }
+    .buyer-file::file-selector-button {
+      margin-right: 1rem;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(244,240,235,0.38);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--cream);
+      font: inherit;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+    .buyer-file::file-selector-button:hover { border-color: var(--copper2); }
+    .buyer-consent { margin-top: 1.5rem; }
+    .buyer-turnstile { display: flex; justify-content: center; margin-top: 1.5rem; }
+    .buyer-turnstile:empty { margin-top: 0; }

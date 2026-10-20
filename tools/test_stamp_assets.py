@@ -43,6 +43,7 @@ class StampAssetsTestCase(unittest.TestCase):
         self.write("analytics.js", "// analytics")
         self.write("valuation.js", "// valuation")
         self.write("contact.js", "// contact")
+        self.write("buyer-list.js", "// buyer list")
 
     def tearDown(self):
         os.chdir(self._origin)
@@ -71,6 +72,7 @@ class StampAssetsTestCase(unittest.TestCase):
             '<script src="{p}main.js"></script>'
             '<script src="{p}valuation.js" defer></script>'
             '<script src="{p}contact.js" defer></script>'
+            '<script src="{p}buyer-list.js" defer></script>'
             "</body></html>"
         ).format(p=prefix)
 
@@ -78,8 +80,8 @@ class StampAssetsTestCase(unittest.TestCase):
         self.write("index.html", self.page())
         code, _ = self.run_stamper()
         self.assertEqual(code, 0)
-        self.assertEqual(len(STAMP.findall(self.read("index.html"))), 5,
-                         "each of the five assets should be stamped")
+        self.assertEqual(len(STAMP.findall(self.read("index.html"))), 6,
+                         "each of the six assets should be stamped")
 
     def test_handles_relative_and_root_prefixes(self):
         self.write("index.html", self.page())

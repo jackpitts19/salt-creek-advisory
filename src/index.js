@@ -1,3 +1,5 @@
+import { BUYER_LIST_PATH, handleBuyerList } from "./buyer-intake.js";
+
 const APEX_HOST = "saltcreekadvisory.com";
 const WWW_HOST = "www.saltcreekadvisory.com";
 
@@ -8,7 +10,10 @@ const ALLOWED_METHODS = ["GET", "HEAD", "OPTIONS"];
 // silent degradation.
 //   googletagmanager / google-analytics -> GA4 (analytics.js)
 //   formspree.io                        -> valuation.js lead capture POST,
-//                                          contact.js enquiry POST + form fallback
+//                                          contact.js enquiry POST + form fallback,
+//                                          buyer-list.js no-JavaScript fallback
+//   challenges.cloudflare.com           -> Turnstile, the bot check on the buyer
+//                                          list form (script, its iframe, its calls)
 // No font host is listed on purpose: Cormorant Garamond and Inter are served
 // from this origin under /fonts (see docs/fonts.md), so 'self' covers them.
 const CONTENT_SECURITY_POLICY = [
@@ -20,12 +25,12 @@ const CONTENT_SECURITY_POLICY = [
   // already appears in connect-src, so nothing else on the site can post anywhere.
   "form-action https://formspree.io",
   "frame-ancestors 'none'",
-  "frame-src 'none'",
+  "frame-src https://challenges.cloudflare.com",
   "object-src 'none'",
   // static.cloudflareinsights.com is Cloudflare Web Analytics. Cloudflare injects
   // that beacon at the edge, so it appears in no local build and shows up only
   // when testing the deployed site.
-  "script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com",
+  "script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com https://challenges.cloudflare.com",
   // 'unsafe-inline' is still required by the style="" attributes left in the
   // markup. It was 61: 38 of them were one identical in-copy link declaration
   // pasted per-tag on the three sector/FAQ pages, and those now share the
@@ -38,7 +43,7 @@ const CONTENT_SECURITY_POLICY = [
   // www.google.com is GA4's Google-signals endpoint: gtag beacons user_engagement
   // there in addition to google-analytics.com. Omitting it costs engagement data
   // and prints a CSP error on every page.
-  "connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://cloudflareinsights.com",
+  "connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://cloudflareinsights.com https://challenges.cloudflare.com",
   "manifest-src 'self'",
   "worker-src 'self'",
   "upgrade-insecure-requests",
@@ -307,11 +312,20 @@ function methodNotAllowed() {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    // The buyer list form's one endpoint. It is the only path that takes a POST,
+    // so it is answered before the method gate and the redirect logic, both of
+    // which exist for pages.
+    if (url.pathname === BUYER_LIST_PATH) {
+      const response = withStandardHeaders(await handleBuyerList(request, env), BUYER_LIST_PATH);
+      response.headers.set("cache-control", "no-store");
+      return response;
+    }
+
     if (!ALLOWED_METHODS.includes(request.method)) {
       return methodNotAllowed();
     }
 
-    const url = new URL(request.url);
     const originalScheme = getOriginalScheme(request, url);
     const targetHost = url.hostname === WWW_HOST ? APEX_HOST : url.hostname;
     // Year resolution runs after normalization so that ".html" and trailing
