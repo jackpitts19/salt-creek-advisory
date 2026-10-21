@@ -13,7 +13,7 @@ import test from "node:test";
 import worker from "../src/index.js";
 import {
   BUYER_LIST_PATH, BUYER_TYPES, CONSENT_TEXT, CONSENT_TEXT_VERSION, MAX_ONE_PAGER_BYTES,
-  NEWS_CONSENT_TEXT, NEWS_CONSENT_TEXT_VERSION, handleBuyerList,
+  NEWS_CONSENT_TEXT, NEWS_CONSENT_TEXT_VERSION, handleBuyerList, validateSignup,
 } from "../src/buyer-intake.js";
 import { GEOGRAPHY, SECTORS, describeCriteria, parseMillions, validateCriteria } from "../src/buyer-criteria.js";
 
@@ -243,6 +243,15 @@ test("an unticked or odd news value sends no news consent at all", async () => {
   }
 });
 
+test("only a tick, or a literal true from code, counts as asking for news", () => {
+  const base = { ...VALID, consent: true };
+  assert.equal(validateSignup({ ...base, newsConsent: true }).fields.wantsNews, true);
+  assert.equal(validateSignup({ ...base, newsConsent: "yes" }).fields.wantsNews, true);
+  for (const value of [undefined, null, false, 1, "on", "Yes"]) {
+    assert.equal(validateSignup({ ...base, newsConsent: value }).fields.wantsNews, false, String(value));
+  }
+});
+
 test("the news box alone never stands in for the deal consent", async () => {
   const { calls, fetchImpl } = fakeNetwork(() => ok());
   const response = await handleBuyerList(post({ consent: "", newsConsent: "yes" }), CONFIGURED, deps(fetchImpl));
@@ -407,8 +416,9 @@ test("the news box is optional, starts unticked, and says exactly what HelmIQ re
   const input = html.match(/<input[^>]*id="bNewsConsent"[^>]*>/)[0];
   assert.match(input, /name="newsConsent"/);
   assert.doesNotMatch(input, /\brequired\b|\bchecked\b/);
-  const label = html.match(/id="bNewsConsent"[^>]*>\s*<span>([^<]+)<\/span>/)[1];
-  assert.equal(label, NEWS_CONSENT_TEXT);
+  // The wording runs up to the "(optional)" hint, which is not part of what they agree to.
+  const label = html.match(/id="bNewsConsent"[^>]*>\s*<span>([^<]+)<span class="val-label-hint">\(optional\)<\/span><\/span>/)[1];
+  assert.equal(label.trim(), NEWS_CONSENT_TEXT);
 });
 
 // The criteria rules on their own, without the request around them.
