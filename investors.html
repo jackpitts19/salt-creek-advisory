@@ -28,7 +28,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=8c3dad89" />
+  <link rel="stylesheet" href="styles.css?v=768559fc" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -178,6 +178,16 @@
       </div>
       <div class="val-grid2">
         <div class="val-field">
+          <label class="val-label" for="bTitle">Your Title</label>
+          <input id="bTitle" name="title" class="val-input" type="text" placeholder="Partner, VP, Principal" autocomplete="organization-title" autocapitalize="words" maxlength="120" required>
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="bPhone">Phone <span class="val-label-hint">(optional)</span></label>
+          <input id="bPhone" name="phone" class="val-input" type="tel" placeholder="(312) 555-0123" autocomplete="tel" maxlength="30">
+        </div>
+      </div>
+      <div class="val-grid2">
+        <div class="val-field">
           <label class="val-label" for="bFirm">Firm</label>
           <input id="bFirm" name="firmName" class="val-input" type="text" placeholder="Firm name" autocomplete="organization" maxlength="160" required>
         </div>
@@ -279,7 +289,11 @@
         <input type="checkbox" id="bConsent" name="consent" value="yes" required>
         <span>Email me client opportunities that fit what I told you. I can unsubscribe at any time.</span>
       </label>
-      <p class="contact-form-trust">We keep your details in our CRM and use them only to tell you about client businesses that match. We never share them with sellers or other buyers. See our <a href="privacy">Privacy Policy</a>.</p>
+      <label class="val-consent-check buyer-consent" for="bNewsConsent">
+        <input type="checkbox" id="bNewsConsent" name="newsConsent" value="yes">
+        <span>Also send me occasional news and announcements from Salt Creek Advisory. I can unsubscribe at any time. <span class="val-label-hint">(optional)</span></span>
+      </label>
+      <p class="contact-form-trust">We keep your details in our CRM and use them only to tell you about client businesses that match and, if you tick the second box, to send you our news. We never share them with sellers or other buyers. See our <a href="privacy">Privacy Policy</a>.</p>
 
       <div class="buyer-turnstile" id="buyerTurnstile"></div>
       <p class="contact-status" id="buyerStatus" role="alert" aria-live="assertive" tabindex="-1"></p>
@@ -363,7 +377,7 @@
 </footer>
 
 <script src="main.js?v=220786fb"></script>
-<script src="buyer-list.js?v=d3b53fab" defer></script>
+<script src="buyer-list.js?v=6c613292" defer></script>
 
 </body>
 </html>

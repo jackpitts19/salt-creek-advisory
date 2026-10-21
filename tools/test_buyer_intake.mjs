@@ -12,7 +12,8 @@ import test from "node:test";
 
 import worker from "../src/index.js";
 import {
-  BUYER_LIST_PATH, BUYER_TYPES, CONSENT_TEXT, CONSENT_TEXT_VERSION, MAX_ONE_PAGER_BYTES, handleBuyerList,
+  BUYER_LIST_PATH, BUYER_TYPES, CONSENT_TEXT, CONSENT_TEXT_VERSION, MAX_ONE_PAGER_BYTES,
+  NEWS_CONSENT_TEXT, NEWS_CONSENT_TEXT_VERSION, handleBuyerList, normalizePhone, validateSignup,
 } from "../src/buyer-intake.js";
 import { GEOGRAPHY, SECTORS, describeCriteria, parseMillions, validateCriteria } from "../src/buyer-criteria.js";
 
@@ -28,6 +29,8 @@ const PDF = new TextEncoder().encode("%PDF-1.7\n1 0 obj << /Type /Catalog >> end
 const VALID = {
   fullName: "Pat Buyer",
   email: "Pat@Example-Capital.com",
+  title: "Partner",
+  phone: "(312) 555-0123",
   firmName: "Example Capital",
   firmWebsite: "example-capital.com",
   buyerType: "private_equity",
@@ -131,6 +134,10 @@ test("a bad field comes back as a 400 naming that field, and nothing is sent", a
     [{ firmName: "" }, "firmName"],
     [{ buyerType: "hedge_fund" }, "buyerType"],
     [{ consent: "" }, "consent"],
+    [{ title: "  " }, "title"],
+    [{ title: "x".repeat(121) }, "title"],
+    [{ phone: "555-0123" }, "phone"],
+    [{ phone: "call me" }, "phone"],
     [{ whatYouBuy: "x".repeat(2001) }, "whatYouBuy"],
     [{ sectors: [] }, "sectors"],
     [{ ebitdaMinM: "", ebitdaMaxM: "" }, "ebitdaMinM"],
@@ -220,9 +227,71 @@ test("the HelmIQ payload is exactly the v3 contract, with empty optionals left o
   assert.equal(payload.sourceUrl, `${ORIGIN}/investors`);
   assert.match(payload.ipHash, /^[0-9a-f]{64}$/);
   assert.deepEqual(payload.consent, { given: true, textVersion: CONSENT_TEXT_VERSION, text: CONSENT_TEXT });
-  assert.deepEqual(payload.contact, { fullName: "Pat Buyer", email: "pat@example-capital.com" });
+  assert.deepEqual(payload.contact, {
+    fullName: "Pat Buyer", email: "pat@example-capital.com", title: "Partner", phone: "+13125550123",
+  });
   assert.deepEqual(payload.firm, { name: "Example Capital", website: "example-capital.com" });
   assert.equal(payload.buyerTypeLabel, "Private equity fund");
+});
+
+test("the news box, when ticked, sends its own consent beside the deal consent", async () => {
+  const { calls, fetchImpl } = fakeNetwork(() => ok());
+  await handleBuyerList(post({ newsConsent: "yes" }), CONFIGURED, deps(fetchImpl));
+  const { payload } = await received(calls[0]);
+  assert.deepEqual(payload.newsConsent, { given: true, textVersion: NEWS_CONSENT_TEXT_VERSION, text: NEWS_CONSENT_TEXT });
+  assert.deepEqual(payload.consent, { given: true, textVersion: CONSENT_TEXT_VERSION, text: CONSENT_TEXT });
+});
+
+test("an unticked or odd news value sends no news consent at all", async () => {
+  for (const value of ["", "no", "true", "YES "]) {
+    const { calls, fetchImpl } = fakeNetwork(() => ok());
+    await handleBuyerList(post({ newsConsent: value }), CONFIGURED, deps(fetchImpl));
+    const { payload } = await received(calls[0]);
+    assert.equal("newsConsent" in payload, false, JSON.stringify(value));
+  }
+});
+
+test("phone numbers are read the way people type them and sent in E.164", () => {
+  for (const [typed, expected] of [
+    ["(312) 555-0123", "+13125550123"], ["312.555.0123", "+13125550123"], ["1 312 555 0123", "+13125550123"],
+    ["+44 20 7946 0958", "+442079460958"], ["", null], ["   ", null],
+    ["555-0123", undefined], ["+12", undefined], ["+0 20 7946 0958", undefined], ["+4420794", "+4420794"],
+    ["+1234567890123456", undefined], ["312-555-0123 ext 4", undefined], ["2 312 555 0123", undefined],
+  ]) {
+    assert.equal(normalizePhone(typed), expected, typed);
+  }
+});
+
+test("a blank phone is left out of the contact; the title always goes", async () => {
+  const { calls, fetchImpl } = fakeNetwork(() => ok());
+  await handleBuyerList(post({ phone: "" }), CONFIGURED, deps(fetchImpl));
+  const { payload } = await received(calls[0]);
+  assert.deepEqual(payload.contact, { fullName: "Pat Buyer", email: "pat@example-capital.com", title: "Partner" });
+});
+
+test("only a tick, or a literal true from code, counts as asking for news", () => {
+  const base = { ...VALID, consent: true };
+  assert.equal(validateSignup({ ...base, newsConsent: true }).fields.wantsNews, true);
+  assert.equal(validateSignup({ ...base, newsConsent: "yes" }).fields.wantsNews, true);
+  for (const value of [undefined, null, false, 1, "on", "Yes"]) {
+    assert.equal(validateSignup({ ...base, newsConsent: value }).fields.wantsNews, false, String(value));
+  }
+});
+
+test("the news box alone never stands in for the deal consent", async () => {
+  const { calls, fetchImpl } = fakeNetwork(() => ok());
+  const response = await handleBuyerList(post({ consent: "", newsConsent: "yes" }), CONFIGURED, deps(fetchImpl));
+  assert.equal(response.status, 400);
+  assert.equal((await response.json()).field, "consent");
+  assert.equal(calls.length, 0);
+});
+
+test("the fallback email says whether they asked for news", async () => {
+  for (const [value, expected] of [["yes", /^Yes: Also send me occasional news/], ["", /^No\. Do not add them/]]) {
+    const { calls, fetchImpl } = fakeNetwork((url) => (url === FORMSPREE ? ok({ ok: true }) : status(400)));
+    await handleBuyerList(post({ newsConsent: value }), CONFIGURED, deps(fetchImpl));
+    assert.match(JSON.parse(calls.at(-1).init.body).newsAndAnnouncements, expected);
+  }
 });
 
 test("a path in the uploaded file name never reaches HelmIQ", async () => {
@@ -354,7 +423,7 @@ test("the sector and region boxes on the form are exactly the lists the Worker s
 });
 
 test("the form posts the field names the Worker reads, and only accepts PDFs", () => {
-  for (const name of ["fullName", "email", "firmName", "firmWebsite", "buyerType", "whatYouBuy", "consent", "onePager",
+  for (const name of ["fullName", "email", "title", "phone", "firmName", "firmWebsite", "buyerType", "whatYouBuy", "consent", "onePager",
     "ebitdaMinM", "ebitdaMaxM", "revenueMinM", "revenueMaxM", "addOnEbitdaMinM", "addOnEbitdaMaxM",
     "currentFundSizeM", "currentFundVintage"]) {
     assert.match(html, new RegExp(`name="${name}"`), name);
@@ -367,6 +436,15 @@ test("the form posts the field names the Worker reads, and only accepts PDFs", (
 test("the checkbox the buyer ticks says exactly what HelmIQ records as the consent text", () => {
   const label = html.match(/id="bConsent"[^>]*>\s*<span>([^<]+)<\/span>/)[1];
   assert.equal(label, CONSENT_TEXT);
+});
+
+test("the news box is optional, starts unticked, and says exactly what HelmIQ records", () => {
+  const input = html.match(/<input[^>]*id="bNewsConsent"[^>]*>/)[0];
+  assert.match(input, /name="newsConsent"/);
+  assert.doesNotMatch(input, /\brequired\b|\bchecked\b/);
+  // The wording runs up to the "(optional)" hint, which is not part of what they agree to.
+  const label = html.match(/id="bNewsConsent"[^>]*>\s*<span>([^<]+)<span class="val-label-hint">\(optional\)<\/span><\/span>/)[1];
+  assert.equal(label.trim(), NEWS_CONSENT_TEXT);
 });
 
 // The criteria rules on their own, without the request around them.
