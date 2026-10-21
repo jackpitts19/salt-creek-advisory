@@ -2,14 +2,16 @@
  * Buyer-list sign-ups: the form on /investors, posted here, delivered to HelmIQ.
  *
  * The browser posts multipart form data to BUYER_LIST_PATH on this origin: who
- * the buyer is, plus their one-pager (a PDF) or a short note on what they buy.
+ * the buyer is, what they buy (sectors, size ranges, regions, fund; see
+ * src/buyer-criteria.js), and optionally their one-pager (a PDF) or a short note.
  * This module checks it, signs it with a secret the public repository never
  * holds, and sends it to the firm's HelmIQ intake endpoint, where the buyer
- * lands on the buyer list and HelmIQ reads the one-pager for their criteria. If
+ * lands on the buyer list with their criteria filled in and the one-pager
+ * attached to their firm. If
  * HelmIQ is not configured yet, or does not answer, the fields go to the site's
  * existing Formspree form instead, so a sign-up is never lost.
  *
- * Wire contract v2 (HelmIQ side): POST HELMIQ_INTAKE_URL as multipart with a
+ * Wire contract v3 (HelmIQ side; v2 plus the typed `criteria` object): POST HELMIQ_INTAKE_URL as multipart with a
  * `payload` part (the JSON from buildIntakePayload) and an optional `onePager`
  * part (the PDF), and
  *   X-HelmIQ-Timestamp: unix seconds
@@ -28,6 +30,8 @@
  * the list with consent recorded. ALLOW_NO_TURNSTILE = "true" lifts that for
  * local testing only; never set it in production.
  */
+
+import { describeCriteria, validateCriteria } from "./buyer-criteria.js";
 
 export const BUYER_LIST_PATH = "/api/buyer-list";
 
@@ -90,11 +94,12 @@ function isFile(value) {
 }
 
 /**
- * Checks the text fields and returns either the clean fields or the first
+ * Checks who the buyer is and returns either the clean fields or the first
  * problem, named by the form field it belongs to so the page can point at it.
- * The one-pager itself is checked separately (checkOnePager), because reading it
- * is asynchronous.
- * @param {Record<string, unknown>} raw the form's text fields, plus `hasOnePager`
+ * What they buy is checked by validateCriteria, and the one-pager by
+ * checkOnePager (reading it is asynchronous); both are optional extras here,
+ * because the typed criteria are what HelmIQ matches deals on.
+ * @param {Record<string, unknown>} raw the form's text fields
  * @returns {{ ok: true, fields: object } | { ok: false, field: string, error: string }}
  */
 export function validateSignup(raw) {
@@ -119,9 +124,6 @@ export function validateSignup(raw) {
   const whatYouBuy = text(raw.whatYouBuy);
   if (whatYouBuy.length > LIMITS.whatYouBuy) {
     return bad("whatYouBuy", `Please keep this under ${LIMITS.whatYouBuy} characters.`);
-  }
-  if (!raw.hasOnePager && !whatYouBuy) {
-    return bad("onePager", "Please upload your one-pager, or tell us in a few lines what you buy.");
   }
 
   if (raw.consent !== "yes" && raw.consent !== true) {
@@ -169,12 +171,13 @@ export async function signBody(secret, timestamp, body) {
 }
 
 /**
- * The exact v2 payload HelmIQ's intake endpoint accepts. Optional keys are left
+ * The exact v3 payload HelmIQ's intake endpoint accepts. Optional keys are left
  * out rather than sent empty, because HelmIQ rejects unknown or malformed keys.
+ * `fields.criteria` is the object validateCriteria returned.
  */
 export function buildIntakePayload(fields, onePager, { submissionId, submittedAt, sourceUrl, ipHash }) {
   const payload = {
-    version: 2,
+    version: 3,
     submissionId,
     submittedAt,
     sourceUrl,
@@ -185,9 +188,12 @@ export function buildIntakePayload(fields, onePager, { submissionId, submittedAt
     buyerType: fields.buyerType,
     buyerTypeLabel: BUYER_TYPES.get(fields.buyerType),
   };
-  if (fields.whatYouBuy) payload.whatYouBuy = fields.whatYouBuy;
-  if (onePager) payload.onePager = onePager;
-  return payload;
+  const extras = {
+    ...(fields.criteria && Object.keys(fields.criteria).length > 0 && { criteria: fields.criteria }),
+    ...(fields.whatYouBuy && { whatYouBuy: fields.whatYouBuy }),
+    ...(onePager && { onePager }),
+  };
+  return { ...payload, ...extras };
 }
 
 async function postWithTimeout(url, init, fetchImpl, timeoutMs) {
@@ -248,6 +254,7 @@ export async function deliverToFallback(fields, file, submissionId, fetchImpl = 
     firm: fields.firmName,
     website: fields.firmWebsite,
     buyerType: BUYER_TYPES.get(fields.buyerType),
+    criteria: fields.criteria ? describeCriteria(fields.criteria) : "",
     whatTheyBuy: fields.whatYouBuy,
     onePager: file
       ? `They uploaded a one-pager (${file.filename}, ${Math.ceil(file.bytes.length / 1024)} KB) that could not be forwarded here. Ask them to email it.`
@@ -269,6 +276,17 @@ export async function deliverToFallback(fields, file, submissionId, fetchImpl = 
   } catch {
     return false;
   }
+}
+
+// The criteria answers as validateCriteria reads them: the two tick-box groups
+// as lists, every other answer as the text typed.
+const CRITERIA_TEXT_FIELDS = [
+  "ebitdaMinM", "ebitdaMaxM", "revenueMinM", "revenueMaxM",
+  "addOnEbitdaMinM", "addOnEbitdaMaxM", "currentFundSizeM", "currentFundVintage",
+];
+function criteriaFields(form) {
+  const answers = Object.fromEntries(CRITERIA_TEXT_FIELDS.map((name) => [name, form.get(name) ?? ""]));
+  return { ...answers, sectors: form.getAll("sectors"), geography: form.getAll("geography") };
 }
 
 function turnstileReady(env) {
@@ -349,9 +367,11 @@ export async function handleBuyerList(request, env, deps = {}) {
     buyerType: form.get("buyerType"),
     whatYouBuy: form.get("whatYouBuy"),
     consent: form.get("consent"),
-    hasOnePager: isFile(upload) && upload.size > 0,
   });
   if (!checked.ok) return reply(400, { ok: false, field: checked.field, error: checked.error });
+  const wanted = validateCriteria(criteriaFields(form), checked.fields.buyerType, new Date(now()).getUTCFullYear());
+  if (!wanted.ok) return reply(400, { ok: false, field: wanted.field, error: wanted.error });
+  const fields = { ...checked.fields, criteria: wanted.criteria };
 
   const onePager = await checkOnePager(upload);
   if (!onePager.ok) return reply(onePager.status, { ok: false, field: onePager.field, error: onePager.error });
@@ -365,7 +385,7 @@ export async function handleBuyerList(request, env, deps = {}) {
     const fileMeta = file
       ? { filename: file.filename, bytes: file.bytes.length, sha256: await sha256Hex(file.bytes), contentType: "application/pdf" }
       : null;
-    const payload = buildIntakePayload(checked.fields, fileMeta, {
+    const payload = buildIntakePayload(fields, fileMeta, {
       submissionId,
       submittedAt: new Date(now()).toISOString(),
       sourceUrl: `${SITE_ORIGIN}/investors`,
@@ -380,7 +400,7 @@ export async function handleBuyerList(request, env, deps = {}) {
     // keeps the sign-up, and the logged outcome shows the drift.
   }
 
-  const saved = await deliverToFallback(checked.fields, file, submissionId, fetchImpl);
+  const saved = await deliverToFallback(fields, file, submissionId, fetchImpl);
   console.log(JSON.stringify({ event: "buyer_list_signup", submissionId, outcome: saved ? "fallback" : "lost" }));
   if (saved) return reply(200, { ok: true });
   return reply(502, { ok: false, field: "form", error: "We could not send this just now. Please email jack@saltcreekadvisory.com instead." });

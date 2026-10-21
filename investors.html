@@ -28,7 +28,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=45feaf5e" />
+  <link rel="stylesheet" href="styles.css?v=8c3dad89" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -124,7 +124,7 @@
           Joining the list costs nothing and commits you to nothing. We add you to our buyer distribution list. When a client&rsquo;s business fits what you told us, we reach out directly, and only with what that client has approved us to share.
         </p>
         <h2 class="investors-h2">What to <em>send us.</em></h2>
-        <p class="investors-body">The easiest way is to upload your one-pager in the <a href="#join" class="text-link-dark">form below</a>. No one-pager? A few lines covering this is enough:</p>
+        <p class="investors-body">The <a href="#join" class="text-link-dark">form below</a> asks for the essentials and takes about two minutes. Add your one-pager too if you have one. What helps most:</p>
         <ul class="capability-list investors-send-list">
           <li><strong>Who you are.</strong> Private equity firm, family office, strategic acquirer, search fund, or independent sponsor.</li>
           <li><strong>Sectors.</strong> The industries you buy in, and the ones you will not touch.</li>
@@ -164,7 +164,7 @@
       <input type="hidden" name="_subject" value="Buyer list sign-up">
       <input type="hidden" name="form" value="buyer-list">
       <h2 class="contact-form-title">Join the buyer list</h2>
-      <p class="contact-form-sub">About a minute. Upload your one-pager, or tell us in a few lines what you buy, and we will reach out when a client&rsquo;s business fits. All fields are required unless marked optional.</p>
+      <p class="contact-form-sub">About two minutes. Tell us what you buy, and we will reach out when a client&rsquo;s business fits. All fields are required unless marked optional.</p>
 
       <div class="val-grid2">
         <div class="val-field">
@@ -200,14 +200,79 @@
         </select>
       </div>
 
+      <fieldset class="val-field buyer-group" id="bSectors">
+        <legend class="val-label">Sectors You Buy In <span class="val-label-hint">(tick all that apply)</span></legend>
+        <div class="buyer-checks">
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Agriculture"><span>Agriculture</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Business Services"><span>Business Services</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Consumer"><span>Consumer</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Education"><span>Education</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Energy &amp; Utilities"><span>Energy &amp; Utilities</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Financial Services"><span>Financial Services</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Government &amp; Defense"><span>Government &amp; Defense</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Healthcare"><span>Healthcare</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Hospitality &amp; Leisure"><span>Hospitality &amp; Leisure</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Industrial &amp; Manufacturing"><span>Industrial &amp; Manufacturing</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Media &amp; Telecommunications"><span>Media &amp; Telecommunications</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Real Estate &amp; Construction"><span>Real Estate &amp; Construction</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Technology"><span>Technology</span></label>
+          <label class="buyer-check"><input type="checkbox" name="sectors" value="Transportation &amp; Logistics"><span>Transportation &amp; Logistics</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="val-field buyer-range">
+        <legend class="val-label">Platform EBITDA ($M) <span class="val-label-hint" id="bEbitdaHint"></span></legend>
+        <div class="val-grid2">
+          <input id="bEbitdaMin" name="ebitdaMinM" class="val-input" type="text" inputmode="decimal" placeholder="From, e.g. 3" aria-label="Platform EBITDA ($M) from, $ millions" maxlength="12">
+          <input id="bEbitdaMax" name="ebitdaMaxM" class="val-input" type="text" inputmode="decimal" placeholder="To, e.g. 15" aria-label="Platform EBITDA ($M) to, $ millions" maxlength="12">
+        </div>
+      </fieldset>
+      <fieldset class="val-field buyer-range">
+        <legend class="val-label">Revenue ($M) <span class="val-label-hint">(optional)</span></legend>
+        <div class="val-grid2">
+          <input id="bRevenueMin" name="revenueMinM" class="val-input" type="text" inputmode="decimal" placeholder="From, e.g. 20" aria-label="Revenue ($M) from, $ millions" maxlength="12">
+          <input id="bRevenueMax" name="revenueMaxM" class="val-input" type="text" inputmode="decimal" placeholder="To, e.g. 100" aria-label="Revenue ($M) to, $ millions" maxlength="12">
+        </div>
+      </fieldset>
+      <fieldset class="val-field buyer-range">
+        <legend class="val-label">Add-On EBITDA ($M) <span class="val-label-hint">(optional, if you buy add-ons)</span></legend>
+        <div class="val-grid2">
+          <input id="bAddOnMin" name="addOnEbitdaMinM" class="val-input" type="text" inputmode="decimal" placeholder="From, e.g. 1" aria-label="Add-On EBITDA ($M) from, $ millions" maxlength="12">
+          <input id="bAddOnMax" name="addOnEbitdaMaxM" class="val-input" type="text" inputmode="decimal" placeholder="To, e.g. 3" aria-label="Add-On EBITDA ($M) to, $ millions" maxlength="12">
+        </div>
+      </fieldset>
+      <fieldset class="val-field buyer-group">
+        <legend class="val-label">Regions <span class="val-label-hint">(optional)</span></legend>
+        <div class="buyer-checks">
+          <label class="buyer-check"><input type="checkbox" name="geography" value="United States"><span>United States</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Northeast"><span>Northeast</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Southeast"><span>Southeast</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Midwest"><span>Midwest</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Southwest"><span>Southwest</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="West"><span>West</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Canada"><span>Canada</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="North America"><span>North America</span></label>
+          <label class="buyer-check"><input type="checkbox" name="geography" value="Global"><span>Global</span></label>
+        </div>
+      </fieldset>
+      <div class="val-grid2" id="bFundFields">
+        <div class="val-field">
+          <label class="val-label" for="bFundSize">Current Fund Size ($M) <span class="val-label-hint">(optional)</span></label>
+          <input id="bFundSize" name="currentFundSizeM" class="val-input" type="text" inputmode="decimal" placeholder="e.g. 450" maxlength="12">
+        </div>
+        <div class="val-field">
+          <label class="val-label" for="bFundVintage">Year It Closed <span class="val-label-hint">(optional)</span></label>
+          <input id="bFundVintage" name="currentFundVintage" class="val-input" type="text" inputmode="numeric" placeholder="e.g. 2023" maxlength="4">
+        </div>
+      </div>
+
       <div class="val-field buyer-upload" id="bUploadField" hidden>
-        <label class="val-label" for="bOnePager">Your One-Pager <span class="val-label-hint">(PDF, up to 4 MB)</span></label>
+        <label class="val-label" for="bOnePager">Your One-Pager <span class="val-label-hint">(optional; PDF, up to 4 MB)</span></label>
         <input id="bOnePager" name="onePager" class="val-input buyer-file" type="file" accept="application/pdf,.pdf">
-        <p class="val-help">The sheet you already send bankers: sectors, size, geography, what you look for. We read it so you do not have to retype it.</p>
+        <p class="val-help">The sheet you already send bankers. We keep it with your firm&rsquo;s record so our team has it on hand.</p>
       </div>
       <div class="val-field">
-        <label class="val-label" for="bWhatYouBuy">What You Buy <span class="val-label-hint" id="bWhatYouBuyHint">(a few lines)</span></label>
-        <textarea id="bWhatYouBuy" name="whatYouBuy" class="val-input contact-textarea" rows="4" placeholder="Sectors, company size or EBITDA range, geography, platform or add-on, and anything you will not touch." maxlength="2000"></textarea>
+        <label class="val-label" for="bWhatYouBuy">Anything Else We Should Know <span class="val-label-hint">(optional)</span></label>
+        <textarea id="bWhatYouBuy" name="whatYouBuy" class="val-input contact-textarea" rows="3" placeholder="Niches you focus on, deal structures you prefer, anything you will not touch." maxlength="2000"></textarea>
       </div>
 
       <label class="val-consent-check buyer-consent" for="bConsent">
@@ -298,7 +363,7 @@
 </footer>
 
 <script src="main.js?v=220786fb"></script>
-<script src="buyer-list.js?v=6e4f12a9" defer></script>
+<script src="buyer-list.js?v=d3b53fab" defer></script>
 
 </body>
 </html>
