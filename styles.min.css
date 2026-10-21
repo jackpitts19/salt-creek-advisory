@@ -3584,6 +3584,7 @@
     }
     .buyer-file::file-selector-button:hover { border-color: var(--copper2); }
     .buyer-consent { margin-top: 1.5rem; }
+    .buyer-consent + .buyer-consent { margin-top: 0.75rem; }
     .buyer-turnstile { display: flex; justify-content: center; margin-top: 1.5rem; }
     .buyer-turnstile:empty { margin-top: 0; }
     .buyer-form [hidden] { display: none; }
