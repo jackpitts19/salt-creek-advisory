@@ -418,6 +418,8 @@ test("fund size and vintage count only for buyers who raise a fund", () => {
 
 test("out-of-range numbers name the field that is wrong", () => {
   assert.equal(criteriaOf({ ebitdaMinM: "20000" }).field, "ebitdaMinM");
+  assert.equal(criteriaOf({ ebitdaMinM: "0", ebitdaMaxM: "0" }).field, "ebitdaMaxM");
+  assert.equal(criteriaOf({ ebitdaMinM: "0", ebitdaMaxM: "5" }).ok, true);
   assert.equal(criteriaOf({ addOnEbitdaMinM: "5", addOnEbitdaMaxM: "2" }).field, "addOnEbitdaMaxM");
   assert.equal(criteriaOf({ currentFundSizeM: "0" }).field, "currentFundSizeM");
   assert.equal(criteriaOf({ currentFundSizeM: "450000000" }).field, "currentFundSizeM");

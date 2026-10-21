@@ -152,7 +152,7 @@
       var min = amount(range[1]);
       var max = amount(range[2]);
       if (isNaN(min) || min > MAX_RANGE_M) return [range[0], 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
-      if (isNaN(max) || max > MAX_RANGE_M) return [range[0].replace('Min', 'Max'), 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
+      if (isNaN(max) || max === 0 || max > MAX_RANGE_M) return [range[0].replace('Min', 'Max'), 'Please enter the ' + range[3] + ' range in $ millions, for example 5.'];
       if (min !== null && max !== null && max < min) {
         return [range[0].replace('Min', 'Max'), 'The top of the ' + range[3] + ' range is below the bottom.'];
       }

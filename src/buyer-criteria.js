@@ -85,8 +85,9 @@ function pick(values, allowed) {
 function checkRange(raw, range) {
   const min = parseMillions(raw[range.min]);
   const max = parseMillions(raw[range.max]);
-  for (const [key, amount] of [[range.min, min], [range.max, max]]) {
-    if (amount !== null && !(amount >= 0 && amount <= MAX_RANGE_M)) {
+  // A range's top must be above 0 (HelmIQ's rule); its bottom may be 0.
+  for (const [key, amount, floor] of [[range.min, min, 0], [range.max, max, Number.MIN_VALUE]]) {
+    if (amount !== null && !(amount >= floor && amount <= MAX_RANGE_M)) {
       return { error: { field: key, message: `Please enter the ${range.label} range in $ millions, for example 5.` } };
     }
   }
