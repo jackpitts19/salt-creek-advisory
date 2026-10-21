@@ -52,6 +52,13 @@ export const CONSENT_TEXT_VERSION = "2026-10-19";
 export const CONSENT_TEXT =
   "Email me client opportunities that fit what I told you. I can unsubscribe at any time.";
 
+// The optional second box, for news and announcements. Kept apart from the deal
+// consent above: ticking it never puts anyone on the deal list, and leaving it
+// blank sends nothing at all. Same rule: change both together, bump the version.
+export const NEWS_CONSENT_TEXT_VERSION = "2026-10-21";
+export const NEWS_CONSENT_TEXT =
+  "Also send me occasional news and announcements from Salt Creek Advisory. I can unsubscribe at any time.";
+
 // Value on the wire -> label the buyer saw. Order is the order on the form.
 export const BUYER_TYPES = new Map([
   ["private_equity", "Private equity fund"],
@@ -130,7 +137,10 @@ export function validateSignup(raw) {
     return bad("consent", "Please tick the box so we can email you opportunities.");
   }
 
-  return { ok: true, fields: { fullName, email, firmName, firmWebsite, buyerType, whatYouBuy } };
+  // Only an explicit tick counts; anything else means no.
+  const wantsNews = raw.newsConsent === "yes" || raw.newsConsent === true;
+
+  return { ok: true, fields: { fullName, email, firmName, firmWebsite, buyerType, whatYouBuy, wantsNews } };
 }
 
 /**
@@ -192,6 +202,9 @@ export function buildIntakePayload(fields, onePager, { submissionId, submittedAt
     ...(fields.criteria && Object.keys(fields.criteria).length > 0 && { criteria: fields.criteria }),
     ...(fields.whatYouBuy && { whatYouBuy: fields.whatYouBuy }),
     ...(onePager && { onePager }),
+    ...(fields.wantsNews && {
+      newsConsent: { given: true, textVersion: NEWS_CONSENT_TEXT_VERSION, text: NEWS_CONSENT_TEXT },
+    }),
   };
   return { ...payload, ...extras };
 }
@@ -260,6 +273,9 @@ export async function deliverToFallback(fields, file, submissionId, fetchImpl = 
       ? `They uploaded a one-pager (${file.filename}, ${Math.ceil(file.bytes.length / 1024)} KB) that could not be forwarded here. Ask them to email it.`
       : "None uploaded.",
     consent: `${CONSENT_TEXT} (version ${CONSENT_TEXT_VERSION})`,
+    newsAndAnnouncements: fields.wantsNews
+      ? `Yes: ${NEWS_CONSENT_TEXT} (version ${NEWS_CONSENT_TEXT_VERSION})`
+      : "No. Do not add them to news or announcements.",
   };
   try {
     const response = await postWithTimeout(FALLBACK_ENDPOINT, {
@@ -367,6 +383,7 @@ export async function handleBuyerList(request, env, deps = {}) {
     buyerType: form.get("buyerType"),
     whatYouBuy: form.get("whatYouBuy"),
     consent: form.get("consent"),
+    newsConsent: form.get("newsConsent"),
   });
   if (!checked.ok) return reply(400, { ok: false, field: checked.field, error: checked.error });
   const wanted = validateCriteria(criteriaFields(form), checked.fields.buyerType, new Date(now()).getUTCFullYear());

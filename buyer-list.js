@@ -212,6 +212,7 @@
     }
     data.append('whatYouBuy', value('bWhatYouBuy'));
     data.append('consent', el('bConsent').checked ? 'yes' : '');
+    data.append('newsConsent', el('bNewsConsent').checked ? 'yes' : '');
     data.append('website_confirm', value('bConfirmUrl'));
     data.append('turnstileToken', turnstileWidget !== null && window.turnstile ? window.turnstile.getResponse(turnstileWidget) : '');
     var file = chosenFile();
