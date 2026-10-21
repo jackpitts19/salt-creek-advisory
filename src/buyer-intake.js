@@ -85,7 +85,8 @@ export function normalizePhone(value) {
   if (!typed) return null;
   if (!/^\+?[\d\s().-]+$/.test(typed)) return undefined;
   const digits = typed.replace(/\D/g, "");
-  if (typed.startsWith("+")) return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : undefined;
+  // HelmIQ's rule: ^\+[1-9]\d{6,14}$ (no leading zero, 7 to 15 digits).
+  if (typed.startsWith("+")) return /^[1-9]\d{6,14}$/.test(digits) ? `+${digits}` : undefined;
   if (digits.length === 10) return `+1${digits}`;
   if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
   return undefined;

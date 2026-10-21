@@ -255,7 +255,8 @@ test("phone numbers are read the way people type them and sent in E.164", () => 
   for (const [typed, expected] of [
     ["(312) 555-0123", "+13125550123"], ["312.555.0123", "+13125550123"], ["1 312 555 0123", "+13125550123"],
     ["+44 20 7946 0958", "+442079460958"], ["", null], ["   ", null],
-    ["555-0123", undefined], ["+12", undefined], ["312-555-0123 ext 4", undefined], ["2 312 555 0123", undefined],
+    ["555-0123", undefined], ["+12", undefined], ["+0 20 7946 0958", undefined], ["+4420794", "+4420794"],
+    ["+1234567890123456", undefined], ["312-555-0123 ext 4", undefined], ["2 312 555 0123", undefined],
   ]) {
     assert.equal(normalizePhone(typed), expected, typed);
   }

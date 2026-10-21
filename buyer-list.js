@@ -179,7 +179,7 @@
     if (!value('bTitle')) return ['title', 'Please enter your title.'];
     // A rough mirror of the Worker's normalizePhone, so most typos are caught here.
     var phoneDigits = value('bPhone').replace(/\D/g, '');
-    if (value('bPhone') && (!/^\+?[\d\s().-]+$/.test(value('bPhone')) || phoneDigits.length < 8 || phoneDigits.length > 15)) {
+    if (value('bPhone') && (!/^\+?[\d\s().-]+$/.test(value('bPhone')) || phoneDigits.length < 7 || phoneDigits.length > 15)) {
       return ['phone', 'Please enter a valid phone number, or leave it blank.'];
     }
     if (!value('bFirm')) return ['firmName', "Please enter your firm's name."];
