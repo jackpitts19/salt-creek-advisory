@@ -70,8 +70,26 @@ export const BUYER_TYPES = new Map([
   ["other", "Other"],
 ]);
 
-const LIMITS = { fullName: 120, email: 254, firmName: 160, firmWebsite: 200, whatYouBuy: 2000, filename: 200 };
+const LIMITS = { fullName: 120, email: 254, title: 120, firmName: 160, firmWebsite: 200, whatYouBuy: 2000, filename: 200 };
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * A phone number as people type it, in E.164 for HelmIQ. Ten digits (or eleven
+ * starting with 1) are read as US or Canada; anything else must start with "+".
+ * Blank is `null`; anything unreadable is `undefined`.
+ * @param {unknown} value
+ * @returns {string | null | undefined}
+ */
+export function normalizePhone(value) {
+  const typed = line(value);
+  if (!typed) return null;
+  if (!/^\+?[\d\s().-]+$/.test(typed)) return undefined;
+  const digits = typed.replace(/\D/g, "");
+  if (typed.startsWith("+")) return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : undefined;
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return undefined;
+}
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 
@@ -119,6 +137,12 @@ export function validateSignup(raw) {
   const email = line(raw.email).toLowerCase();
   if (!EMAIL_SHAPE.test(email) || email.length > LIMITS.email) return bad("email", "Please enter a valid work email.");
 
+  const title = line(raw.title);
+  if (!title || title.length > LIMITS.title) return bad("title", "Please enter your title.");
+
+  const phone = normalizePhone(raw.phone);
+  if (phone === undefined) return bad("phone", "Please enter a valid phone number, or leave it blank.");
+
   const firmName = line(raw.firmName);
   if (!firmName || firmName.length > LIMITS.firmName) return bad("firmName", "Please enter your firm's name.");
 
@@ -140,7 +164,7 @@ export function validateSignup(raw) {
   // Only an explicit tick counts; anything else means no.
   const wantsNews = raw.newsConsent === "yes" || raw.newsConsent === true;
 
-  return { ok: true, fields: { fullName, email, firmName, firmWebsite, buyerType, whatYouBuy, wantsNews } };
+  return { ok: true, fields: { fullName, email, title, phone, firmName, firmWebsite, buyerType, whatYouBuy, wantsNews } };
 }
 
 /**
@@ -193,7 +217,12 @@ export function buildIntakePayload(fields, onePager, { submissionId, submittedAt
     sourceUrl,
     ipHash,
     consent: { given: true, textVersion: CONSENT_TEXT_VERSION, text: CONSENT_TEXT },
-    contact: { fullName: fields.fullName, email: fields.email },
+    contact: {
+      fullName: fields.fullName,
+      email: fields.email,
+      ...(fields.title && { title: fields.title }),
+      ...(fields.phone && { phone: fields.phone }),
+    },
     firm: fields.firmWebsite ? { name: fields.firmName, website: fields.firmWebsite } : { name: fields.firmName },
     buyerType: fields.buyerType,
     buyerTypeLabel: BUYER_TYPES.get(fields.buyerType),
@@ -264,6 +293,8 @@ export async function deliverToFallback(fields, file, submissionId, fetchImpl = 
     submissionId,
     name: fields.fullName,
     email: fields.email,
+    title: fields.title,
+    phone: fields.phone || "Not given.",
     firm: fields.firmName,
     website: fields.firmWebsite,
     buyerType: BUYER_TYPES.get(fields.buyerType),
@@ -378,6 +409,8 @@ export async function handleBuyerList(request, env, deps = {}) {
   const checked = validateSignup({
     fullName: form.get("fullName"),
     email: form.get("email"),
+    title: form.get("title"),
+    phone: form.get("phone"),
     firmName: form.get("firmName"),
     firmWebsite: form.get("firmWebsite"),
     buyerType: form.get("buyerType"),

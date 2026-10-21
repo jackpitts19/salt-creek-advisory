@@ -66,7 +66,7 @@
 
   // Server field name -> the element an error about it should point at.
   var FIELD_TARGETS = {
-    fullName: 'bName', email: 'bEmail', firmName: 'bFirm', firmWebsite: 'bWebsite',
+    fullName: 'bName', email: 'bEmail', title: 'bTitle', phone: 'bPhone', firmName: 'bFirm', firmWebsite: 'bWebsite',
     buyerType: 'bType', onePager: 'bOnePager', whatYouBuy: 'bWhatYouBuy',
     consent: 'bConsent', turnstile: 'buyerTurnstile', sectors: 'bSectors',
     ebitdaMinM: 'bEbitdaMin', ebitdaMaxM: 'bEbitdaMax', revenueMinM: 'bRevenueMin', revenueMaxM: 'bRevenueMax',
@@ -176,6 +176,12 @@
     var file = chosenFile();
     if (!value('bName')) return ['fullName', 'Please enter your name.'];
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('bEmail'))) return ['email', 'Please enter a valid work email.'];
+    if (!value('bTitle')) return ['title', 'Please enter your title.'];
+    // A rough mirror of the Worker's normalizePhone, so most typos are caught here.
+    var phoneDigits = value('bPhone').replace(/\D/g, '');
+    if (value('bPhone') && (!/^\+?[\d\s().-]+$/.test(value('bPhone')) || phoneDigits.length < 8 || phoneDigits.length > 15)) {
+      return ['phone', 'Please enter a valid phone number, or leave it blank.'];
+    }
     if (!value('bFirm')) return ['firmName', "Please enter your firm's name."];
     if (!value('bType')) return ['buyerType', 'Please choose what kind of buyer you are.'];
     var criteria = criteriaProblem();
@@ -197,6 +203,8 @@
     var data = new FormData();
     data.append('fullName', value('bName'));
     data.append('email', value('bEmail'));
+    data.append('title', value('bTitle'));
+    data.append('phone', value('bPhone'));
     data.append('firmName', value('bFirm'));
     data.append('firmWebsite', value('bWebsite'));
     data.append('buyerType', value('bType'));
