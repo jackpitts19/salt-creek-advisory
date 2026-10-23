@@ -41,301 +41,16 @@
   }
   clearStoredLeads();
 
-  // Base EBITDA multiple ranges, calibrated to 2025-26 lower middle market
-  // transaction data (GF Data, BizBuySell, sector reports). Low end = typical
-  // negotiated sale; high end = quality business in a competitive process.
-  const MULT = {
-    ece:          [3.5, 6.0],
-    services:     [4.5, 7.0],
-    homeservices: [4.5, 7.5],
-    facilities:   [4.0, 6.5],
-    manufacturing:[4.5, 6.5],
-    distribution: [4.5, 6.5],
-    construction: [3.5, 5.5],
-    healthcare:   [5.0, 7.5],
-    insurance:    [7.0, 10.0],
-    itservices:   [5.0, 8.0],
-    software:     [6.0, 10.0],
-    professional: [4.0, 6.5],
-    agency:       [4.0, 6.0],
-    transport:    [3.5, 5.5],
-    auto:         [4.5, 7.0],
-    consumer:     [3.0, 4.5],
-    restaurants:  [2.5, 4.0],
-    ecommerce:    [3.0, 5.0],
-    other:        [3.5, 5.5]
-  };
-  const NAMES = {
-    ece: 'early childhood education', services: 'business services',
-    homeservices: 'home services', facilities: 'facility services and landscaping',
-    manufacturing: 'manufacturing', distribution: 'distribution and logistics',
-    construction: 'construction', healthcare: 'healthcare services',
-    insurance: 'insurance agency', itservices: 'IT services',
-    software: 'software and technology', professional: 'professional services',
-    agency: 'agency', transport: 'transportation', auto: 'auto services',
-    consumer: 'consumer', restaurants: 'restaurant and food service',
-    ecommerce: 'e-commerce', other: 'comparable'
-  };
-  // Typical EBITDA margins by industry, used only when profit is left blank.
-  const MARGIN = {
-    ece: 0.18, services: 0.15, homeservices: 0.12, facilities: 0.12,
-    manufacturing: 0.12, distribution: 0.07, construction: 0.10, healthcare: 0.15,
-    insurance: 0.25, itservices: 0.15, software: 0.25, professional: 0.20,
-    agency: 0.15, transport: 0.08, auto: 0.20, consumer: 0.10,
-    restaurants: 0.12, ecommerce: 0.10, other: 0.12
-  };
-  // What it costs to replace a full-time owner-operator, by revenue. Every
-  // multiple in MULT is an EBITDA multiple, so a profit figure that still
-  // contains the owner's own pay (SDE) has to give up a market manager's salary
-  // before it can be priced against them. Owners routinely report SDE and call
-  // it profit, and at the small end the difference is most of the valuation.
-  // Tiers are deliberately conservative: overstating the salary here would erase
-  // a real business, which is a worse error than understating it slightly.
-  const MANAGER_SALARY = [
-    [1e6, 65000], [3e6, 85000], [7e6, 115000], [15e6, 150000], [Infinity, 200000]
-  ];
+  // The tables, the arithmetic and the result screen's words live in
+  // valuation-tables.js, valuation-estimate.js and valuation-explain.js, which
+  // the page loads first so Node can test them without a browser. The sources
+  // behind the multiples are in valuation-sources.js.
+  const E = window.SCValuationEstimate;
+  const SRC = window.SCValuationSources;
+  const { SUBSECTORS, NAMES, parseMoney, fmt, roundSmart } = E;
 
-  /**
-   * Market pay for whoever the buyer hires to do the owner's job.
-   * @param {number} revenue annual revenue, used as the size proxy
-   * @returns {number} replacement salary in dollars
-   */
-  function replacementSalary(revenue) {
-    const tier = MANAGER_SALARY.find((entry) => revenue < entry[0]);
-    return tier[1];
-  }
-
-  // Subsector-level multiple/margin overrides. Each industry with real dispersion
-  // between its niches gets its own list; industries left out (or the "_other"
-  // fallback) use the industry-level MULT/MARGIN/NAMES above instead.
-  const SUBSECTORS = {
-    ece: [
-      {id:'independent', label:'Single-Site Independent Preschool / Daycare', mult:[3.0,5.0], margin:0.15, name:'single-site preschools and daycares'},
-      {id:'multisite', label:'Multi-Site Regional Preschool Group', mult:[4.0,6.5], margin:0.18, name:'multi-site preschool groups'},
-      {id:'franchise', label:'Franchise-Affiliated Childcare Center', mult:[3.5,5.5], margin:0.16, name:'franchise-affiliated childcare centers'},
-      {id:'specialty', label:'Specialty (Montessori, Bilingual, Special Needs)', mult:[4.0,7.0], margin:0.20, name:'specialty early education providers'}
-    ],
-    services: [
-      {id:'staffing', label:'Staffing / Recruiting', mult:[3.5,5.5], margin:0.10, name:'staffing and recruiting firms'},
-      {id:'outsourced', label:'Outsourced Back-Office (Payroll, HR, BPO)', mult:[5.5,8.5], margin:0.18, name:'outsourced back-office providers'},
-      {id:'inspection', label:'Environmental / Testing / Inspection', mult:[5.0,7.5], margin:0.18, name:'environmental, testing, and inspection firms'},
-      {id:'security', label:'Security Services', mult:[4.0,6.0], margin:0.10, name:'security services firms'}
-    ],
-    homeservices: [
-      {id:'hvac', label:'HVAC (Residential)', mult:[5.0,8.0], margin:0.13, name:'residential HVAC companies'},
-      {id:'plumbing', label:'Plumbing', mult:[4.5,7.5], margin:0.12, name:'plumbing companies'},
-      {id:'electrical', label:'Electrical', mult:[4.5,7.5], margin:0.12, name:'electrical contractors'},
-      {id:'multitrade', label:'Multi-Trade / Combo Shop', mult:[5.0,8.5], margin:0.13, name:'multi-trade home services companies'},
-      {id:'pest', label:'Pest Control', mult:[5.5,9.0], margin:0.20, name:'pest control companies'}
-    ],
-    facilities: [
-      {id:'landscapemaint', label:'Commercial Landscape Maintenance', mult:[4.5,7.0], margin:0.13, name:'commercial landscape maintenance companies'},
-      {id:'landscapedb', label:'Landscape Design / Build', mult:[3.5,5.5], margin:0.10, name:'landscape design/build companies'},
-      {id:'janitorial', label:'Janitorial / Commercial Cleaning', mult:[4.0,6.5], margin:0.10, name:'janitorial and commercial cleaning companies'},
-      {id:'exterior', label:'Snow Removal / Exterior Services', mult:[3.5,5.5], margin:0.12, name:'snow removal and exterior services companies'}
-    ],
-    manufacturing: [
-      {id:'machining', label:'Precision Machining / Metal Fabrication', mult:[4.5,7.0], margin:0.14, name:'precision machining and metal fabrication shops'},
-      {id:'contract', label:'Contract / OEM Manufacturing', mult:[4.0,6.0], margin:0.10, name:'contract and OEM manufacturers'},
-      {id:'foodbev', label:'Food & Beverage Manufacturing', mult:[5.0,7.5], margin:0.12, name:'food and beverage manufacturers'},
-      {id:'buildingproducts', label:'Building Products Manufacturing', mult:[4.5,6.5], margin:0.12, name:'building products manufacturers'},
-      {id:'plastics', label:'Plastics / Injection Molding', mult:[4.5,6.5], margin:0.13, name:'plastics and injection molding companies'}
-    ],
-    distribution: [
-      {id:'wholesale', label:'Wholesale Distribution (Durable Goods)', mult:[4.5,6.5], margin:0.07, name:'wholesale distributors'},
-      {id:'foodbevdist', label:'Food & Beverage Distribution', mult:[4.0,6.0], margin:0.06, name:'food and beverage distributors'},
-      {id:'industrial', label:'Industrial / MRO Distribution', mult:[5.0,7.0], margin:0.09, name:'industrial and MRO distributors'},
-      {id:'logistics', label:'3PL / Warehousing & Logistics', mult:[5.0,7.5], margin:0.10, name:'3PL and warehousing companies'}
-    ],
-    construction: [
-      {id:'general', label:'General Contracting', mult:[3.0,5.0], margin:0.08, name:'general contractors'},
-      {id:'specialty', label:'Specialty Mechanical / Electrical Contracting', mult:[4.0,6.0], margin:0.10, name:'specialty mechanical and electrical contractors'},
-      {id:'roofing', label:'Roofing', mult:[4.0,6.5], margin:0.12, name:'roofing companies'},
-      {id:'civil', label:'Civil / Infrastructure', mult:[3.5,5.5], margin:0.09, name:'civil and infrastructure contractors'}
-    ],
-    healthcare: [
-      {id:'dental', label:'Dental Practice', mult:[5.5,8.5], margin:0.20, name:'dental practices'},
-      {id:'homehealth', label:'Home Health / Home Care', mult:[5.5,8.0], margin:0.13, name:'home health and home care agencies'},
-      {id:'behavioral', label:'Behavioral Health / Therapy', mult:[5.5,8.5], margin:0.15, name:'behavioral health and therapy practices'},
-      {id:'pt', label:'Physical / Occupational Therapy', mult:[5.0,7.5], margin:0.15, name:'physical and occupational therapy clinics'},
-      {id:'medpractice', label:'Medical Practice (Non-Dental)', mult:[5.0,7.5], margin:0.18, name:'medical practices'},
-      {id:'veterinary', label:'Veterinary', mult:[6.0,9.0], margin:0.20, name:'veterinary practices'}
-    ],
-    insurance: [
-      {id:'personal', label:'Personal Lines Agency', mult:[6.0,8.5], margin:0.22, name:'personal lines agencies'},
-      {id:'commercial', label:'Commercial P&C Agency', mult:[7.5,10.5], margin:0.28, name:'commercial P&C agencies'},
-      {id:'benefits', label:'Employee Benefits Brokerage', mult:[7.5,10.5], margin:0.28, name:'employee benefits brokerages'},
-      {id:'mga', label:'MGA / Specialty Program', mult:[8.0,11.0], margin:0.25, name:'MGAs and specialty program businesses'}
-    ],
-    itservices: [
-      {id:'msp', label:'Managed Service Provider (MSP)', mult:[5.5,8.5], margin:0.17, name:'managed service providers'},
-      {id:'cyber', label:'Cybersecurity Services', mult:[6.5,9.5], margin:0.18, name:'cybersecurity services firms'},
-      {id:'itstaffing', label:'IT Staffing / Consulting', mult:[4.0,6.5], margin:0.10, name:'IT staffing and consulting firms'},
-      {id:'cloud', label:'Cloud / Infrastructure Services', mult:[5.5,8.5], margin:0.16, name:'cloud and infrastructure services firms'}
-    ],
-    software: [
-      {id:'verticalsaas', label:'Vertical SaaS', mult:[7.0,11.0], margin:0.28, name:'vertical SaaS companies'},
-      {id:'onprem', label:'On-Premise / Legacy Licensed Software', mult:[4.5,7.0], margin:0.22, name:'on-premise and legacy licensed software companies'},
-      {id:'fintech', label:'Fintech / Payments Software', mult:[6.5,10.5], margin:0.25, name:'fintech and payments software companies'},
-      {id:'devtools', label:'Dev Tools / Infrastructure Software', mult:[6.5,10.5], margin:0.22, name:'dev tools and infrastructure software companies'}
-    ],
-    professional: [
-      {id:'accounting', label:'Accounting / CPA Firm', mult:[5.0,7.5], margin:0.25, name:'accounting and CPA firms'},
-      {id:'engineering', label:'Engineering Firm', mult:[5.0,7.5], margin:0.18, name:'engineering firms'},
-      {id:'consulting', label:'Management Consulting', mult:[4.0,6.5], margin:0.20, name:'management consulting firms'},
-      {id:'architecture', label:'Architecture', mult:[3.5,5.5], margin:0.15, name:'architecture firms'}
-    ],
-    agency: [
-      {id:'digital', label:'Digital Marketing / Performance', mult:[4.0,6.5], margin:0.15, name:'digital marketing and performance agencies'},
-      {id:'creative', label:'Creative / Branding', mult:[3.5,5.5], margin:0.14, name:'creative and branding agencies'},
-      {id:'pr', label:'PR / Communications', mult:[3.5,5.5], margin:0.14, name:'PR and communications agencies'},
-      {id:'mediabuying', label:'Media Buying', mult:[4.0,6.0], margin:0.10, name:'media buying agencies'}
-    ],
-    transport: [
-      {id:'truckload', label:'Truckload Carrier', mult:[3.0,5.0], margin:0.07, name:'truckload carriers'},
-      {id:'ltl', label:'LTL / Regional Carrier', mult:[4.0,6.0], margin:0.08, name:'LTL and regional carriers'},
-      {id:'specialized', label:'Specialized Freight (Tanker, Flatbed, Refrigerated)', mult:[3.5,5.5], margin:0.09, name:'specialized freight carriers'},
-      {id:'brokerage', label:'Freight Brokerage', mult:[4.0,6.5], margin:0.06, name:'freight brokerages'}
-    ],
-    auto: [
-      {id:'carwash', label:'Express Car Wash', mult:[6.0,9.0], margin:0.30, name:'express car wash businesses'},
-      {id:'repair', label:'Auto Repair / Collision', mult:[4.0,6.0], margin:0.16, name:'auto repair and collision shops'},
-      {id:'quicklube', label:'Quick Lube / Tire', mult:[4.5,6.5], margin:0.18, name:'quick lube and tire shops'},
-      {id:'glass', label:'Auto Glass / Detailing', mult:[4.0,6.0], margin:0.15, name:'auto glass and detailing businesses'}
-    ],
-    consumer: [
-      {id:'specialtyretail', label:'Specialty Retail (Brick & Mortar)', mult:[2.5,4.0], margin:0.08, name:'specialty retailers'},
-      {id:'cpg', label:'Consumer Products / CPG Brand', mult:[4.0,6.5], margin:0.12, name:'consumer products brands'},
-      {id:'franchiseretail', label:'Franchise Retail', mult:[3.0,4.5], margin:0.10, name:'franchise retail operators'},
-      {id:'beauty', label:'Beauty / Personal Care Services', mult:[3.5,5.5], margin:0.15, name:'beauty and personal care businesses'}
-    ],
-    restaurants: [
-      {id:'qsr', label:'Quick Service / Fast Casual (Multi-Unit)', mult:[4.0,6.0], margin:0.15, name:'multi-unit quick service and fast casual restaurants'},
-      {id:'fullservice', label:'Full Service / Casual Dining', mult:[2.0,3.5], margin:0.10, name:'full service and casual dining restaurants'},
-      {id:'catering', label:'Catering / Institutional Food Service', mult:[3.0,4.5], margin:0.10, name:'catering and institutional food service companies'},
-      {id:'independent', label:'Single High-Performing Independent', mult:[2.0,3.0], margin:0.10, name:'single-location independent restaurants'}
-    ],
-    ecommerce: [
-      {id:'marketplace', label:'Amazon-First / Marketplace Brand', mult:[3.0,5.0], margin:0.15, name:'marketplace-first e-commerce brands'},
-      {id:'dtc', label:'DTC Brand (Owned Site)', mult:[3.5,5.5], margin:0.12, name:'direct-to-consumer brands'},
-      {id:'subscription', label:'Subscription / Consumables Brand', mult:[4.5,7.0], margin:0.15, name:'subscription and consumables brands'},
-      {id:'b2b', label:'B2B E-Commerce', mult:[4.0,6.0], margin:0.10, name:'B2B e-commerce companies'}
-    ]
-  };
-
-  // Each dropdown below was designed independently (owner dependency, growth,
-  // concentration, revenue quality), then rescaled together so the four
-  // combined best-case and worst-case totals stay close to the original
-  // 4-tier model's combined swing (+1.75 / -2.75). Individually stretching
-  // each dimension's own extreme by up to 0.15 is fine; letting all four
-  // stretch in the same direction at once is not, since highX/lowX have no
-  // cap beyond the multiple floor.
-  const OWNER_ADJ = {
-    fullTeamAbsentee: 0.50, gmInPlace: 0.28, teamOpsOwnerRelationships: 0.05,
-    teamOpsOwnerSales: -0.18, dailyHandsOn: -0.40, irreplaceableDelivery: -0.62,
-    allMe: -0.80
-  };
-  const GROWTH_ADJ = {
-    explosive25plus: 0.55, strong10to25: 0.35, steady3to10: 0.18,
-    unevenGrowth: 0, roughlyFlat: -0.20, recentDip: -0.42, multiYearDecline: -0.80
-  };
-  const CONC_ADJ = {
-    under5: 0.30, five_ten: 0.15, ten_25: 0, twentyfive_40: -0.30,
-    forty_60: -0.55, sixty_80: -0.80, over80: -1.00
-  };
-  const REC_ADJ = {
-    lockedInContracts: 0.55, autoRenewing: 0.35, repeatNoContract: 0.17,
-    mixedRevenue: 0, oneTimeProject: -0.20, cyclicalLumpy: -0.40
-  };
-
-  // Verified acquirers by industry (publicly reported activity, 2025-26).
-  const BUYERS = {
-    ece: [
-      ['Cadence Education', 'PE-backed national platform with 300+ schools across 30 states; has acquired more than 100 preschools. Connor spent three years inside Cadence, working through more than 40 of those acquisitions.'],
-      ['KinderCare Learning Companies', 'One of the largest early education providers in the country.'],
-      ['Busy Bees / BrightPath', 'Global operator backed by the Ontario Teachers’ Pension Plan, growing across North America.']
-    ],
-    services: [
-      ['Springdale Industries', 'Long-term holding company with 375+ partner businesses nationwide; buys majority stakes and keeps management in place. We know their team well.'],
-      ['Alpine Investors', 'One of the biggest names in business services; backs Apex, Ascend, Trilon, and Evergreen, among the most acquisitive platforms in the country.'],
-      ['Shore Capital Partners', 'Ranked #1 in U.S. private equity deal volume 2015–2024 (PitchBook); built around buying founder-owned businesses our size.']
-    ],
-    homeservices: [
-      ['Apex Service Partners', 'The most active home services consolidator: roughly 60 acquisitions in 2025 across HVAC, plumbing and electrical. An Alpine Investors platform.'],
-      ['Multi-trade PE platforms', 'Dozens of private equity-backed regional platforms are actively acquiring residential trades businesses.']
-    ],
-    facilities: [
-      ['BrightView', 'The largest commercial landscaper in the country, actively acquiring again.'],
-      ['SiteOne Landscape Supply', 'Serial acquirer in the landscape supply chain: seven acquisitions in 2025 alone.'],
-      ['PE-backed facility services platforms', 'Consolidators in landscaping, janitorial and facility maintenance remain highly active.']
-    ],
-    manufacturing: [
-      ['Marmon Holdings (Berkshire Hathaway)', 'A long-time home for family-owned niche manufacturers; more than 100 autonomous businesses.'],
-      ['PE-backed manufacturing platforms', 'Industrial-focused private equity firms actively acquire precision, specialty, and contract manufacturers.']
-    ],
-    distribution: [
-      ['Watsco', 'The largest HVAC distributor in North America and a serial acquirer of family-owned distributors.'],
-      ['SiteOne Landscape Supply', 'Completed seven distribution acquisitions in 2025; dozens over the last decade.']
-    ],
-    construction: [
-      ['Comfort Systems USA', 'Public mechanical and electrical contractor that completed five acquisitions in 2025.'],
-      ['Specialty trade consolidators', 'PE-backed platforms in fire and life safety, roofing, paving, and mechanical trades are acquiring aggressively.']
-    ],
-    healthcare: [
-      ['Shore Capital Partners', 'The most active healthcare investor in the lower middle market; ranked #1 in U.S. PE deal volume 2015–2024.'],
-      ['Heartland Dental', 'The largest dental support organization in the country, supporting 1,700+ offices.'],
-      ['MSO and DSO platforms', 'PE-backed physician, dental, and therapy groups are consolidating nearly every specialty.']
-    ],
-    insurance: [
-      ['BroadStreet Partners', 'The most active agency acquirer in the country, with 69 deals in 2025.'],
-      ['Hub International', 'Top-five broker, 49 agency acquisitions in 2025.'],
-      ['Inszone Insurance Services', '45 agency acquisitions in 2025 and accelerating.']
-    ],
-    itservices: [
-      ['Evergreen Services Group (Lyra)', 'The most acquisitive MSP buyer in the world: 47 acquisitions in 2025. An Alpine Investors company.'],
-      ['PE-backed MSP platforms', 'A deep field of platforms actively consolidating managed IT services.']
-    ],
-    software: [
-      ['Constellation Software', 'Famously acquires hundreds of small vertical software companies and holds them forever.'],
-      ['Vertical SaaS consolidators', 'PE-backed software platforms compete aggressively for niche products with sticky customers.']
-    ],
-    professional: [
-      ['Ascend', 'Alpine-backed accounting platform; dozens of CPA firm mergers, including Top 200 firms.'],
-      ['Trilon Group', 'The most prolific acquirer in engineering and infrastructure consulting: eight acquisitions in 2025.'],
-      ['PE-backed professional services platforms', 'Accounting, engineering, and consulting roll-ups are among the hottest areas in private equity.']
-    ],
-    agency: [
-      ['Accenture', 'Has acquired dozens of marketing and creative agencies at the larger end of the market.'],
-      ['PE-backed agency platforms', 'Digital marketing and creative agency roll-ups actively acquire specialized shops with retainer revenue.']
-    ],
-    transport: [
-      ['TFI International', 'One of the most acquisitive trucking consolidators in North America, with well over 100 acquisitions in its history.'],
-      ['Knight-Swift', 'Top-five carrier that has grown through acquisition, including U.S. Xpress and Dependable Highway Express.']
-    ],
-    auto: [
-      ['Mammoth Holdings', 'Express car wash platform with 200+ locations in 17 states. Its founding CEO has been a guest on our podcast.'],
-      ['Mister Car Wash', 'The largest U.S. car wash operator, taken private by Leonard Green in 2026.'],
-      ['Crash Champions', 'PE-backed collision repair consolidator with hundreds of locations.']
-    ],
-    consumer: [
-      ['Shore Capital Partners', 'Closed a $450M+ food and beverage fund in 2025; built around buying founder-owned consumer businesses.'],
-      ['Strategic and franchise acquirers', 'Category leaders and franchise groups actively acquire proven consumer concepts and locations.']
-    ],
-    restaurants: [
-      ['Flynn Group', 'The largest multi-brand franchise operator in the world, with thousands of locations across seven brands.'],
-      ['Savory Fund', 'Private equity fund built specifically to buy and scale emerging restaurant brands; $750M+ in assets.'],
-      ['Shore Capital Partners', 'Closed a $450M+ food and beverage fund in 2025.']
-    ],
-    ecommerce: [
-      ['Razor Group', 'The surviving consolidator of the aggregator era; merged with Infinite Commerce in 2025 to manage 10,000+ SKUs.'],
-      ['Strategic brand acquirers', 'The aggregator wave has cooled. Today’s buyers are selective and pay for profitable, differentiated brands.']
-    ]
-  };
-  const BUYERS_GENERIC = [
-    ['PE-backed industry platforms', 'Private equity consolidators building scale in your sector through add-on acquisitions.'],
-    ['Strategic acquirers', 'Larger companies in your industry seeking geographic or capability expansion.'],
-    ['Family offices & independent sponsors', 'Long-hold buyers who compete well on culture and continuity.']
-  ];
+  // Named buyers by industry, kept with the other tables in valuation-tables.js.
+  const { BUYERS, BUYERS_GENERIC } = window.SCValuationTables;
 
   const STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','Washington D.C.','West Virginia','Wisconsin','Wyoming'];
 
@@ -395,16 +110,15 @@
    * a network error once the plan's monthly submission quota is spent, so the status
    * is checked explicitly: that is the failure most likely to happen quietly.
    * @param {Object} lead the full submission, sent only to Formspree
+   * @param {string} subject the email subject Formspree sends it under
    * @param {Object} context non-identifying fields safe to report to GA4
    * @returns {Promise<void>}
    */
-  function deliverLead(lead, context) {
+  function deliverLead(lead, subject, context) {
     return fetch(LEAD_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(Object.assign({
-        _subject: 'New valuation lead: ' + lead.name + ' (' + lead.industry + ', ' + lead.state + ')'
-      }, lead))
+      body: JSON.stringify(Object.assign({ _subject: subject }, lead))
     })
       .then((response) => {
         if (!response.ok) throw new Error('lead endpoint returned HTTP ' + response.status);
@@ -425,19 +139,39 @@
     stateSel.appendChild(o);
   });
 
-  // Populate subsector options whenever the industry changes.
+  /**
+   * One <option>, built with DOM calls like everything else the page adds.
+   * @param {string} value
+   * @param {string} text
+   * @returns {HTMLOptionElement}
+   */
+  function option(value, text) {
+    const node = document.createElement('option');
+    node.value = value;
+    node.textContent = text;
+    return node;
+  }
+
+  // Populate subsector options whenever the industry changes. Pet care gets a
+  // pointer for vets, whose practices are priced as healthcare, not pet care.
   const subSel = $('vSubsector');
   $('vIndustry').addEventListener('change', () => {
-    const list = SUBSECTORS[$('vIndustry').value];
+    const industry = $('vIndustry').value;
+    // Linked only while it shows: a hidden element named in aria-describedby
+    // is still read out, so a static link would read the vet hint everywhere.
+    const showVetHint = industry === 'petcare';
+    $('vSubsectorHint').hidden = !showVetHint;
+    if (showVetHint) subSel.setAttribute('aria-describedby', 'vSubsectorHint');
+    else subSel.removeAttribute('aria-describedby');
+    const list = Object.prototype.hasOwnProperty.call(SUBSECTORS, industry) ? SUBSECTORS[industry] : null;
     if (!list) {
-      subSel.innerHTML = '<option value="">Not applicable for this industry</option>';
+      subSel.replaceChildren(option('', 'Not applicable for this industry'));
       subSel.disabled = true;
       return;
     }
     subSel.disabled = false;
-    subSel.innerHTML = '<option value="">Select your subsector&hellip;</option>' +
-      list.map(s => '<option value="' + s.id + '">' + s.label + '</option>').join('') +
-      '<option value="_other">Other / Not Listed</option>';
+    subSel.replaceChildren(option('', 'Select your subsector\u2026'),
+      ...list.map((s) => option(s.id, s.label)), option('_other', 'Other / Not Listed'));
   });
 
   /**
@@ -512,12 +246,6 @@
       step.scrollIntoView({ block: 'start', behavior: rm ? 'auto' : 'smooth' });
     }
   }
-
-  function parseMoney(v) {
-    const d = String(v).replace(/[^0-9.]/g, '');
-    return d ? Math.round(parseFloat(d)) : 0;
-  }
-  function fmt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
 
   ['vRevenue', 'vProfit'].forEach(id => {
     const el = $(id);
@@ -638,18 +366,6 @@
   $('back1').addEventListener('click', () => showStep(1));
   $('back2').addEventListener('click', () => showStep(2));
 
-  function sizeAdj(p) {
-    if (p >= 5e6) return 1.5;
-    if (p >= 2e6) return 0.75;
-    if (p >= 1e6) return 0.25;
-    if (p >= 5e5) return 0;
-    if (p >= 2.5e5) return -0.5;
-    return -1.0;
-  }
-  function roundSmart(v) {
-    const step = v >= 1e7 ? 5e5 : v >= 1e6 ? 1e5 : 2.5e4;
-    return Math.round(v / step) * step;
-  }
   function countUp(el, target, dur) {
     if (rm) { el.textContent = fmt(target); return; }
     // The span ships empty, so give it its starting figure now rather than one
@@ -665,109 +381,149 @@
     requestAnimationFrame(tick);
   }
 
+  /**
+   * The three buyers for an industry, with the generic ones filling in.
+   * @param {string} ind an industry key
+   */
   function renderBuyers(ind) {
-    const list = (BUYERS[ind] || []).concat(BUYERS_GENERIC).slice(0, 3);
+    const own = Object.prototype.hasOwnProperty.call(BUYERS, ind) ? BUYERS[ind] : [];
+    const list = own.concat(BUYERS_GENERIC).slice(0, 3);
     $('valBuyersTitle').textContent = 'Buyers active in ' +
       (NAMES[ind] === 'comparable' ? 'businesses like yours' : NAMES[ind]);
-    $('valBuyersList').innerHTML = list.map(b =>
-      '<div class="val-buyer"><span class="val-buyer-name">' + b[0] +
-      '</span><span class="val-buyer-desc">' + b[1] + '</span></div>'
-    ).join('');
+    $('valBuyersList').replaceChildren(...list.map((b) => {
+      const card = el('div', 'val-buyer');
+      card.append(el('span', 'val-buyer-name', b[0]), el('span', 'val-buyer-desc', b[1]));
+      return card;
+    }));
   }
 
-  $('calcBtn').addEventListener('click', () => {
-    const name = $('vName').value.trim();
-    const email = $('vEmail').value.trim();
-    if (!name) return fail(3, 'Please enter your name.', 'vName');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(3, 'Please enter a valid email address.', 'vEmail');
-    clearStepErrors(3);
+  /**
+   * "Sources for <industry>": the newest few sources behind this industry's
+   * multiples, each linking to the publisher, then a link to the full list.
+   * Built from valuation-sources.js with DOM calls, never markup strings.
+   * @param {string} ind an industry key
+   * @param {string} method how the business was priced: 'sde', 'ebitda' or 'blend'
+   */
+  function renderSourcesLine(ind, method) {
+    const line = $('valSourcesLine');
+    const picked = SRC ? SRC.resultSources(ind, method) : [];
+    line.hidden = !picked.length;
+    if (!picked.length) return line.replaceChildren();
+    // The industry as the owner picked it ("Consumer / Retail"), which reads
+    // better here than the lower-case name the breakdown uses.
+    const label = ind === 'other' ? 'Sources for businesses like yours: ' : 'Sources for ' + sel('vIndustry') + ': ';
+    const parts = [document.createTextNode(label)];
+    picked.forEach((source, i) => {
+      const link = el('a', '', source.publisher);
+      link.href = source.url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      parts.push(link, document.createTextNode(' (' + source.sortKey.slice(0, 4) + ')' + (i < picked.length - 1 ? ', ' : '. ')));
+    });
+    const all = el('a', '', 'See every source');
+    all.href = '#sources';
+    line.replaceChildren(...parts, all, document.createTextNode('.'));
+  }
 
-    const ind = $('vIndustry').value;
-    const subKey = $('vSubsector').value;
-    const subList = SUBSECTORS[ind];
-    const sub = subList ? subList.find(s => s.id === subKey) : null;
-    const multRange = sub ? sub.mult : MULT[ind];
-    const margin = sub ? sub.margin : MARGIN[ind];
-    const subName = sub ? sub.name : NAMES[ind];
+  // What the lead and the email say when an optional question is skipped.
+  // Always present, so every Formspree submission has the same columns.
+  const TIMELINE_UNANSWERED = 'Not answered';
 
-    const rev = parseMoney($('vRevenue').value);
-    let prof = parseMoney($('vProfit').value);
-    let estimated = false;
-    if (!prof && rev) { prof = Math.round(rev * margin); estimated = true; }
+  /**
+   * The text a select is showing, which is what the lead and the email carry.
+   * @param {string} id the select's id
+   * @returns {string}
+   */
+  function sel(id) {
+    const e = $(id);
+    return e.options[e.selectedIndex].text;
+  }
 
-    // An owner who reported SDE handed us a number that still pays them. Buyers
-    // price the business without the owner in it, so a market manager's salary
-    // comes out before any multiple touches it. The estimated path skips this:
-    // MARGIN is already an EBITDA margin, so the salary is spoken for.
-    const ownerPayRemoved = (!estimated && $('vProfitBasis').value === 'includesOwnerPay')
-      ? replacementSalary(rev || Math.round(prof / margin))
-      : 0;
-    prof = prof - ownerPayRemoved;
+  /**
+   * One element with a class and plain text. Everything the result screen
+   * builds goes through textContent, never innerHTML, so no answer or figure
+   * can ever be read as markup.
+   * @param {string} tag the element to create
+   * @param {string} className its class, or '' for none
+   * @param {string} [text] its text
+   * @returns {HTMLElement}
+   */
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
 
-    // Once a manager is paid there is nothing left to put a multiple on. Saying
-    // that plainly beats printing a range built on zero or a negative number.
-    const belowManagerPay = prof <= 0;
-
-    // Very large businesses get a closer look, not a guess.
-    const bigDeal = prof >= 12e6 || rev >= 12e7;
-    const showRange = !bigDeal && !belowManagerPay;
-
-    const adj = sizeAdj(prof) + OWNER_ADJ[$('vOwner').value] + GROWTH_ADJ[$('vGrowth').value] +
-                CONC_ADJ[$('vConc').value] + REC_ADJ[$('vRec').value];
-    const lowX = Math.max(2.0, multRange[0] + adj);
-    const highX = Math.max(2.5, multRange[1] + adj);
-    const low = roundSmart(prof * lowX);
-    const high = roundSmart(prof * highX);
-
-    $('valNumbers').style.display = showRange ? 'block' : 'none';
-    $('valBigLook').style.display = bigDeal ? 'block' : 'none';
-    $('valSmallLook').style.display = (belowManagerPay && !bigDeal) ? 'block' : 'none';
-
-    if (bigDeal) {
-      $('valBigLookMsg').textContent = 'Honestly? At your size, a calculator range isn’t worth your time. ' +
-        'Businesses like yours trade on things a tool can’t see: buyer appetite, sector momentum, deal ' +
-        'structure, and how the story gets told. Rather than hand you a number that could be off by tens of ' +
-        'millions in either direction, we’d like to take a real look. That conversation is free, ' +
-        'confidential, and worth it at your scale.';
+  /**
+   * encodeURIComponent that cannot throw. A lone surrogate pasted into the name
+   * or phone field makes the plain call throw, which used to happen after the
+   * lead had been sent and before the result showed, leaving the visitor stuck.
+   * Same approach as safeEncode in contact.js.
+   * @param {string} value text for a mailto link
+   * @returns {string}
+   */
+  function safeEncode(value) {
+    try {
+      return encodeURIComponent(value);
+    } catch (err) {
+      const cleaned = value
+        .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g, '')
+        .replace(/(^|[^\uD800-\uDBFF])([\uDC00-\uDFFF])/g, '$1');
+      try {
+        return encodeURIComponent(cleaned);
+      } catch (err2) {
+        return '';
+      }
     }
+  }
 
-    if (belowManagerPay && !bigDeal) {
-      $('valSmallLookMsg').textContent = 'You told us your own pay is still inside that profit figure. Once we ' +
-        'set aside about ' + fmt(ownerPayRemoved) + ' to hire someone to do your job, there is not enough left ' +
-        'for a multiple to mean anything. That is more common than you would think, and it does not mean the ' +
-        'business has no value. It usually means the value sits in the assets, the customer relationships, or ' +
-        'the right buyer, rather than in the earnings. Let us look at it properly before you take any number ' +
-        'seriously.';
-    }
+  /**
+   * The owner's answers, in the shape computeEstimate takes. The selling-timeline
+   * answer is deliberately left out: it travels with the lead, never the number.
+   * @returns {Readonly<Object>}
+   */
+  function collectInputs() {
+    return Object.freeze({
+      industry: $('vIndustry').value, subsector: $('vSubsector').value,
+      revenue: parseMoney($('vRevenue').value), profit: parseMoney($('vProfit').value),
+      profitBasis: $('vProfitBasis').value,
+      owner: $('vOwner').value, growth: $('vGrowth').value,
+      concentration: $('vConc').value, revenueType: $('vRec').value
+    });
+  }
 
-    const profPhrase = estimated
-      ? 'an estimated ' + fmt(prof) + ' of annual profit (you left profit blank, so we applied typical margins for ' + subName + ' to your revenue, which makes this a rougher starting point)'
-      : ownerPayRemoved
-        ? fmt(prof) + ' of annual profit, after setting aside ' + fmt(ownerPayRemoved) + ' to replace what you do ' +
-          '(you told us your own pay was still in that number, and buyers price the business without you in it)'
-        : 'your ' + fmt(prof) + ' of annual profit';
-    $('valNote').textContent = 'Based on a ' + lowX.toFixed(1) + 'x\u2013' + highX.toFixed(1) +
-      'x multiple applied to ' + profPhrase + ', adjusted for size, ' +
-      'owner involvement, growth, customer concentration, and revenue quality. That is where ' +
-      subName + ' are trading today. Where you land inside the range, or above it, ' +
-      'depends almost entirely on whether buyers compete for your business.';
-
-    renderBuyers(ind);
-
-    const sel = (id) => { const e = $(id); return e.options[e.selectedIndex].text; };
-    const lead = {
-      name, email, phone: $('vPhone').value.trim(), website: $('vWebsite').value.trim(),
+  /**
+   * Everything that goes to Formspree for one submission. Every field name the
+   * CRM already reads is kept; the figures come from E.leadFigures so they can
+   * be tested without a browser.
+   * @param {Object} est the estimate
+   * @param {{name: string, email: string}} contact who it is for
+   * @returns {Readonly<Object>}
+   */
+  function buildLead(est, contact) {
+    const figures = E.leadFigures(est);
+    return Object.freeze({
+      name: contact.name, email: contact.email,
+      phone: $('vPhone').value.trim(), website: $('vWebsite').value.trim(),
       state: $('vState').value,
       industry: sel('vIndustry'), subsector: subSel.disabled ? 'N/A' : sel('vSubsector'),
       ownerInvolvement: sel('vOwner'), revenueTrend: sel('vGrowth'),
       customerConcentration: sel('vConc'), revenueType: sel('vRec'),
-      revenue: rev, profit: prof, profitEstimated: estimated, oversized: bigDeal,
-      // What the owner said about their own pay, and what we took out because of
-      // it. Both travel with the lead so the number in the email can be retraced.
-      profitBasis: estimated ? 'N/A (estimated from margins)' : sel('vProfitBasis'),
-      ownerPayRemoved: ownerPayRemoved,
-      belowManagerPay: belowManagerPay,
-      estimateLow: low, estimateHigh: high,
+      // For qualifying the lead only. Neither reaches the estimate, and both stay
+      // out of analytics: the privacy policy names what GA4 receives.
+      sellingTimeline: $('vTiming').value ? sel('vTiming') : TIMELINE_UNANSWERED,
+      ownsRealEstate: $('vRealEstate').value ? sel('vRealEstate') : TIMELINE_UNANSWERED,
+      // profit is what the owner typed (or our estimate when blank); the rest
+      // say how it was priced, so the number in the email can be retraced.
+      revenue: figures.revenue, profit: figures.profit, profitEstimated: figures.profitEstimated,
+      oversized: figures.oversized,
+      profitBasis: est.estimated ? 'N/A (estimated from margins)' : sel('vProfitBasis'),
+      profitAfterManagerPay: figures.profitAfterManagerPay, sde: figures.sde,
+      valuationMethod: figures.valuationMethod, rangeShown: figures.rangeShown,
+      ownerPayRemoved: figures.ownerPayRemoved,
+      belowManagerPay: figures.belowManagerPay,
+      estimateLow: figures.estimateLow, estimateHigh: figures.estimateHigh,
       // A consent clause nobody can prove was shown is worth nothing, so the
       // acceptance travels with the lead. TERMS_VERSION pins each submission to
       // the wording that was actually on screen when it was sent.
@@ -778,25 +534,221 @@
       // we knew and did it anyway.
       phoneConsent: $('vConsentPhone').checked,
       date: new Date().toISOString(), source: 'valuation-tool'
-    };
+    });
+  }
 
-    // Non-identifying context for GA4. The visitor's name, email, phone and website
-    // stay out of analytics entirely: those go to Formspree and nowhere else.
+  /**
+   * The prewritten email behind "Email Us This Estimate", the fallback that gets
+   * the lead to us when the automatic delivery fails.
+   * @param {Object} lead the submission
+   * @param {Object} est the estimate
+   * @returns {string} a mailto: URL
+   */
+  function buildMailto(lead, est) {
+    const subject = 'Valuation inquiry from ' + lead.name;
+    const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
+      'Name: ' + lead.name + '\nEmail: ' + lead.email + (lead.phone ? '\nPhone: ' + lead.phone : '') +
+      (lead.website ? '\nWebsite: ' + lead.website : '') + '\nState: ' + lead.state +
+      (lead.sellingTimeline !== TIMELINE_UNANSWERED ? '\nSelling timeline: ' + lead.sellingTimeline : '') +
+      '\nIndustry: ' + lead.industry + '\nSubsector: ' + lead.subsector +
+      '\nOwner involvement: ' + lead.ownerInvolvement +
+      '\nRevenue trend: ' + lead.revenueTrend + '\nLargest customer: ' + lead.customerConcentration +
+      '\nRevenue type: ' + lead.revenueType +
+      (lead.ownsRealEstate !== TIMELINE_UNANSWERED ? '\nOwn the real estate: ' + lead.ownsRealEstate : '') +
+      mailtoFigures(lead, est) +
+      '\n\nI’d like to talk about what a real number could look like.';
+    return 'mailto:jack@saltcreekadvisory.com?cc=connor@saltcreekadvisory.com&subject=' +
+      safeEncode(subject) + '&body=' + safeEncode(bodyTxt);
+  }
+
+  // How the email names each way of pricing a business.
+  const METHOD_LABELS = Object.freeze({
+    ebitda: 'EBITDA, after a manager’s salary', sde: 'Owner earnings (SDE)',
+    blend: 'A blend of owner earnings (SDE) and EBITDA', none: 'No range shown'
+  });
+
+  /**
+   * The money lines of the prewritten email, mirroring the lead's figures.
+   * @param {Object} lead the submission
+   * @param {Object} est the estimate
+   * @returns {string}
+   */
+  function mailtoFigures(lead, est) {
+    const range = !lead.rangeShown
+      ? (est.bigDeal ? 'needs a closer look, large business' : 'none yet; let’s talk it through')
+      : fmt(lead.estimateLow) + ' to ' + fmt(lead.estimateHigh);
+    return '\nAnnual revenue: ' + fmt(lead.revenue) +
+      '\nAnnual profit: ' + fmt(lead.profit) + (lead.profitEstimated ? ' (estimated from margins)' : '') +
+      '\nOwn pay still in that number: ' + lead.profitBasis +
+      (lead.sde !== '' ? '\nOwner earnings (SDE): ' + fmt(lead.sde) : '') +
+      (lead.ownerPayRemoved ? '\nManager salary set aside: ' + fmt(lead.ownerPayRemoved) : '') +
+      '\nPriced on: ' + METHOD_LABELS[lead.valuationMethod] +
+      '\nEstimated range: ' + range;
+  }
+
+  /**
+   * One line of a breakdown list: the term, its figure, and where it came from.
+   * A figure that is a range keeps each end whole and lets the line break only
+   * at the dash, so "$1,795,800 – $2,890,800" never splits mid-number on a phone.
+   * @param {{term: string, value: string, detail: string, kind: string}} line
+   * @returns {HTMLElement}
+   */
+  function calcRowElement(line) {
+    const parts = line.value.split(' – ');
+    const isRange = parts.length > 1;
+    const group = el('div', 'val-calc-row' + (line.kind !== 'step' ? ' val-calc-row--' + line.kind : '') +
+      (isRange ? ' val-calc-row--range' : ''));
+    const value = el('dd', 'val-calc-value');
+    parts.forEach((part, i) => {
+      if (i) value.appendChild(document.createTextNode(' – '));
+      value.appendChild(el('span', 'val-nowrap', part));
+    });
+    group.append(el('dt', '', line.term), value, el('dd', 'val-calc-detail', line.detail));
+    return group;
+  }
+
+  /**
+   * Fills a breakdown list, replacing whatever an earlier submission left.
+   * @param {HTMLElement} list the dl to fill
+   * @param {ReadonlyArray} lines rows from valuation-estimate.js
+   */
+  function fillCalcList(list, lines) {
+    list.replaceChildren(...lines.map(calcRowElement));
+  }
+
+  /**
+   * "What's moving your number": each answer, ranked, with what it does to the
+   * range in words and the buyer's reason in one sentence.
+   * @param {Object} est the estimate
+   */
+  function renderMoves(est) {
+    $('valMovesIntro').textContent = E.movesIntro(est);
+    $('valMovesList').replaceChildren(...E.rankMoves(est).map((move) => {
+      const item = el('li', 'val-move val-move--' + move.direction);
+      const head = el('div', 'val-move-head');
+      // The comma is for screen readers, which would otherwise run the answer
+      // and its dollar effect together; on screen the layout already parts them.
+      head.append(el('span', 'val-move-name', move.label), el('span', 'sr-only', ', '),
+        el('span', 'val-move-amount', move.amountText));
+      item.append(head, el('p', 'val-move-why', move.why));
+      return item;
+    }));
+    const note = E.movesNote(est);
+    $('valMovesNote').textContent = note;
+    $('valMovesNote').hidden = !note;
+  }
+
+  /**
+   * The notes that sit by the number: the warm word for a small business and,
+   * when the owner holds the property, what that means. Hidden when empty.
+   * @param {Object} est the estimate
+   */
+  function renderSideNotes(est) {
+    const small = E.smallBusinessNote(est);
+    $('valSmallBizNote').textContent = small;
+    $('valSmallBizNote').hidden = !small || !est.showRange;
+    const ownsProperty = $('vRealEstate').value === 'yes';
+    $('valRealEstateNote').textContent = ownsProperty ? E.REAL_ESTATE_NOTE : '';
+    $('valRealEstateNote').hidden = !ownsProperty || !est.showRange;
+  }
+
+  /**
+   * Why a small business got no number yet, in plain words.
+   * @param {Object} est the estimate
+   * @returns {string}
+   */
+  function noRangeReason(est) {
+    if (est.method === 'none') {
+      return 'The numbers you gave leave no owner earnings for a multiple to work on yet. ';
+    }
+    // Priced on owner earnings, but so small that a multiple rounds to nothing.
+    if (est.method === 'sde' || est.method === 'blend') {
+      return 'At these owner earnings, a multiple comes to too little for a range to mean much yet: we round to ' +
+        'the nearest ' + fmt(E.roundingStep(est.exactHigh)) + '. ';
+    }
+    // A tiny revenue with profit left blank can estimate to $0 without any pay
+    // being set aside, so the message only blames the salary when there was one.
+    return est.ownerPayRemoved
+      ? 'You told us your own pay is still inside that profit figure. Once we set aside about ' +
+        fmt(est.ownerPayRemoved) + ' to hire someone to do your job, there is not enough left for a multiple to mean anything. '
+      : 'At the revenue you entered, typical margins leave too little profit for a multiple to mean anything. ';
+  }
+
+  /**
+   * The two no-number screens: too large for a calculator, or nothing yet to
+   * put a multiple on. The second shows the money lines that got it there and,
+   * for a small business, never closes the door.
+   * @param {Object} est the estimate
+   */
+  function renderNoRange(est) {
+    if (est.bigDeal) {
+      $('valBigLookMsg').textContent = 'Honestly? At your size, a calculator range isn’t worth your time. ' +
+        'Businesses like yours trade on things a tool can’t see: buyer appetite, sector momentum, deal ' +
+        'structure, and how the story gets told. Rather than hand you a number that could be off by tens of ' +
+        'millions in either direction, we’d like to take a real look. That conversation is free, ' +
+        'confidential, and worth it at your scale.';
+      return;
+    }
+    const warm = E.smallBusinessNote(est);
+    $('valSmallLookMsg').textContent = noRangeReason(est) + 'That is more common than you would think, and it ' +
+      'does not mean the business has no value. It usually means the value sits in the assets, the customer ' +
+      'relationships, or the right buyer, rather than in the earnings. Let us look at it properly before you ' +
+      'take any number seriously.' + (warm ? ' ' + warm : '');
+    const lines = E.buildEarningsRows(est);
+    fillCalcList($('valSmallCalcList'), lines);
+    $('valSmallCalc').hidden = !lines.length;
+  }
+
+  /**
+   * Draws the result screen for one estimate. Every list is rebuilt from scratch,
+   * so a visitor who goes back, changes an answer and resubmits never sees rows
+   * left over from the first attempt.
+   * @param {Object} est the estimate
+   */
+  function renderResult(est) {
+    $('valNumbers').style.display = est.showRange ? 'block' : 'none';
+    $('valBigLook').style.display = est.bigDeal ? 'block' : 'none';
+    $('valSmallLook').style.display = (!est.showRange && !est.bigDeal) ? 'block' : 'none';
+    $('valCalc').hidden = !est.showRange;
+    $('valMoves').hidden = !est.showRange;
+    renderSideNotes(est);
+    if (est.showRange) {
+      $('valNote').textContent = E.rangeNote(est);
+      fillCalcList($('valCalcList'), E.buildBreakdownRows(est));
+      renderMoves(est);
+    } else {
+      fillCalcList($('valCalcList'), []);
+      $('valMovesList').replaceChildren();
+      renderNoRange(est);
+    }
+    renderSourcesLine(est.industry, est.method);
+    renderBuyers(est.industry);
+  }
+
+  /**
+   * Reports the submission and sends the lead. Non-identifying context only goes
+   * to GA4: the visitor's name, email, phone and website go to Formspree and
+   * nowhere else, and so do the selling-timeline and real-estate answers.
+   * @param {Object} lead the submission
+   * @param {Object} est the estimate
+   */
+  function sendLead(lead, est) {
     const leadContext = {
       industry: lead.industry,
       state: lead.state,
-      oversized: bigDeal,
-      // Oversized businesses, and ones with nothing left after a manager's pay,
+      oversized: est.bigDeal,
+      // Oversized businesses, and ones with nothing yet to put a multiple on,
       // get no range on screen, so they carry no comparable value here either.
-      value: showRange ? Math.round((low + high) / 2) : 0,
+      value: est.showRange ? est.midpoint : 0,
       currency: 'USD'
     };
-
     // Cleared first so a visitor who steps back and resubmits is not left looking
     // at a stale warning from an earlier attempt.
     hideLeadWarning();
     if (LEAD_ENDPOINT) {
-      deliverLead(lead, leadContext);
+      const subject = E.leadSubjectPrefix(est) + 'New valuation lead: ' + lead.name +
+        ' (' + lead.industry + ', ' + lead.state + ')';
+      deliverLead(lead, subject, leadContext);
     } else {
       // No endpoint configured means the lead reaches us only if they mail it.
       showLeadWarning();
@@ -808,32 +760,26 @@
     // should not leave their name, revenue and profit on a shared computer.
     // The lead still reaches us via the POST above and the mailto link below.
     clearStoredLeads();
+  }
 
-    const subject = 'Valuation inquiry from ' + name;
-    const bodyTxt = 'Hi Jack and Connor,\n\nI just used the valuation tool on your site.\n\n' +
-      'Name: ' + name + '\nEmail: ' + email + (lead.phone ? '\nPhone: ' + lead.phone : '') +
-      (lead.website ? '\nWebsite: ' + lead.website : '') + '\nState: ' + lead.state +
-      '\nIndustry: ' + lead.industry + '\nSubsector: ' + lead.subsector +
-      '\nOwner involvement: ' + lead.ownerInvolvement +
-      '\nRevenue trend: ' + lead.revenueTrend + '\nLargest customer: ' + lead.customerConcentration +
-      '\nRevenue type: ' + lead.revenueType + '\nAnnual revenue: ' + fmt(rev) +
-      '\nAnnual profit: ' + fmt(prof) + (estimated ? ' (estimated from margins)' : '') +
-      '\nOwn pay still in that number: ' + lead.profitBasis +
-      (ownerPayRemoved ? '\nManager salary set aside: ' + fmt(ownerPayRemoved) : '') +
-      '\nEstimated range: ' + (bigDeal
-        ? 'needs a closer look, large business'
-        : belowManagerPay
-          ? 'nothing left to price once a manager is paid'
-          : fmt(low) + ' to ' + fmt(high)) +
-      '\n\nI\u2019d like to talk about what a real number could look like.';
-    $('valEmailLink').setAttribute('href',
-      'mailto:jack@saltcreekadvisory.com?cc=connor@saltcreekadvisory.com&subject=' +
-      encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyTxt));
+  $('calcBtn').addEventListener('click', () => {
+    const name = $('vName').value.trim();
+    const email = $('vEmail').value.trim();
+    if (!name) return fail(3, 'Please enter your name.', 'vName');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(3, 'Please enter a valid email address.', 'vEmail');
+    clearStepErrors(3);
+
+    const est = E.computeEstimate(collectInputs());
+    const lead = buildLead(est, { name, email });
+    renderResult(est);
+    sendLead(lead, est);
+    $('valEmailLink').setAttribute('href', buildMailto(lead, est));
 
     showStep(4);
-    if (showRange) {
-      countUp($('valLow'), low, 1200);
-      countUp($('valHigh'), high, 1400);
+    if (est.showRange) {
+      countUp($('valLow'), est.low, 1200);
+      countUp($('valHigh'), est.high, 1400);
+      countUp($('valMid'), est.midpoint, 1300);
     }
   });
 })();

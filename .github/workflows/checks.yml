@@ -66,6 +66,16 @@ jobs:
       - name: Valuation tool tests
         run: node tools/test_valuation_prefill.mjs
 
+      # The estimate itself: pinned outputs, so a repricing is always a decision,
+      # plus the result screen's breakdown and ranked answers.
+      - name: Valuation estimate tests
+        run: node tools/test_valuation_estimate.mjs
+
+      # The result screen built from it, and the page copy, FAQ schema, multiples
+      # table and sources list that quote the tool.
+      - name: Valuation result screen tests
+        run: node tools/test_valuation_explain.mjs
+
       - name: Generated files are current
         run: |
           python3 tools/stamp_assets.py

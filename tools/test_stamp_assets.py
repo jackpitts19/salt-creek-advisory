@@ -42,6 +42,10 @@ class StampAssetsTestCase(unittest.TestCase):
         self.write("main.js", "console.info('hi');")
         self.write("analytics.js", "// analytics")
         self.write("valuation.js", "// valuation")
+        self.write("valuation-tables.js", "// valuation tables")
+        self.write("valuation-estimate.js", "// valuation estimate")
+        self.write("valuation-explain.js", "// valuation explain")
+        self.write("valuation-sources.js", "// valuation sources")
         self.write("contact.js", "// contact")
         self.write("buyer-list.js", "// buyer list")
 
@@ -70,6 +74,10 @@ class StampAssetsTestCase(unittest.TestCase):
             '<script src="{p}analytics.js" defer></script>'
             "</head><body>"
             '<script src="{p}main.js"></script>'
+            '<script src="{p}valuation-tables.js" defer></script>'
+            '<script src="{p}valuation-estimate.js" defer></script>'
+            '<script src="{p}valuation-explain.js" defer></script>'
+            '<script src="{p}valuation-sources.js" defer></script>'
             '<script src="{p}valuation.js" defer></script>'
             '<script src="{p}contact.js" defer></script>'
             '<script src="{p}buyer-list.js" defer></script>'
@@ -80,8 +88,8 @@ class StampAssetsTestCase(unittest.TestCase):
         self.write("index.html", self.page())
         code, _ = self.run_stamper()
         self.assertEqual(code, 0)
-        self.assertEqual(len(STAMP.findall(self.read("index.html"))), 6,
-                         "each of the six assets should be stamped")
+        self.assertEqual(len(STAMP.findall(self.read("index.html"))), 10,
+                         "each of the ten assets should be stamped")
 
     def test_handles_relative_and_root_prefixes(self):
         self.write("index.html", self.page())

@@ -67,9 +67,8 @@ INDUSTRY_PARAM = "industry"
 # in valuation.html that their reader would pick. Bare slugs, as in
 # build_related.py, so nothing here moves when the guide year rolls.
 #
-# The pet care guides are absent on purpose: the form has no pet care option,
-# and sending a dog daycare owner in with "Consumer / Retail" already chosen
-# would hand them another sector's multiples. They link to the plain form.
+# The pet care guides link with Pet Care chosen now that the form offers it.
+# The roll-ups guide covers legal services too, so it links to the plain form.
 SECTOR_INDUSTRY = {
     "msp-valuation-multiples": "itservices",
     "best-ma-advisors-msp-managed-service-providers": "itservices",
@@ -88,15 +87,19 @@ SECTOR_INDUSTRY = {
     "ma-advisor-industrials-manufacturing": "manufacturing",
     "business-services-valuation-multiples": "services",
     "ma-advisor-business-services": "services",
+    "dog-daycare-pet-care-valuation-multiples": "petcare",
+    "best-ma-advisors-pet-care-dog-daycare-businesses": "petcare",
+    "prepare-dog-daycare-business-for-sale": "petcare",
+    "evaluate-pet-care-acquisition-offer": "petcare",
 }
 
 BAND_LINES = (
     START,
     '<div class="article-tldr article-tldr--band">',
     '  <span class="article-tldr-label">Free Valuation Range</span>',
-    "  <p>A dozen quick dropdowns and about two minutes get you a ballpark range for your"
-    " business, built from published industry transaction multiple ranges. It is a"
-    " directional estimate, not a formal valuation.</p>",
+    "  <p>About a dozen quick questions and two minutes get you a ballpark range for your"
+    " business, built from published industry transaction multiple ranges, with the math"
+    " behind it. It is a directional estimate, not a formal valuation.</p>",
     '  <a href="{href}" class="text-link">Value My Business'
     ' <span aria-hidden="true">&#8594;</span></a>',
     "</div>",
