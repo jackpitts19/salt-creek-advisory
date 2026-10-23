@@ -120,6 +120,17 @@ test("shows the pay it added back, or how it estimated owner earnings", () => {
   assert.match(estimated[0].detail, /capped at 35% of revenue/);
 });
 
+test("says it added back only the pay revenue could have covered", () => {
+  const rows = V.buildBreakdownRows(V.computeEstimate(inputs({
+    industry: "homeservices", subsector: "plumbing", revenue: 32923, profit: 3292,
+    profitBasis: "excludesOwnerPay" })));
+
+  assert.deepEqual(pairs(rows).slice(0, 3), [
+    ["Profit you reported", "$3,292"], ["Added back: your pay", "+$29,631"],
+    ["Owner earnings a buyer prices (SDE)", "$32,923"]]);
+  assert.match(rows[1].detail, /more than the business spent in total/);
+});
+
 test("walks the blend: both methods, then the weighting", () => {
   const rows = V.buildBreakdownRows(hvacEstimate());
   const byTerm = Object.fromEntries(rows.map((r) => [r.term, r]));

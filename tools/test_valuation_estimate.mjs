@@ -246,6 +246,30 @@ test("adds back a typical owner's pay when it was already taken out", () => {
   assert.equal(est.method, "sde");
 });
 
+test("never adds back more owner pay than the business spent beyond its profit", () => {
+  // Jack's live test on 2026-10-23: $32,923 of revenue and $3,292 of profit
+  // after pay. The full $65,000 typical salary made owner earnings $68,292,
+  // more than twice revenue. The owner can only have been paid out of the
+  // $29,631 that was not profit.
+  const est = V.computeEstimate(inputs({
+    industry: "homeservices", subsector: "plumbing", revenue: 32923, profit: 3292,
+    profitBasis: "excludesOwnerPay",
+  }));
+
+  assert.equal(est.ownerPayAddedBack, 29631);
+  assert.equal(est.sde, 32923);
+  assert.ok(est.sde <= 32923, "owner earnings cannot exceed revenue");
+  assert.equal(est.payAddBackCapped, true);
+});
+
+test("adds back the full typical salary when revenue leaves room for it", () => {
+  const est = V.computeEstimate(inputs({
+    industry: "other", revenue: 400000, profit: 50000, profitBasis: "excludesOwnerPay",
+  }));
+
+  assert.equal(est.payAddBackCapped, false);
+});
+
 test("estimates owner earnings for a small business with profit left blank", () => {
   const est = V.computeEstimate(inputs({ industry: "homeservices", subsector: "_other", revenue: 500000, profit: 0 }));
 
