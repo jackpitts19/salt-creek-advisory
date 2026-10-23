@@ -164,6 +164,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "what-buyers-look-for-in-an-acquisition-target",
   "what-you-keep-after-selling-a-business",
   "when-to-start-exit-planning",
+  "who-buys-msp-businesses",
   "working-capital-peg-ma",
 ]);
 
