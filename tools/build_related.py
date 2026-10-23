@@ -368,7 +368,17 @@ RELATED = {
     "business-services-valuation-multiples": [
         "/business-services-ma-advisor", "ma-advisor-business-services",
         "msp-valuation-multiples", "manufacturing-valuation-multiples",
-        "ebitda-and-business-valuation-basics", "hvac-plumbing-valuation-multiples"],
+        "ebitda-and-business-valuation-basics", "hvac-plumbing-valuation-multiples",
+        "selling-commercial-landscaping-company"],
+
+    # Sector: commercial landscaping. The business services page and multiples
+    # guide lead, since landscaping sits inside that sector; then the two deal
+    # terms the guide's worked example turns on (working capital in a seasonal
+    # business, rollover into a platform) and the PE-versus-strategic buyer guide.
+    "selling-commercial-landscaping-company": [
+        "/business-services-ma-advisor", "business-services-valuation-multiples",
+        "working-capital-peg-ma", "rollover-equity-explained",
+        "strategic-buyer-vs-private-equity-buyer"],
 
     # Sector: HVAC and plumbing valuation. The two trade advisor guides lead,
     # since a reader pricing the company asks next who should sell it; then the
@@ -383,7 +393,7 @@ RELATED = {
         "/business-services-ma-advisor", "business-services-valuation-multiples",
         "best-ma-advisors-hvac-companies", "best-ma-advisors-plumbing-companies",
         "best-ma-advisors-accounting-cpa-firms",
-        "best-ma-advisors-msp-managed-service-providers"],
+        "best-ma-advisors-msp-managed-service-providers", "selling-commercial-landscaping-company"],
 
     # Choosing an advisor. The fee guide sits second in the two comparisons that
     # quote a percentage without deriving it: a reader just told a $20M sale runs
