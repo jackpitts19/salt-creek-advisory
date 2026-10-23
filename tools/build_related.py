@@ -109,7 +109,16 @@ RELATED = {
     "earnouts-escrow-holdbacks": [
         "ma-deal-structure", "working-capital-peg-ma",
         "strategic-buyer-vs-private-equity-buyer",
-        "seller-risk-protection-deal-structuring"],
+        "seller-risk-protection-deal-structuring", "rollover-equity-explained"],
+    # Rollover equity: primary for "rollover equity" and "second bite". Its
+    # body links deal structure, earnouts, the LOI, asset-vs-stock, net
+    # proceeds, the buyer comparison and the roll-up guide by name, so its own
+    # list runs to what the body only describes: seller protections that sit
+    # beside the equity terms, the peg that moves cash at closing, and the
+    # family succession guide for owners weighing a sale against keeping it.
+    "rollover-equity-explained": [
+        "ma-deal-structure", "seller-risk-protection-deal-structuring",
+        "working-capital-peg-ma", "family-business-succession-planning"],
 
     # Post-closing risk. The earnout guide answers "will I be paid the rest of
     # the price"; this one answers "how much of what I was already paid can be
@@ -136,10 +145,11 @@ RELATED = {
     # leans on most (the unsolicited-offer walk it reuses, deal structure, the
     # asset-or-stock question that drives the tax, and earnouts). It is carried
     # by the three pages whose readers ask "so what do I keep?" next.
+    # Rollover: its section 6 explains the tax deferral; the guide is the long form.
     "what-you-keep-after-selling-a-business": [
         "evaluate-unsolicited-offer-buy-business", "ma-deal-structure",
         "asset-sale-vs-stock-sale", "earnouts-escrow-holdbacks",
-        "letter-of-intent-selling-a-business"],
+        "letter-of-intent-selling-a-business", "rollover-equity-explained"],
 
     # The structure question that sits underneath every offer: which legal form
     # the sale takes and what that moves between buyer and seller. Its own four
@@ -183,9 +193,11 @@ RELATED = {
     # the earnout and escrow terms it tells the reader to separate from cash at
     # closing, and the deal-structure guide behind its rollover section. Carried
     # by the three other MSP guides as a fourth or fifth destination.
+    # The rollover guide is the long form of its rollover section.
     "who-buys-msp-businesses": [
         "/msp-ma-advisor", "msp-valuation-multiples",
-        "earnouts-escrow-holdbacks", "ma-deal-structure"],
+        "earnouts-escrow-holdbacks", "ma-deal-structure",
+        "rollover-equity-explained"],
 
     # Sector: pet care. The advisor comparison sits in the middle of both other
     # pet care guides rather than at the end: a reader on multiples or roll-ups
