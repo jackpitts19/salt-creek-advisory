@@ -220,9 +220,13 @@ class Links(unittest.TestCase):
     def test_general_guide_links_to_the_plain_valuation_page(self):
         self.assertEqual(band.href_for("ma-advisor-fees"), "../valuation")
 
-    def test_pet_care_guides_link_plain_because_the_form_has_no_pet_care_option(self):
-        self.assertEqual(band.href_for("dog-daycare-pet-care-valuation-multiples"),
-                         "../valuation")
+    def test_pet_care_guides_link_with_pet_care_preselected(self):
+        for slug in ("dog-daycare-pet-care-valuation-multiples", "best-ma-advisors-pet-care-dog-daycare-businesses",
+                     "prepare-dog-daycare-business-for-sale", "evaluate-pet-care-acquisition-offer"):
+            self.assertEqual(band.href_for(slug), "../valuation?industry=petcare", slug)
+
+    def test_mixed_sector_roll_up_guide_still_links_plain(self):
+        self.assertEqual(band.href_for("roll-ups-legal-services-pet-care"), "../valuation")
 
     def test_year_is_split_from_a_guide_slug_whatever_the_year(self):
         self.assertEqual(band.split_year("articles/msp-valuation-multiples-2026.html"),

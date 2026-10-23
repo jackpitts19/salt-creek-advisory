@@ -104,6 +104,8 @@ python3 tools/test_submit_indexnow.py
 python3 tools/test_check_links.py
 python3 tools/test_check_canonical.py
 node     tools/test_worker_redirects.mjs
+node     tools/test_valuation_prefill.mjs
+node     tools/test_valuation_estimate.mjs   # the estimate and its breakdown
 ```
 
 Those are all offline. One more needs production to be up, so it is not part of

@@ -27,9 +27,12 @@ import re
 import sys
 
 # Only the assets pages load from this origin. Fonts and images sit behind their
-# own cache rules; analytics.js, valuation.js, contact.js and buyer-list.js are here because they
-# ship under the same .js rule as main.js and would go stale the same way.
-ASSETS = ("styles.css", "main.js", "analytics.js", "valuation.js", "contact.js", "buyer-list.js")
+# own cache rules; analytics.js, the five valuation scripts, contact.js and
+# buyer-list.js are here because they ship under the same .js rule as main.js and
+# would go stale the same way.
+ASSETS = ("styles.css", "main.js", "analytics.js", "valuation.js", "valuation-tables.js",
+          "valuation-estimate.js", "valuation-explain.js", "valuation-sources.js",
+          "contact.js", "buyer-list.js")
 HASH_LENGTH = 8
 STYLESHEET = "styles.css"
 TRIMMED_STYLESHEET = "styles.min.css"
