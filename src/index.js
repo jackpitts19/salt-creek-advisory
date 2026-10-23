@@ -158,6 +158,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "rollover-equity-explained",
   "sell-side-advisor-vs-business-broker",
   "seller-risk-protection-deal-structuring",
+  "selling-cpa-firm-private-equity",
   "selling-to-search-fund-independent-sponsor",
   "strategic-buyer-vs-private-equity-buyer",
   "telling-employees-about-selling-business",

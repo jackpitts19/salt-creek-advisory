@@ -256,7 +256,18 @@ RELATED = {
     # buyer-type guide for the internal, regional and PE comparison.
     "how-to-value-accounting-cpa-firm-before-sale": [
         "best-ma-advisors-accounting-cpa-firms", "ebitda-and-business-valuation-basics",
-        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer"],
+        "working-capital-peg-ma", "strategic-buyer-vs-private-equity-buyer",
+        "selling-cpa-firm-private-equity"],
+
+    # Selling a CPA firm to private equity: the deal-terms companion to the two
+    # accounting guides above. Its body links both by name, so its own list runs
+    # to what the body only describes: the business services page that covers
+    # accounting, the LOI it tells the reader to negotiate before signing, the
+    # rollover terms it lists questions about, and the family succession guide
+    # for the internal-succession path it compares.
+    "selling-cpa-firm-private-equity": [
+        "/business-services-ma-advisor", "letter-of-intent-selling-a-business",
+        "rollover-equity-explained", "family-business-succession-planning"],
 
     # Sector: dental and orthodontics. The dental multiples guide leads: it is
     # the long form of the SDE-versus-EBITDA distinction the whole comparison
