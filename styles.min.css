@@ -405,7 +405,7 @@
       margin-bottom: 2.5rem;
     }
     .hero-h1 em {
-      font-style: italic;
+      font-style: normal;
       font-weight: 300;
       color: var(--copper3);
     }
@@ -504,7 +504,7 @@
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-size: clamp(200px, 28vw, 400px);
       font-weight: 300;
-      font-style: italic;
+      font-style: normal;
       color: transparent;
       -webkit-text-stroke: 1px rgba(7,17,26,0.055);
       pointer-events: none;
@@ -889,7 +889,7 @@
       border-radius: 8px;
       margin-bottom: 1.8rem;
     }
-    .podcast-h2 em { font-style: italic; color: var(--copper3); }
+    .podcast-h2 em { font-style: normal; color: var(--copper3); }
     .podcast-h2 {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-size: var(--fs-display-4);
@@ -1120,7 +1120,7 @@
       margin-bottom: 1.75rem;
     }
     .contact-h2 em {
-      font-style: italic;
+      font-style: normal;
       color: var(--copper3);
     }
     .contact-sub {
@@ -1502,7 +1502,7 @@
     }
     .impact-stat-num--word {
       font-size: var(--fs-display-4);
-      font-style: italic;
+      font-style: normal;
       letter-spacing: -0.005em;
       line-height: 1.08;
       padding-top: 0.35rem;
@@ -1553,14 +1553,14 @@
       display: block;
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-size: 3.2rem;
-      font-style: italic;
+      font-style: normal;
       line-height: 0.6;
       color: var(--copper2);
       opacity: 0.55;
       margin-bottom: 0.9rem;
     }
     .impact-body-quote em {
-      font-style: italic;
+      font-style: normal;
       color: var(--cream);
     }
     .impact-body-text {
@@ -1763,7 +1763,7 @@
       line-height: 1.15;
       margin-bottom: 1.25rem;
     }
-    .sector-flagship h3 em { font-style: italic; color: var(--copper3); }
+    .sector-flagship h3 em { font-style: normal; color: var(--copper3); }
     .sector-flagship p {
       font-size: 1rem;
       font-weight: 400;
@@ -1871,7 +1871,7 @@
       letter-spacing: -0.01em;
     }
     .sector-group-h2 em,
-    .articles-group-h2 em { font-style: italic; color: var(--copper-accent); }
+    .articles-group-h2 em { font-style: normal; color: var(--copper-accent); }
     .investors {
       background: var(--navy2);
       padding: 6.5rem 6%;
@@ -1902,7 +1902,7 @@
       line-height: 1.12;
       margin-bottom: 1.5rem;
     }
-    .investors-h2 em { font-style: italic; color: var(--copper3); }
+    .investors-h2 em { font-style: normal; color: var(--copper3); }
     .investors-body {
       font-size: 1rem;
       font-weight: 400;
@@ -1967,7 +1967,7 @@
       max-width: 30ch;
       text-wrap: balance;
     }
-    .faq-h2 em { font-style: italic; color: var(--copper3); }
+    .faq-h2 em { font-style: normal; color: var(--copper3); }
     .faq-sub {
       font-size: 1rem;
       font-weight: 400;
@@ -2122,7 +2122,7 @@
     .page-hero::after { content:''; position:absolute; inset:0; opacity:.1; pointer-events:none; background-image: radial-gradient(circle, rgba(184,115,51,0.35) 1px, transparent 1px); background-size:40px 40px; mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); }
     .page-hero .wrap { position: relative; z-index: 1; }
     .page-hero-h1 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-2); font-weight:300; color: var(--cream); line-height:1.1; margin-bottom: 1.5rem; max-width: 760px; letter-spacing:-0.01em; }
-    .page-hero-h1 em { font-style: italic; color: var(--copper3); }
+    .page-hero-h1 em { font-style: normal; color: var(--copper3); }
     .page-hero-sub { font-size: 1rem; font-weight:300; color: var(--muted); line-height:1.85; max-width: 580px; }
     .page-hero + section { padding-top: 5rem; }
     .why-us + .why-us { padding-top: 4rem; }
@@ -2244,7 +2244,7 @@
     }
     .next-cta { background: var(--navy3); padding: 5.5rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
     .next-cta-h2 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin:0 auto 1.2rem; max-width: 30ch; text-wrap: balance; }
-    .next-cta-h2 em { font-style:italic; color:var(--copper3); }
+    .next-cta-h2 em { font-style: normal; color:var(--copper3); }
     .next-cta-sub { font-size:1rem; font-weight:400; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
     .next-cta-actions { display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap; }
     .contact-logo { height: 160px; width:auto; margin: 0 auto 2rem; display:block; border-radius: 6px; }
@@ -2654,7 +2654,7 @@
     }
     .article-body blockquote p {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-style: italic;
+      font-style: normal;
       font-size: 1.2rem;
       font-weight: 400;
       color: var(--cream);
@@ -2939,7 +2939,7 @@
     }
     .capability-section.navy .capability-section-header h2 { color: var(--cream); }
     .capability-section.cream .capability-section-header h2 { color: var(--navy); }
-    .capability-section-header h2 em { font-style: italic; color: var(--copper-accent); }
+    .capability-section-header h2 em { font-style: normal; color: var(--copper-accent); }
     .capability-section.navy .capability-section-header p { color: var(--muted); font-size: 1rem; font-weight: 400; line-height: 1.8; }
     .capability-section .capability-sectors-list { margin-bottom: 0; }
     .capability-section .capability-sectors-list li { color: var(--cream); border-right-color: rgba(244,240,235,0.18); }
@@ -3256,7 +3256,7 @@
     }
     .home-quote {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-style: italic;
+      font-style: normal;
       font-size: var(--fs-display-5);
       font-weight: 400;
       line-height: 1.25;

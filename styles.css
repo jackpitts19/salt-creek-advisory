@@ -581,7 +581,7 @@
     }
 
     .hero-h1 em {
-      font-style: italic;
+      font-style: normal;
       font-weight: 300;
       color: var(--copper3);
     }
@@ -701,7 +701,7 @@
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-size: clamp(200px, 28vw, 400px);
       font-weight: 300;
-      font-style: italic;
+      font-style: normal;
       color: transparent;
       -webkit-text-stroke: 1px rgba(7,17,26,0.055);
       pointer-events: none;
@@ -1194,7 +1194,7 @@
       margin-bottom: 1.8rem;
     }
 
-    .podcast-h2 em { font-style: italic; color: var(--copper3); }
+    .podcast-h2 em { font-style: normal; color: var(--copper3); }
 
     .podcast-h2 {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
@@ -1468,7 +1468,7 @@
     }
 
     .contact-h2 em {
-      font-style: italic;
+      font-style: normal;
       color: var(--copper3);
     }
 
@@ -1912,13 +1912,18 @@
       text-wrap: balance;
     }
 
-    /* The copper italic second line is the brand's signature, so it is
-       worth spending carefully. On the homepage it now appears exactly
-       twice: the hero opens with it and the contact section closes with
-       it. It used to run seven times down a single page, at which point
-       it stops reading as a flourish and starts reading as a template.
-       The markup keeps its <em> so the copy is untouched; these headings
-       simply set it upright. */
+    /* The copper second line is the brand's signature, so it is worth
+       spending carefully. On the homepage it appears exactly twice: the
+       hero opens with it and the contact section closes with it. It used
+       to run seven times down a single page, at which point it stops
+       reading as a flourish and starts reading as a template. The markup
+       keeps its <em> so the copy is untouched; these headings simply set
+       it upright and in the heading's colour.
+
+       Every other heading <em> keeps its copper but is set upright too.
+       Jack retired the slanted italic site-wide on 2026-10-23: a serif
+       headline ending in an italic phrase is the stock look of generated
+       sites, and a bank should read plain and assured. */
     .impact-h2 em {
       font-style: normal;
       color: inherit;
@@ -1977,7 +1982,7 @@
        so a long unbreakable word can't force the grid past the viewport. */
     .impact-stat-num--word {
       font-size: var(--fs-display-4);
-      font-style: italic;
+      font-style: normal;
       letter-spacing: -0.005em;
       line-height: 1.08;
       padding-top: 0.35rem;
@@ -2041,18 +2046,18 @@
       display: block;
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
       font-size: 3.2rem;
-      font-style: italic;
+      font-style: normal;
       line-height: 0.6;
       color: var(--copper2);
       opacity: 0.55;
       margin-bottom: 0.9rem;
     }
 
-    /* This one is an actual pull quote, so the italic is doing real
-       typographic work and stays. Dropping the copper keeps it from
-       reading as a third instance of the hero device. */
+    /* A pull quote, set upright like the rest of the display type. Dropping
+       the copper keeps it from reading as a third instance of the hero
+       device. */
     .impact-body-quote em {
-      font-style: italic;
+      font-style: normal;
       color: var(--cream);
     }
 
@@ -2304,7 +2309,7 @@
       margin-bottom: 1.25rem;
     }
 
-    .sector-flagship h3 em { font-style: italic; color: var(--copper3); }
+    .sector-flagship h3 em { font-style: normal; color: var(--copper3); }
 
     .sector-flagship p {
       font-size: 1rem;
@@ -2443,7 +2448,7 @@
     }
 
     .sector-group-h2 em,
-    .articles-group-h2 em { font-style: italic; color: var(--copper-accent); }
+    .articles-group-h2 em { font-style: normal; color: var(--copper-accent); }
 
     /* ============================================================
        INVESTORS / BUY-SIDE
@@ -2483,7 +2488,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .investors-h2 em { font-style: italic; color: var(--copper3); }
+    .investors-h2 em { font-style: normal; color: var(--copper3); }
 
     .investors-body {
       font-size: 1rem;
@@ -2563,7 +2568,7 @@
       text-wrap: balance;
     }
 
-    .faq-h2 em { font-style: italic; color: var(--copper3); }
+    .faq-h2 em { font-style: normal; color: var(--copper3); }
 
     .faq-sub {
       font-size: 1rem;
@@ -2767,7 +2772,7 @@
     .page-hero::after { content:''; position:absolute; inset:0; opacity:.1; pointer-events:none; background-image: radial-gradient(circle, rgba(184,115,51,0.35) 1px, transparent 1px); background-size:40px 40px; mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 50% 90% at 90% 40%, black 0%, transparent 70%); }
     .page-hero .wrap { position: relative; z-index: 1; }
     .page-hero-h1 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-2); font-weight:300; color: var(--cream); line-height:1.1; margin-bottom: 1.5rem; max-width: 760px; letter-spacing:-0.01em; }
-    .page-hero-h1 em { font-style: italic; color: var(--copper3); }
+    .page-hero-h1 em { font-style: normal; color: var(--copper3); }
     .page-hero-sub { font-size: 1rem; font-weight:300; color: var(--muted); line-height:1.85; max-width: 580px; }
 
     /* Seam corrections.
@@ -2971,7 +2976,7 @@
 
     .next-cta { background: var(--navy3); padding: 5.5rem 6%; text-align:center; border-top:1px solid rgba(244,240,235,0.05); }
     .next-cta-h2 { font-family:'Cormorant Garamond','Cormorant Garamond Fallback',Georgia,serif; font-size: var(--fs-display-4); font-weight:300; color:var(--cream); line-height:1.15; margin:0 auto 1.2rem; max-width: 30ch; text-wrap: balance; }
-    .next-cta-h2 em { font-style:italic; color:var(--copper3); }
+    .next-cta-h2 em { font-style: normal; color:var(--copper3); }
     .next-cta-sub { font-size:1rem; font-weight:400; color:var(--muted); max-width:480px; margin:0 auto 2.5rem; line-height:1.85; }
     .next-cta-actions { display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap; }
 
@@ -3554,7 +3559,7 @@
 
     .article-body blockquote p {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-style: italic;
+      font-style: normal;
       font-size: 1.2rem;
       font-weight: 400;
       color: var(--cream);
@@ -3921,7 +3926,7 @@
     }
     .capability-section.navy .capability-section-header h2 { color: var(--cream); }
     .capability-section.cream .capability-section-header h2 { color: var(--navy); }
-    .capability-section-header h2 em { font-style: italic; color: var(--copper-accent); }
+    .capability-section-header h2 em { font-style: normal; color: var(--copper-accent); }
     .capability-section.navy .capability-section-header p { color: var(--muted); font-size: 1rem; font-weight: 400; line-height: 1.8; }
     /* The home page's practice-area list, reused on the navy "Sectors we focus
        on" band so the band carries more than one paragraph. Same five names
@@ -4322,7 +4327,7 @@
 
     .home-quote {
       font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
-      font-style: italic;
+      font-style: normal;
       font-size: var(--fs-display-5);
       font-weight: 400;
       line-height: 1.25;
