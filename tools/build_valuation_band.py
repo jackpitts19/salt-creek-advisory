@@ -74,6 +74,7 @@ SECTOR_INDUSTRY = {
     "msp-valuation-multiples": "itservices",
     "best-ma-advisors-msp-managed-service-providers": "itservices",
     "msp-sale-readiness-checklist": "itservices",
+    "who-buys-msp-businesses": "itservices",
     "childcare-daycare-valuation-multiples": "ece",
     "ma-advisor-early-childhood-education": "ece",
     "prepare-preschool-childcare-business-for-sale": "ece",

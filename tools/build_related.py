@@ -161,10 +161,12 @@ RELATED = {
     # explainer, so the advisor comparison sits second rather than last.
     "msp-valuation-multiples": [
         "/msp-ma-advisor", "best-ma-advisors-msp-managed-service-providers",
-        "business-services-valuation-multiples", "msp-sale-readiness-checklist"],
+        "business-services-valuation-multiples", "msp-sale-readiness-checklist",
+        "who-buys-msp-businesses"],
     "best-ma-advisors-msp-managed-service-providers": [
         "/msp-ma-advisor", "msp-valuation-multiples",
-        "how-to-choose-an-ma-advisor", "msp-sale-readiness-checklist"],
+        "how-to-choose-an-ma-advisor", "msp-sale-readiness-checklist",
+        "who-buys-msp-businesses"],
     # The readiness checklist is the page an MSP owner reads before either of the
     # two above is useful, and both carry it as a fourth destination rather than
     # displacing one. Its body already links both of them by name, so its own
@@ -173,7 +175,17 @@ RELATED = {
     # guide, which is where every unresolved issue in it ends up.
     "msp-sale-readiness-checklist": [
         "/msp-ma-advisor", "due-diligence-checklist-selling-a-business",
-        "earnouts-escrow-holdbacks"],
+        "earnouts-escrow-holdbacks", "who-buys-msp-businesses"],
+    # The MSP buyer guide: which kind of buyer is on the other side of an offer.
+    # Its body links the sector page, the strategic-versus-PE comparison, the
+    # readiness checklist and the letter of intent guide by name, so its own list
+    # runs to what the body only describes: the multiples a buyer prices from,
+    # the earnout and escrow terms it tells the reader to separate from cash at
+    # closing, and the deal-structure guide behind its rollover section. Carried
+    # by the three other MSP guides as a fourth or fifth destination.
+    "who-buys-msp-businesses": [
+        "/msp-ma-advisor", "msp-valuation-multiples",
+        "earnouts-escrow-holdbacks", "ma-deal-structure"],
 
     # Sector: pet care. The advisor comparison sits in the middle of both other
     # pet care guides rather than at the end: a reader on multiples or roll-ups
