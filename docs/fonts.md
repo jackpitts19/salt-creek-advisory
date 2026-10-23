@@ -1,11 +1,18 @@
 # Fonts: self-hosted, and how to change them
 
-The site sets Cormorant Garamond (display) and Inter (text). Both are served
+The site sets Source Serif 4 (display: headlines, pull quotes, big numbers),
+Inter (text), and Cormorant Garamond for the SALT CREEK wordmark only.
+
+**2026-10-23:** display type moved from Cormorant Garamond to Source Serif 4,
+and every italic display flourish was set upright. Cormorant's light hairline
+cut and the copper italic headline endings read as the stock look of
+generated sites; a bank's headlines should look sturdy. The wordmark stays in
+Cormorant because it is part of the logo. Both are served
 from this origin under `fonts/`, declared once at the top of `styles.css`, and
 the two files a first paint needs are preloaded from every page head:
 
 ```html
-<link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
 ```
 
@@ -27,8 +34,15 @@ the bold. The Inter file here carries the full 100 to 900 axis.
 
 | File | Family | Style | Weight axis | Subset |
 |---|---|---|---|---|
-| `fonts/cormorant-garamond-var.woff2` | Cormorant Garamond | normal | 300 to 700 | Latin |
-| `fonts/cormorant-garamond-italic-var.woff2` | Cormorant Garamond | italic | 300 to 700 | Latin |
+| `fonts/source-serif-4-var.woff2` | Source Serif 4 | normal | 300 to 700 (opsz pinned at 48) | Latin |
+| `fonts/cormorant-garamond-var.woff2` | Cormorant Garamond (wordmark only) | normal | 300 to 700 | Latin |
+| `fonts/cormorant-garamond-italic-var.woff2` | Cormorant Garamond | italic | 300 to 700 | Latin (no longer declared in styles.css; kept for tools/one_pager_template.html) |
+
+`source-serif-4-var.woff2` is the Google Fonts Latin build of Source Serif 4
+(SIL OFL 1.1), downloaded 2026-10-23, with fontTools' instancer pinning the
+optical-size axis at 48 and trimming weight to 300-700: 122 KB down to 49 KB.
+Its `@font-face` carries `size-adjust: 86%`, which brings its x-height close
+to Cormorant's so headline sizes stayed as laid out.
 | `fonts/inter-var.woff2` | Inter | normal | 100 to 900 | Latin |
 
 They are the Latin variable builds Google Fonts serves to a current Chrome for
@@ -70,7 +84,8 @@ space. Then `size-adjust = web / fallback`, and each override is the web
 font's metric divided by `size-adjust`:
 
 - Cormorant on Times New Roman: size-adjust 97.06%, ascent 95.20%, descent 29.57%.
-- Cormorant Italic on Times New Roman Italic: size-adjust 87.12%, ascent 106.07%, descent 32.94%.
+- Source Serif 4 (wght 400, opsz 48: ascent 1.036, descent 0.335, avg advance 0.4163, all times the 86% face size-adjust) on Times New Roman: size-adjust 88.36%, ascent 100.83%, descent 32.60%.
+- The Cormorant italic fallback face was removed with the italic display type.
 - Inter on Arial: size-adjust 107.49%, ascent 90.12%, descent 22.44%.
 
 The italic face has its own descriptors because the headline on every hero

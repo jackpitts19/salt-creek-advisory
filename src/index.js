@@ -14,8 +14,9 @@ const ALLOWED_METHODS = ["GET", "HEAD", "OPTIONS"];
 //                                          buyer-list.js no-JavaScript fallback
 //   challenges.cloudflare.com           -> Turnstile, the bot check on the buyer
 //                                          list form (script, its iframe, its calls)
-// No font host is listed on purpose: Cormorant Garamond and Inter are served
-// from this origin under /fonts (see docs/fonts.md), so 'self' covers them.
+// No font host is listed on purpose: Source Serif 4, Cormorant Garamond (the
+// wordmark only) and Inter are served from this origin under /fonts (see
+// docs/fonts.md), so 'self' covers them.
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "base-uri 'self'",
