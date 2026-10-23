@@ -123,6 +123,55 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertEqual(check_links.classify(None, check_links.ERR_OTHER), BLOCKED)
 
 
+class HomepageProbeTestCase(unittest.TestCase):
+    """A 404 only means gone if the site's own homepage answers.
+
+    ftc.gov returns 404 to every scripted request, its homepage included, while
+    serving the same pages to browsers. A press release cited in the LOI guide
+    showed up as DEAD every week for that reason alone.
+    """
+
+    def setUp(self):
+        self.original = check_links._attempt
+        check_links._homepage_status.cache_clear()
+
+    def tearDown(self):
+        check_links._attempt = self.original
+        check_links._homepage_status.cache_clear()
+
+    def stub(self, statuses):
+        calls = []
+
+        def attempt(url, user_agent, timeout):
+            calls.append(url)
+            return statuses(url), None
+
+        check_links._attempt = attempt
+        return calls
+
+    def test_404_from_a_site_whose_homepage_404s_is_blocked_not_dead(self):
+        self.stub(lambda url: 404)
+        status, error = check_links.fetch("https://www.ftc.gov/news-events/release")
+        self.assertEqual(check_links.classify(status, error), BLOCKED)
+        self.assertEqual(error, check_links.ERR_ROBOT_404)
+
+    def test_404_from_a_site_whose_homepage_answers_is_still_dead(self):
+        self.stub(lambda url: 200 if url == "https://vendor.com/" else 404)
+        status, error = check_links.fetch("https://vendor.com/moved")
+        self.assertEqual(check_links.classify(status, error), DEAD)
+
+    def test_homepage_is_probed_once_per_host(self):
+        calls = self.stub(lambda url: 404)
+        check_links.fetch("https://www.ftc.gov/a")
+        check_links.fetch("https://www.ftc.gov/b")
+        self.assertEqual(calls.count("https://www.ftc.gov/"), 1)
+
+    def test_success_never_probes_the_homepage(self):
+        calls = self.stub(lambda url: 200)
+        check_links.fetch("https://vendor.com/page")
+        self.assertEqual(calls, ["https://vendor.com/page"])
+
+
 class RunTestCase(unittest.TestCase):
     """End to end over a synthetic site, with the network stubbed out."""
 

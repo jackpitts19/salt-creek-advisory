@@ -32,6 +32,9 @@ inside a month:
   - <link rel="preconnect"> hrefs are origins to warm, not pages. Fetching
     fonts.gstatic.com is supposed to fail.
 
+  - ftc.gov 404s every scripted request, its own homepage included. A 404 from
+    a host whose front page also 404s is a refusal, not a missing page.
+
 So the classifier carries this script, not the fetcher. Only 404, 410, and a
 host that no longer resolves count as DEAD and fail the run. Everything else
 that is not a success is BLOCKED: printed, never fatal. A weekly job that fails
@@ -55,6 +58,7 @@ import urllib.request
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
+from functools import lru_cache
 from html import unescape
 from typing import List, Optional
 
@@ -67,6 +71,7 @@ BLOCKED = "blocked"
 ERR_DNS = "dns"
 ERR_TIMEOUT = "timeout"
 ERR_OTHER = "other"
+ERR_ROBOT_404 = "robot404"
 
 # Gone, and saying so. Everything else that fails is a door held shut.
 DEAD_STATUSES = frozenset({404, 410})
@@ -108,7 +113,11 @@ class Finding:
     def reason(self):
         if self.status is not None:
             return "HTTP {}".format(self.status)
-        return {ERR_DNS: "host does not resolve", ERR_TIMEOUT: "timed out"}.get(
+        return {
+            ERR_DNS: "host does not resolve",
+            ERR_TIMEOUT: "timed out",
+            ERR_ROBOT_404: "404s robots, homepage too",
+        }.get(
             self.error, "connection failed"
         )
 
@@ -200,7 +209,7 @@ def _attempt(url, user_agent, timeout):
         return None, ERR_OTHER
 
 
-def fetch(url, timeout=DEFAULT_TIMEOUT):
+def _fetch_once(url, timeout=DEFAULT_TIMEOUT):
     """Browser first, then a declared contact if the door was held shut."""
     status, error = _attempt(url, BROWSER_UA, timeout)
     if status in RETRY_WITH_DECLARED_UA:
@@ -209,6 +218,30 @@ def fetch(url, timeout=DEFAULT_TIMEOUT):
             return retry_status, None
         if retry_status is not None:
             return retry_status, retry_error
+    return status, error
+
+
+@lru_cache(maxsize=None)
+def _homepage_status(origin):
+    """One probe per host, however many of its pages the site cites."""
+    return _fetch_once(origin + "/")[0]
+
+
+def fetch(url, timeout=DEFAULT_TIMEOUT):
+    """A 404 counts as gone only if the site's own homepage answers.
+
+    ftc.gov 404s every scripted request, homepage included, and serves the same
+    URLs to browsers. A host that denies its own front door is refusing robots,
+    not reporting a missing page.
+    """
+    status, error = _fetch_once(url, timeout)
+    if status not in DEAD_STATUSES:
+        return status, error
+    parts = url.split("/")
+    if len(parts) < 3:
+        return status, error
+    if _homepage_status(parts[0] + "//" + parts[2]) in DEAD_STATUSES:
+        return None, ERR_ROBOT_404
     return status, error
 
 
