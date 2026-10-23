@@ -155,6 +155,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "reduce-owner-dependence-before-selling",
   "roll-up-buy-and-build-acquisition-advisory",
   "roll-ups-legal-services-pet-care",
+  "rollover-equity-explained",
   "sell-side-advisor-vs-business-broker",
   "seller-risk-protection-deal-structuring",
   "selling-to-search-fund-independent-sponsor",
