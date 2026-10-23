@@ -98,9 +98,12 @@
     if (est.sdeSource === 'addedBack') {
       return [
         row('Profit you reported', fmt(est.reportedProfit), 'You told us your own pay is already taken out of this number.'),
-        row('Added back: a typical owner’s pay', '+' + fmt(est.ownerPayAddedBack),
-          'Businesses this size are priced with the owner’s pay still in the earnings, so we add back a typical ' +
-          'market salary for running a business your size.'),
+        row(est.payAddBackCapped ? 'Added back: your pay' : 'Added back: a typical owner’s pay', '+' + fmt(est.ownerPayAddedBack),
+          'Businesses this size are priced with the owner’s pay still in the earnings, so we add back ' +
+          (est.payAddBackCapped
+            ? 'what you could have paid yourself: everything your revenue covered beyond profit. A typical salary ' +
+              'would be more than the business spent in total.'
+            : 'a typical market salary for running a business your size.')),
         total(priced)
       ];
     }
@@ -501,7 +504,8 @@
       return 'an estimated ' + fmt(est.sde) + ' of owner earnings (you left profit blank, so this is a rougher starting point)';
     }
     if (est.sdeSource === 'addedBack') {
-      return fmt(est.sde) + ' of owner earnings (your profit plus a typical owner’s salary of ' + fmt(est.ownerPayAddedBack) + ')';
+      return fmt(est.sde) + ' of owner earnings (your profit plus ' +
+        (est.payAddBackCapped ? 'up to ' + fmt(est.ownerPayAddedBack) + ' of your own pay' : 'a typical owner’s salary of ' + fmt(est.ownerPayAddedBack)) + ')';
     }
     return 'your ' + fmt(est.sde) + ' of owner earnings (profit with your own pay still in it)';
   }

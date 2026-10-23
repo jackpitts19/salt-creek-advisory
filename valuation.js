@@ -63,6 +63,9 @@
   // lead so a submission can be matched to the terms that were on screen.
   const TERMS_VERSION = '2026-10-09';
 
+  // A US number with area code. Extensions and a leading 1 only add digits.
+  const MIN_PHONE_DIGITS = 10;
+
   const $ = (id) => document.getElementById(id);
   const steps = document.querySelectorAll('.val-step');
   const dots = document.querySelectorAll('.val-progress li');
@@ -421,7 +424,11 @@
       parts.push(link, document.createTextNode(' (' + source.sortKey.slice(0, 4) + ')' + (i < picked.length - 1 ? ', ' : '. ')));
     });
     const all = el('a', '', 'See every source');
-    all.href = '#sources';
+    // The full list lives on the methodology page, not under the calculator.
+    // A new tab, so following it never costs the owner their result.
+    all.href = 'valuation-methodology#sources';
+    all.target = '_blank';
+    all.rel = 'noopener';
     line.replaceChildren(...parts, all, document.createTextNode('.'));
   }
 
@@ -767,6 +774,12 @@
     const email = $('vEmail').value.trim();
     if (!name) return fail(3, 'Please enter your name.', 'vName');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(3, 'Please enter a valid email address.', 'vEmail');
+    // Phone stays optional, but a typed one has to be dialable: a test lead
+    // arrived with letters for a phone number and no way to call back.
+    const phone = $('vPhone').value.trim();
+    if (phone && (/[a-z]/i.test(phone) || phone.replace(/\D/g, '').length < MIN_PHONE_DIGITS)) {
+      return fail(3, 'Please enter a phone number we can call, or leave it blank.', 'vPhone');
+    }
     clearStepErrors(3);
 
     const est = E.computeEstimate(collectInputs());

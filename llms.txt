@@ -118,6 +118,7 @@ Each compares named firms head to head and includes a methodology section statin
 - [Capabilities](https://saltcreekadvisory.com/capabilities): sell-side M&A, buyer outreach, off-market sales, valuation, and AI audits, for owners only
 - [Process](https://saltcreekadvisory.com/process): the sell-side M&A process end to end
 - [Business valuation calculator](https://saltcreekadvisory.com/valuation): free ballpark value range from published industry transaction multiple ranges, with a step-by-step breakdown and the answers that move the number most; directional, not a formal valuation
+- [How the valuation calculator works](https://saltcreekadvisory.com/valuation-methodology): the calculator's full method (SDE below $300,000 of owner earnings, EBITDA after a manager's salary from $750,000, a blend in between), the starting EBITDA and SDE multiple ranges for every industry it covers, what moves them, a worked example, and every published source behind them, by industry with dates
 - [FAQ](https://saltcreekadvisory.com/faq): direct answers on valuation, timing, fees, confidentiality
 - [Investors](https://saltcreekadvisory.com/investors): buyer list for PE firms, family offices, strategic acquirers, and search funds who want to see our clients' businesses when they go to market (Salt Creek Advisory does not take buy-side mandates)
 - [Podcast](https://saltcreekadvisory.com/podcast): The Making Of Hosted by Jack Pitts

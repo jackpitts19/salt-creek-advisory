@@ -299,7 +299,9 @@
    * Owner earnings (SDE): what the business pays the person who runs it.
    *
    * Reported with the owner's pay in it, that is the figure itself. Reported
-   * without it, a typical owner's salary goes back in. Left blank, it is
+   * without it, a typical owner's salary goes back in, but never more than
+   * revenue minus profit: the owner can only have been paid out of what the
+   * business spent, so owner earnings never exceed revenue. Left blank, it is
    * estimated only for a business under $1 million of revenue, as profit at a
    * typical margin plus a typical salary, capped at 35% of revenue so a tiny
    * business is never credited with more than it could plausibly earn. A
@@ -308,22 +310,28 @@
    * @param {Object} inputs the owner's answers, money in dollars
    * @param {number} margin the margin profit was estimated with
    * @param {Object} earnings from earningsBasis
-   * @returns {{sde: number|null, sdeSource: string|null, ownerPayAddedBack: number, sdeCapped: boolean}}
+   * @returns {{sde: number|null, sdeSource: string|null, ownerPayAddedBack: number, sdeCapped: boolean, payAddBackCapped: boolean}}
    */
   function ownerEarnings(inputs, margin, earnings) {
     if (earnings.estimated) {
       if (inputs.revenue >= ESTIMATE_SDE_BELOW_REVENUE) {
-        return { sde: null, sdeSource: null, ownerPayAddedBack: 0, sdeCapped: false };
+        return { sde: null, sdeSource: null, ownerPayAddedBack: 0, sdeCapped: false, payAddBackCapped: false };
       }
       const uncapped = earnings.reportedProfit + replacementSalary(inputs.revenue);
       const cap = Math.round(inputs.revenue * SDE_REVENUE_CAP);
-      return { sde: Math.min(uncapped, cap), sdeSource: 'estimated', ownerPayAddedBack: 0, sdeCapped: cap < uncapped };
+      return { sde: Math.min(uncapped, cap), sdeSource: 'estimated', ownerPayAddedBack: 0, sdeCapped: cap < uncapped, payAddBackCapped: false };
     }
     if (inputs.profitBasis === 'includesOwnerPay') {
-      return { sde: inputs.profit, sdeSource: 'reported', ownerPayAddedBack: 0, sdeCapped: false };
+      return { sde: inputs.profit, sdeSource: 'reported', ownerPayAddedBack: 0, sdeCapped: false, payAddBackCapped: false };
     }
-    const added = replacementSalary(inputs.revenue || Math.round(inputs.profit / margin));
-    return { sde: inputs.profit + added, sdeSource: 'addedBack', ownerPayAddedBack: added, sdeCapped: false };
+    const typical = replacementSalary(inputs.revenue || Math.round(inputs.profit / margin));
+    // Without a revenue figure there is nothing to bound the salary by.
+    const room = inputs.revenue ? Math.max(0, inputs.revenue - inputs.profit) : typical;
+    const added = Math.min(typical, room);
+    return {
+      sde: inputs.profit + added, sdeSource: 'addedBack', ownerPayAddedBack: added,
+      sdeCapped: false, payAddBackCapped: added < typical
+    };
   }
 
   /**

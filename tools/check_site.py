@@ -577,6 +577,8 @@ NAV_CURRENT = {
     "sectors.html": ("sectors", "page"),
     "team.html": ("team", "page"),
     "valuation.html": ("valuation", "page"),
+    # The methodology sits under the tool, the way a sector page sits under Sectors.
+    "valuation-methodology.html": ("valuation", "true"),
     "msp-ma-advisor.html": ("sectors", "true"),
     "pet-care-ma-advisor.html": ("sectors", "true"),
     "preschool-childcare-ma-advisor.html": ("sectors", "true"),
