@@ -83,6 +83,7 @@ SECTOR_INDUSTRY = {
     "best-ma-advisors-hvac-companies": "homeservices",
     "best-ma-advisors-plumbing-companies": "homeservices",
     "best-ma-advisors-accounting-cpa-firms": "professional",
+    "selling-cpa-firm-private-equity": "professional",
     "manufacturing-valuation-multiples": "manufacturing",
     "ma-advisor-industrials-manufacturing": "manufacturing",
     "business-services-valuation-multiples": "services",
