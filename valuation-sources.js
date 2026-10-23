@@ -3,7 +3,7 @@
   // starting ranges, by industry, newest first. Each was checked by hand in
   // October 2026 against the publisher's own page (BizBuySell through archived
   // copies, since it blocks automated reading). The "Where these multiples come
-  // from" section of valuation.html lists exactly these, and
+  // from" section of valuation-methodology.html lists exactly these, and
   // tools/test_valuation_explain.mjs keeps the two in step, so a source added
   // here has to be added there too.
   //

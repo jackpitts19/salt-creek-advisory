@@ -39,6 +39,16 @@ export function pageHtml() {
 }
 
 /**
+ * valuation-methodology.html, read fresh for each test that needs it. The
+ * worked example, the multiples table, the sources and most of the FAQ moved
+ * there so the calculator page does not scroll forever.
+ * @returns {string}
+ */
+export function methodologyHtml() {
+  return readFileSync(new URL("../valuation-methodology.html", import.meta.url), "utf8");
+}
+
+/**
  * The option values a select on the real page ships, read from the markup so
  * the tables are checked against the form and not against a copy of it.
  * @param {string} id the select's id

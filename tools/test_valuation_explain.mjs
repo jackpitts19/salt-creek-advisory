@@ -6,14 +6,16 @@
 // business: the EBITDA path, the small-business SDE path, or the blend of the
 // two. "What's moving your number" has to rank the owner's answers by how far
 // they move the range. The explainer, the FAQ and its JSON-LD, the multiples
-// table and the sources list on valuation.html all repeat what the tool does,
-// so each is checked against the tool rather than against a copy.
+// table and the sources list on valuation.html and valuation-methodology.html
+// all repeat what the tool does, so each is checked against the tool rather
+// than against a copy.
 //
 // Node's own test runner, no dependencies, matching the tools alongside.
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import test from "node:test";
-import { V, inputs, jasonInputs, near, pageHtml } from "./valuation_test_helpers.mjs";
+import { readFileSync } from "node:fs";
+import { V, inputs, jasonInputs, methodologyHtml, near, pageHtml } from "./valuation_test_helpers.mjs";
 
 const require = createRequire(import.meta.url);
 const S = require("../valuation-sources.js");
@@ -422,7 +424,7 @@ test("each source says what kind of figure it gives, and the page labels the one
   const ibba = Object.values(S.SOURCES).flat().filter((s) => /^IBBA/.test(s.publisher));
   assert.deepEqual([...new Set(ibba.map((s) => s.publisher))], ["IBBA / M&A Source (Market Pulse)"]);
 
-  const section = pageHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/)[0];
+  const section = methodologyHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/)[0];
   const tagged = (section.match(/class="val-source-tag"/g) || []).length;
   const notBasis = Object.values(S.SOURCES).flat().filter((s) => ["asking", "ceiling", "contrary"].includes(s.kind)).length;
   assert.equal(tagged, notBasis);
@@ -430,8 +432,8 @@ test("each source says what kind of figure it gives, and the page labels the one
 });
 
 test("the sources section on the page lists exactly the sources in the data", () => {
-  const section = pageHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/);
-  assert.ok(section, "valuation.html has no #sources section");
+  const section = methodologyHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/);
+  assert.ok(section, "valuation-methodology.html has no #sources section");
   for (const [industry, list] of Object.entries(S.SOURCES)) {
     const block = section[0].match(new RegExp('<details[^>]*data-industry="' + industry + '"[\\s\\S]*?</details>'));
     assert.ok(block, industry + " has no block");
@@ -445,7 +447,7 @@ test("the sources section on the page lists exactly the sources in the data", ()
 });
 
 test("the thin-evidence niches are labelled on the page", () => {
-  const section = pageHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/)[0];
+  const section = methodologyHtml().match(/<section[^>]*id="sources"[\s\S]*?<\/section>/)[0];
 
   for (const [industry, ids] of Object.entries(S.LIMITED_EVIDENCE)) {
     const block = section.match(new RegExp('<details[^>]*data-industry="' + industry + '"[\\s\\S]*?</details>'))[0];
@@ -474,8 +476,8 @@ function plainText(fragment) {
 }
 
 test("the worked example on the page is what the tool actually shows", () => {
-  const table = pageHtml().match(/<table id="valExampleTable"[\s\S]*?<\/table>/);
-  assert.ok(table, "valuation.html has no #valExampleTable");
+  const table = methodologyHtml().match(/<table id="valExampleTable"[\s\S]*?<\/table>/);
+  assert.ok(table, "valuation-methodology.html has no #valExampleTable");
 
   for (const line of V.buildBreakdownRows(machineShop())) {
     assert.ok(table[0].includes(">" + line.term + "<"), line.term);
@@ -484,7 +486,7 @@ test("the worked example on the page is what the tool actually shows", () => {
 });
 
 test("the worked example's ranked answers and what-ifs match the tool", () => {
-  const html = pageHtml();
+  const html = methodologyHtml();
   const tenToTwentyFive = machineShop({ concentration: "ten_25" });
   const withManager = machineShop({ owner: "gmInPlace" });
   const asIfEbitda = machineShop({ profitBasis: "excludesOwnerPay" });
@@ -513,8 +515,8 @@ function sdeSpan(industry) {
 }
 
 test("the multiples table on the page matches the tool's own starting ranges", () => {
-  const table = pageHtml().match(/<table id="valMultiplesTable"[\s\S]*?<\/table>/);
-  assert.ok(table, "valuation.html has no #valMultiplesTable");
+  const table = methodologyHtml().match(/<table id="valMultiplesTable"[\s\S]*?<\/table>/);
+  assert.ok(table, "valuation-methodology.html has no #valMultiplesTable");
   const rows = Array.from(table[0].matchAll(/<tr data-industry="([^"]+)">([\s\S]*?)<\/tr>/g));
 
   assert.deepEqual(rows.map((m) => m[1]).sort(), Object.keys(V.MULT).sort());
@@ -527,17 +529,61 @@ test("the multiples table on the page matches the tool's own starting ranges", (
   }
 });
 
-test("the FAQ schema says exactly what the visible FAQ says", () => {
-  const html = pageHtml();
+/**
+ * A page's visible FAQ and its FAQPage JSON-LD, as [question, answer] pairs.
+ * @param {string} html the page
+ * @returns {{visible: string[][], schema: string[][]}}
+ */
+function faqPairs(html) {
   const visible = Array.from(
     html.matchAll(/<button class="faq-q" aria-expanded="false">([\s\S]*?)<span[\s\S]*?<div class="faq-a-inner">([\s\S]*?)<\/div><\/div>/g),
     (m) => [plainText(m[1]), plainText(m[2])]);
   const faqPage = Array.from(html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g))
     .map((m) => JSON.parse(m[1])).find((node) => node["@type"] === "FAQPage");
-  const schema = faqPage.mainEntity.map((q) => [q.name, q.acceptedAnswer.text]);
+  return { visible, schema: faqPage.mainEntity.map((q) => [q.name, q.acceptedAnswer.text]) };
+}
 
-  assert.ok(visible.length >= 14, "expected the full FAQ");
+// The calculator page keeps the five questions an owner asks before running it.
+const CALCULATOR_FAQ = [
+  "How much is my business worth?",
+  "How accurate is this estimate?",
+  "Why do I get a range instead of one number?",
+  "What multiple is my industry trading at?",
+  "Is my information kept confidential?",
+];
+
+test("the FAQ schema says exactly what the visible FAQ says, on the calculator page", () => {
+  const { visible, schema } = faqPairs(pageHtml());
+
+  assert.deepEqual(visible.map((pair) => pair[0]), CALCULATOR_FAQ);
   assert.deepEqual(schema, visible);
+});
+
+test("the FAQ schema says exactly what the visible FAQ says, on the methodology page", () => {
+  const { visible, schema } = faqPairs(methodologyHtml());
+
+  assert.equal(visible.length, 13, "expected the rest of the FAQ");
+  assert.ok(visible.every((pair) => !CALCULATOR_FAQ.includes(pair[0])), "a question is on both pages");
+  assert.deepEqual(schema, visible);
+});
+
+test("the calculator page sends readers to the methodology instead of scrolling forever", () => {
+  const html = pageHtml();
+
+  assert.match(html, /<a href="valuation-methodology" class="text-link">See the full methodology/);
+  assert.match(html, /href="valuation-methodology#multiples-by-industry"/);
+  for (const id of ["sources", "valExampleTable", "valMultiplesTable", "worked-example", "who-is-buying"]) {
+    assert.doesNotMatch(html, new RegExp('id="' + id + '"'), id + " belongs on the methodology page");
+  }
+  assert.doesNotMatch(html, /href="#(sources|worked-example|multiples-by-industry|sde-vs-ebitda)"/);
+});
+
+test("the result screen's See every source link opens the methodology page's list", () => {
+  const script = readFileSync(new URL("../valuation.js", import.meta.url), "utf8");
+  const methodology = methodologyHtml();
+
+  assert.match(script, /all\.href = 'valuation-methodology#sources';/);
+  assert.match(methodology, /<section class="val-sources" id="sources"/);
 });
 
 test("the page carries the disclosure by the number and never promises a price", () => {

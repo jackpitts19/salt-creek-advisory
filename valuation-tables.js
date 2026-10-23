@@ -22,8 +22,8 @@
   // Page Sage, Peak Business Valuation, FISART, CT Acquisitions, Capstone
   // Partners, summaries of GF Data), checked against a verified sources pass
   // in October 2026. Most are published ranges and averages from advisers,
-  // brokers and valuation firms, not a closed-deal database, and valuation.html
-  // lists every source. Low end = typical negotiated sale; high end = quality
+  // brokers and valuation firms, not a closed-deal database, and
+  // valuation-methodology.html lists every source. Low end = typical negotiated sale; high end = quality
   // business in a competitive process.
   const MULT = deepFreeze({
     ece:          [3.5, 6.0],

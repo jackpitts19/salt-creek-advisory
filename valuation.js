@@ -424,7 +424,11 @@
       parts.push(link, document.createTextNode(' (' + source.sortKey.slice(0, 4) + ')' + (i < picked.length - 1 ? ', ' : '. ')));
     });
     const all = el('a', '', 'See every source');
-    all.href = '#sources';
+    // The full list lives on the methodology page, not under the calculator.
+    // A new tab, so following it never costs the owner their result.
+    all.href = 'valuation-methodology#sources';
+    all.target = '_blank';
+    all.rel = 'noopener';
     line.replaceChildren(...parts, all, document.createTextNode('.'));
   }
 
