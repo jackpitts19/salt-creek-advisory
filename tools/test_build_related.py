@@ -67,8 +67,8 @@ EXPECTED = {
         "lower-middle-market-ma-process", "best-ma-advisors-hvac-companies"],
     "business-services-valuation-multiples": [
         BUSINESS_SERVICES, "ma-advisor-business-services", "msp-valuation-multiples",
-        "manufacturing-valuation-multiples", "ebitda-and-business-valuation-basics",
-        "hvac-plumbing-valuation-multiples"],
+        "manufacturing-valuation-multiples", "hvac-plumbing-valuation-multiples",
+        "selling-commercial-landscaping-company"],
     "ma-advisor-business-services": [
         BUSINESS_SERVICES, "business-services-valuation-multiples",
         "best-ma-advisors-hvac-companies", "best-ma-advisors-plumbing-companies",

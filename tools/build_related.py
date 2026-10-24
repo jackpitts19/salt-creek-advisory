@@ -363,13 +363,13 @@ RELATED = {
     # sell-side page. The advisor guide then runs through the trade
     # comparisons (HVAC, plumbing, CPA, MSP) that are the verticals it names;
     # how-to-choose yields its slot because it is the best-linked hub on the
-    # site. The multiples guide adds the manufacturing multiples guide as the
-    # neighbouring sector table.
+    # site. The multiples guide adds the MSP, manufacturing and HVAC multiples
+    # guides as neighbouring sector tables, then the commercial landscaping
+    # guide; EBITDA basics gave up its slot to keep the list at six.
     "business-services-valuation-multiples": [
         "/business-services-ma-advisor", "ma-advisor-business-services",
         "msp-valuation-multiples", "manufacturing-valuation-multiples",
-        "ebitda-and-business-valuation-basics", "hvac-plumbing-valuation-multiples",
-        "selling-commercial-landscaping-company"],
+        "hvac-plumbing-valuation-multiples", "selling-commercial-landscaping-company"],
 
     # Sector: commercial landscaping. The business services page and multiples
     # guide lead, since landscaping sits inside that sector; then the two deal
@@ -404,7 +404,7 @@ RELATED = {
         "/business-services-ma-advisor", "business-services-valuation-multiples",
         "best-ma-advisors-hvac-companies", "best-ma-advisors-plumbing-companies",
         "best-ma-advisors-accounting-cpa-firms",
-        "best-ma-advisors-msp-managed-service-providers", "selling-commercial-landscaping-company"],
+        "best-ma-advisors-msp-managed-service-providers"],
 
     # Choosing an advisor. The fee guide sits second in the two comparisons that
     # quote a percentage without deriving it: a reader just told a $20M sale runs
