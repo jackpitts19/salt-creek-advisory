@@ -376,9 +376,20 @@ RELATED = {
     # terms the guide's worked example turns on (working capital in a seasonal
     # business, rollover into a platform) and the PE-versus-strategic buyer guide.
     "selling-commercial-landscaping-company": [
-        "/business-services-ma-advisor", "business-services-valuation-multiples",
+        "/business-services-ma-advisor", "ma-advisors-commercial-landscaping-companies",
+        "business-services-valuation-multiples",
         "working-capital-peg-ma", "rollover-equity-explained",
         "strategic-buyer-vs-private-equity-buyer"],
+
+    # Choosing an advisor: commercial landscaping. The sale guide leads, since
+    # the comparison sends readers there for buyers and valuation; then the
+    # business services page, the broker-versus-advisor and fee guides the
+    # article's questions turn on, and the HVAC comparison as the nearest
+    # field-services sibling.
+    "ma-advisors-commercial-landscaping-companies": [
+        "selling-commercial-landscaping-company", "/business-services-ma-advisor",
+        "sell-side-advisor-vs-business-broker", "ma-advisor-fees",
+        "how-to-choose-an-ma-advisor", "best-ma-advisors-hvac-companies"],
 
     # Sector: HVAC and plumbing valuation. The two trade advisor guides lead,
     # since a reader pricing the company asks next who should sell it; then the

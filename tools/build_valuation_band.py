@@ -87,6 +87,7 @@ SECTOR_INDUSTRY = {
     "ma-advisor-industrials-manufacturing": "manufacturing",
     "business-services-valuation-multiples": "services",
     "selling-commercial-landscaping-company": "facilities",
+    "ma-advisors-commercial-landscaping-companies": "facilities",
     "ma-advisor-business-services": "services",
     "dog-daycare-pet-care-valuation-multiples": "petcare",
     "best-ma-advisors-pet-care-dog-daycare-businesses": "petcare",

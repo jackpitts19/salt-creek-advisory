@@ -145,6 +145,7 @@ const YEAR_STAMPED_GUIDES = new Set([
   "ma-advisor-fees",
   "ma-advisor-early-childhood-education",
   "ma-advisor-industrials-manufacturing",
+  "ma-advisors-commercial-landscaping-companies",
   "ma-deal-structure",
   "ma-glossary-lower-middle-market",
   "manufacturing-valuation-multiples",
